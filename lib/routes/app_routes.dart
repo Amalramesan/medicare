@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:med_care/views/Home/home_page.dart';
+import 'package:med_care/views/Appointment/appointment_page.dart';
 import 'package:med_care/views/Login_page/login.dart';
 import 'package:med_care/views/Regerstration/regerstration.dart';
 import 'package:med_care/views/Splash_screen.dart';
