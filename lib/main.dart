@@ -14,6 +14,13 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute: AppRoutes.splash,
       routes: AppRoutes.routes,
+      theme: ThemeData(
+        scaffoldBackgroundColor: Colors.white,
+        appBarTheme: AppBarTheme(backgroundColor: Colors.grey[300]),
+        inputDecorationTheme: InputDecorationTheme(
+          prefixIconColor: Color.fromARGB(255, 32, 184, 239),
+        ),
+      ),
     );
   }
 }

@@ -1,0 +1,44 @@
+import 'package:flutter/material.dart';
+
+class CustomTextField extends StatelessWidget {
+  final String hintText;
+  final IconData icon;
+  final bool obscureText;
+  final TextEditingController controller;
+  final TextInputType keyboardType;
+  final String? Function(String?)? validator;
+
+  const CustomTextField({
+    super.key,
+    required this.hintText,
+    required this.icon,
+    this.obscureText = false,
+    required this.controller,
+    this.keyboardType = TextInputType.text,
+    this.validator,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: Colors.grey[130],
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      child: TextFormField(
+        controller: controller,
+        obscureText: obscureText,
+        keyboardType: keyboardType,
+        validator: validator,
+        decoration: InputDecoration(
+          prefixIcon: Icon(icon),
+          hintText: hintText,
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 10,
+            vertical: 16,
+          ),
+          border: InputBorder.none,
+        ),
+      ),
+    );
+  }
+}

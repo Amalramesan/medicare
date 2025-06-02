@@ -12,21 +12,21 @@ class HomeWidget extends StatefulWidget {
 class _HomeWidgetState extends State<HomeWidget> {
   final List<Map<String, String>> appointments = const [
     {
-      "imagePath": "assets/icons/doctor1.png",
+      "imagePath": "assets/images/doctor1.png",
       "doctorName": "Dr.Johny",
       "specialty": "Cardiologist",
       "date": "June 12, 2025",
       "time": "10:30 AM",
     },
     {
-      "imagePath": "assets/icons/doctor2.png",
+      "imagePath": "assets/images/doctor2.png",
       "doctorName": "Dr.Lachu",
       "specialty": "Dermatologist",
       "date": "June 13, 2025",
       "time": "02:00 PM",
     },
     {
-      "imagePath": "assets/icons/doctor3.png",
+      "imagePath": "assets/images/doctor3.png",
       "doctorName": "Dr.Vishnu",
       "specialty": "Neurologist",
       "date": "June 15, 2025",
@@ -109,22 +109,6 @@ class _HomeWidgetState extends State<HomeWidget> {
                   child: Text(
                     "Upcommig Appointment",
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                Spacer(),
-                GestureDetector(
-                  onTap: () {
-                    print("taped");
-                  },
-                  child: Row(
-                    children: [
-                      Icon(Icons.add, size: 18, color: Colors.blue),
-                      SizedBox(width: 4),
-                      Text(
-                        "New",
-                        style: TextStyle(fontSize: 18, color: Colors.blue),
-                      ),
-                    ],
                   ),
                 ),
               ],

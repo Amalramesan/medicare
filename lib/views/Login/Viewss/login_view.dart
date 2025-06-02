@@ -1,26 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:med_care/routes/app_routes.dart';
-import 'login_widget.dart'; // import the widget file
+import '../Widgets/login_widget.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+class LoginPage extends StatelessWidget {
+  LoginPage({Key? key}) : super(key: key);
 
-  @override
-  State<LoginPage> createState() => _LoginPageState();
-}
-
-class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
+
   final TextEditingController emailController = TextEditingController();
+
   final TextEditingController passwordController = TextEditingController();
 
-  void signinUser() {
+  void signinUser(BuildContext context) {
     if (_formKey.currentState!.validate()) {
       Navigator.pushReplacementNamed(context, AppRoutes.home);
     }
   }
 
-  void signup() {
+  void signup(BuildContext context) {
     Navigator.pushReplacementNamed(context, AppRoutes.register);
   }
 
@@ -31,8 +28,8 @@ class _LoginPageState extends State<LoginPage> {
         formKey: _formKey,
         emailController: emailController,
         passwordController: passwordController,
-        onSignInTap: signinUser,
-        onSignUpTap: signup,
+        onSignInTap: () => signinUser(context),
+        onSignUpTap: () => signup(context),
       ),
     );
   }

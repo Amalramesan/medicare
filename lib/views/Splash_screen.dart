@@ -24,7 +24,7 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Center(child: Image.asset('assets/medcare_logo.png')),
+      body: Center(child: Image.asset('assets/images/medcare_logo.png')),
     );
   }
 }

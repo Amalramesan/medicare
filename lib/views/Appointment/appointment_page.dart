@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:med_care/views/Appointment/appointment_widget.dart';
+import 'package:med_care/views/Login/Views/login_view.dart';
 import 'package:med_care/views/records/record_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -23,7 +24,6 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: _selectedIndex == 0
           ? AppBar(
-              backgroundColor: Colors.grey[300],
               title: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
@@ -34,15 +34,32 @@ class _HomePageState extends State<HomePage> {
               centerTitle: false,
               titleSpacing: 30,
               actions: [
+                // Notification Icon
                 Padding(
                   padding: const EdgeInsets.all(10),
                   child: GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      // Handle notification tap
+                    },
                     child: Image.asset(
                       'assets/icons/notification.png',
                       height: 27,
                       width: 27,
                     ),
+                  ),
+                ),
+
+                // Logout Button
+                Padding(
+                  padding: const EdgeInsets.only(right: 10),
+                  child: IconButton(
+                    icon: const Icon(Icons.logout, size: 27),
+                    onPressed: () {
+                      Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(builder: (context) => LoginPage()),
+                        (route) => false, // Remove all previous routes
+                      );
+                    },
                   ),
                 ),
               ],
