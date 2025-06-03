@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:med_care/views/Appointment/appointment_widget.dart';
-import 'package:med_care/views/Login/Views/login_view.dart';
+import 'package:med_care/views/Login/Viewss/login_view.dart';
+import 'package:med_care/views/Profile/View/profile_view.dart';
 import 'package:med_care/views/records/record_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -12,11 +13,13 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
-  final List<Widget> _pages = [HomeWidget(), RecordPage()];
+  final List<Widget> _pages = [HomeWidget(), RecordPage(), ProfileView()];
   void onItemtapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+    if (index >= 0 && index < _pages.length) {
+      setState(() {
+        _selectedIndex = index;
+      });
+    }
   }
 
   @override
@@ -48,20 +51,6 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ),
-
-                // Logout Button
-                Padding(
-                  padding: const EdgeInsets.only(right: 10),
-                  child: IconButton(
-                    icon: const Icon(Icons.logout, size: 27),
-                    onPressed: () {
-                      Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(builder: (context) => LoginPage()),
-                        (route) => false, // Remove all previous routes
-                      );
-                    },
-                  ),
-                ),
               ],
             )
           : null,
@@ -75,6 +64,7 @@ class _HomePageState extends State<HomePage> {
             label: "Appointments",
           ),
           BottomNavigationBarItem(icon: Icon(Icons.folder), label: "Records"),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
         ],
       ),
     );

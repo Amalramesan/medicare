@@ -36,12 +36,19 @@ class _HomeWidgetState extends State<HomeWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return SingleChildScrollView(
       child: Column(
         children: [
+          // Greeting
           Container(
             alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.only(left: 30, right: 30, top: 20),
+            padding: EdgeInsets.symmetric(
+              horizontal: screenWidth * 0.07,
+              vertical: screenHeight * 0.02,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -49,20 +56,23 @@ class _HomeWidgetState extends State<HomeWidget> {
                   'Hello, User',
                   style: TextStyle(
                     fontFamily: 'oswald',
-                    fontSize: 30,
+                    fontSize: screenWidth * 0.07,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(height: 8),
+                SizedBox(height: screenHeight * 0.008),
                 Text(
                   'How are you feeling today',
-                  style: TextStyle(fontSize: 18, color: Colors.grey[800]),
+                  style: TextStyle(
+                    fontSize: screenWidth * 0.045,
+                    color: Colors.grey[800],
+                  ),
                 ),
               ],
             ),
           ),
 
-          SizedBox(height: 30),
+          SizedBox(height: screenHeight * 0.03),
 
           // Appointment button
           GestureDetector(
@@ -72,11 +82,10 @@ class _HomeWidgetState extends State<HomeWidget> {
                 builder: (context) => const AppointmentDialog(),
               );
             },
-
             child: Container(
-              width: 350,
-              height: 150,
-              padding: EdgeInsets.all(25),
+              width: screenWidth * 0.9,
+              height: screenHeight * 0.2,
+              padding: EdgeInsets.all(screenWidth * 0.05),
               decoration: BoxDecoration(
                 color: Colors.grey[300],
                 borderRadius: BorderRadius.circular(10),
@@ -85,35 +94,42 @@ class _HomeWidgetState extends State<HomeWidget> {
                 children: [
                   Image.asset(
                     'assets/icons/appointment.png',
-                    height: 75,
-                    width: 175,
+                    height: screenHeight * 0.09,
+                    width: screenWidth * 0.5,
+                    fit: BoxFit.contain,
                   ),
-                  SizedBox(height: 5),
+                  SizedBox(height: screenHeight * 0.01),
                   Text(
                     "Book Appointment",
-                    style: TextStyle(fontWeight: FontWeight.w600),
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: screenWidth * 0.045,
+                    ),
                   ),
                 ],
               ),
             ),
           ),
-          SizedBox(height: 20),
 
-          //upcomming appointments
+          SizedBox(height: screenHeight * 0.02),
+
+          // Upcoming Appointments title
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.07),
             child: Row(
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 30),
-                  child: Text(
-                    "Upcommig Appointment",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                Text(
+                  "Upcoming Appointment",
+                  style: TextStyle(
+                    fontSize: screenWidth * 0.05,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ],
             ),
           ),
+
+          // List of Appointments
           Column(
             children: appointments.map((appointment) {
               return AppointmentList(

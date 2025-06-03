@@ -21,8 +21,8 @@ class CustomTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Colors.grey[130],
-      elevation: 4,
+      color: Colors.grey[200],
+      elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       child: TextFormField(
         controller: controller,

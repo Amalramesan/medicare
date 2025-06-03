@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:med_care/views/Appointment/appointment_page.dart';
-import 'package:med_care/views/Login/Views/login_view.dart';
+import 'package:med_care/views/Login/Viewss/login_view.dart';
 import 'package:med_care/views/Registration/View/registration.dart';
 import 'package:med_care/views/Splash_screen.dart';
 

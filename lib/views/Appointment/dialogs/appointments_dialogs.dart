@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'dialog_date.dart'; // Your SelectDateStep widget
-import 'dialog_doctor.dart'; // The SelectDoctorStep you just fixed
-import 'dialog_timeslot.dart'; // Your SelectTimeStep widget (assumed)
+import 'dialog_date.dart';
+import 'dialog_doctor.dart';
+import 'dialog_timeslot.dart';
 
 class AppointmentDialog extends StatefulWidget {
   const AppointmentDialog({super.key});
@@ -52,80 +52,86 @@ class _AppointmentDialogState extends State<AppointmentDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final dialogHeight = screenHeight * 0.85;
+
     return Dialog(
       insetPadding: const EdgeInsets.all(20),
       child: Container(
         width: double.infinity,
+        constraints: BoxConstraints(maxHeight: dialogHeight),
         padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text(
-              "Book Appointment",
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 20),
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(10),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                "Book Appointment",
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
-              child: Row(
-                children: [
-                  _buildTab("Select Date", 0),
-                  _buildTab("Select Doctor", 1),
-                  _buildTab("Select Time", 2),
-                ],
+              const SizedBox(height: 20),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.grey[200],
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Row(
+                  children: [
+                    _buildTab("Select Date", 0),
+                    _buildTab("Select Doctor", 1),
+                    _buildTab("Select Time", 2),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 20),
-            if (_currentStep == 0)
-              SelectDateStep(
-                selectedDate: selectedDate,
-                onDateSelected: (date) => setState(() => selectedDate = date),
-                onContinue: _nextStep,
-              )
-            else if (_currentStep == 1)
-              SelectDoctorStep(
-                onDoctorSelected: (doctorName) =>
-                    setState(() => selectedDoctor = doctorName),
-                onContinue: _nextStep,
-                onBack: _previousStep, // <-- pass _previousStep here
-              )
-            else if (_currentStep == 2 &&
-                selectedDoctor != null &&
-                selectedDate != null)
-              SelectTimeStep(
-                selectedDoctor: selectedDoctor!,
-                selectedDate: selectedDate!,
-                onBack: _previousStep,
-                onConfirm: (time) {
-                  setState(() => selectedTime = time);
-                  showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: const Text('Appointment Confirmed'),
-                      content: Text(
-                        'Your appointment with $selectedDoctor on ${selectedDate!.toLocal().toString().split(" ")[0]} at $time is confirmed.',
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.of(
-                            context,
-                          ).popUntil((route) => route.isFirst),
-                          child: const Text('Done'),
+              const SizedBox(height: 20),
+              if (_currentStep == 0)
+                SelectDateStep(
+                  selectedDate: selectedDate,
+                  onDateSelected: (date) => setState(() => selectedDate = date),
+                  onContinue: _nextStep,
+                )
+              else if (_currentStep == 1)
+                SelectDoctorStep(
+                  onDoctorSelected: (doctorName) =>
+                      setState(() => selectedDoctor = doctorName),
+                  onContinue: _nextStep,
+                  onBack: _previousStep,
+                )
+              else if (_currentStep == 2 &&
+                  selectedDoctor != null &&
+                  selectedDate != null)
+                SelectTimeStep(
+                  selectedDoctor: selectedDoctor!,
+                  selectedDate: selectedDate!,
+                  onBack: _previousStep,
+                  onConfirm: (time) {
+                    setState(() => selectedTime = time);
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text('Appointment Confirmed'),
+                        content: Text(
+                          'Your appointment with $selectedDoctor on ${selectedDate!.toLocal().toString().split(" ")[0]} at $time is confirmed.',
                         ),
-                      ],
-                    ),
-                  );
-                },
-              )
-            else
-              // Fallback UI if date or doctor is missing on step 3
-              const Center(
-                child: Text("Please select a date and doctor first"),
-              ),
-          ],
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(),
+                            child: const Text('Done'),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                )
+              else
+                const Padding(
+                  padding: EdgeInsets.all(12.0),
+                  child: Center(
+                    child: Text("Please select a date and doctor first"),
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );

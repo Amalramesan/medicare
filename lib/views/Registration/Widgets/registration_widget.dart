@@ -179,8 +179,8 @@ class _SignupFormState extends State<SignupForm> {
                             ),
                             const SizedBox(height: 5),
                             Card(
-                              color: Colors.grey[150],
-                              elevation: 4,
+                              color: Colors.grey[200],
+                              elevation: 2,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
@@ -225,8 +225,8 @@ class _SignupFormState extends State<SignupForm> {
                             ),
                             const SizedBox(height: 5),
                             Card(
-                              color: Colors.grey[150],
-                              elevation: 4,
+                              color: Colors.grey[200],
+                              elevation: 2,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
