@@ -114,6 +114,7 @@ class _SignupFormState extends State<SignupForm> {
                     hintText: "Enter your password",
                     icon: Icons.password,
                     controller: passwordController,
+                    obscureText: true,
                     validator: Validators.validatePassword,
                   ),
                 ),
@@ -129,6 +130,7 @@ class _SignupFormState extends State<SignupForm> {
                     hintText: "Re-enter the password",
                     icon: Icons.password,
                     controller: confirmPasswordController,
+                    obscureText: true,
                     validator: (value) => Validators.validateConfirmPassword(
                       value,
                       passwordController.text,
