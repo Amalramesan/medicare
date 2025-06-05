@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:med_care/views/Appointment/appointment_page.dart';
-import 'package:med_care/views/Login/Viewss/login_view.dart';
-import 'package:med_care/views/Registration/View/registration.dart';
-import 'package:med_care/views/Splash_screen.dart';
+import 'package:med_care/views/Appointment/appointment_view.dart';
+import 'package:med_care/views/Login/login_view.dart';
+import 'package:med_care/views/Registration/registration_view.dart';
+import 'package:med_care/views/splash_screen.dart';
 
 class AppRoutes {
   static const String splash = '/';

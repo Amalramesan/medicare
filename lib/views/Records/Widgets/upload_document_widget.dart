@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:med_care/views/records/dialog_records.dart';
+import 'package:med_care/views/Records/Widgets/record_widget.dart';
 
 class Recordpagewidget extends StatelessWidget {
   const Recordpagewidget({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
       onTap: () {
         showDialog(context: context, builder: (context) => Dropedownn());
       },

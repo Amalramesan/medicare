@@ -18,9 +18,7 @@ class AppointmentList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        print("helo");
-      },
+      onTap: () {},
       child: Container(
         margin: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
         padding: EdgeInsets.all(15),

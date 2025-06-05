@@ -34,8 +34,9 @@ class _SelectTimeStepState extends State<SelectTimeStep> {
 
   @override
   Widget build(BuildContext context) {
-    final formattedDate =
-        "${widget.selectedDate.toLocal().toString().split(' ')[0]}";
+    final formattedDate = widget.selectedDate.toLocal().toString().split(
+      ' ',
+    )[0];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

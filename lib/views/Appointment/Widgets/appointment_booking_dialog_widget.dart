@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'dialog_date.dart';
-import 'dialog_doctor.dart';
-import 'dialog_timeslot.dart';
+import 'dialog_date_widget.dart';
+import 'dialog_doctor_widget.dart';
+import 'dialog_timeslot_widget.dart';
 
 class AppointmentDialog extends StatefulWidget {
   const AppointmentDialog({super.key});

@@ -17,6 +17,7 @@ class _SplashScreenState extends State<SplashScreen> {
   //function for navigate to another page
   Future<void> _navigate() async {
     await Future.delayed(Duration(seconds: 3));
+    if (!mounted) return;
     Navigator.pushReplacementNamed(context, '/login');
   }
 

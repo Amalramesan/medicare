@@ -41,7 +41,6 @@ class RPSCustomPainter extends CustomPainter {
     path0.close();
 
     canvas.drawPath(path0, paint0);
-    ;
   }
 
   @override
