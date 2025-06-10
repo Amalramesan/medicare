@@ -8,12 +8,18 @@ class GenderAgeRowWidget extends StatelessWidget {
   final String? genderValue;
   final Function(String?) onGenderChanged;
 
-  const GenderAgeRowWidget({
+  GenderAgeRowWidget({
     super.key,
     required this.ageController,
     required this.genderValue,
     required this.onGenderChanged,
   });
+
+  final genderOptions = [
+    {'label': 'Male', 'value': 'male'},
+    {'label': 'Female', 'value': 'female'},
+    {'label': 'Not Prefer to Say', 'value': 'na'},
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +28,7 @@ class GenderAgeRowWidget extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Age field as you already have...
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -59,6 +66,7 @@ class GenderAgeRowWidget extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 10),
+          // Gender dropdown
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -80,10 +88,10 @@ class GenderAgeRowWidget extends StatelessWidget {
                         contentPadding: EdgeInsets.symmetric(vertical: 16),
                       ),
                       hint: const Text("Gender"),
-                      items: ['Male', 'Female', 'Other'].map((String value) {
+                      items: genderOptions.map((option) {
                         return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
+                          value: option['value'],
+                          child: Text(option['label']!),
                         );
                       }).toList(),
                       onChanged: onGenderChanged,

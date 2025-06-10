@@ -6,23 +6,34 @@ import 'package:med_care/views/Registration/Widgets/spacing_helper_widget.dart';
 
 class SignupForm extends StatefulWidget {
   final GlobalKey<FormState> formKey;
-  const SignupForm({super.key, required this.formKey});
+  final TextEditingController nameController;
+  final TextEditingController emailController;
+  final TextEditingController phoneController;
+  final TextEditingController passwordController;
+  final TextEditingController confirmPasswordController;
+  final TextEditingController ageController;
+  final TextEditingController placeController;
+  final String? genderValue;
+  final Function(String?) onGenderChanged;
+  const SignupForm({
+    super.key,
+    required this.formKey,
+    required this.nameController,
+    required this.emailController,
+    required this.phoneController,
+    required this.passwordController,
+    required this.confirmPasswordController,
+    required this.ageController,
+    required this.placeController,
+    this.genderValue,
+    required this.onGenderChanged,
+  });
 
   @override
   State<SignupForm> createState() => _SignupFormState();
 }
 
 class _SignupFormState extends State<SignupForm> {
-  final nameController = TextEditingController();
-  final emailController = TextEditingController();
-  final phoneController = TextEditingController();
-  final passwordController = TextEditingController();
-  final confirmPasswordController = TextEditingController();
-  final ageController = TextEditingController();
-  final placeController = TextEditingController();
-
-  String? genderValue;
-
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -44,7 +55,7 @@ class _SignupFormState extends State<SignupForm> {
                   child: CustomTextField(
                     hintText: 'Enter your name',
                     icon: Icons.person,
-                    controller: nameController,
+                    controller: widget.nameController,
                     validator: Validators.validatename,
                   ),
                 ),
@@ -59,7 +70,7 @@ class _SignupFormState extends State<SignupForm> {
                   child: CustomTextField(
                     hintText: "Enter your Email",
                     icon: Icons.email,
-                    controller: emailController,
+                    controller: widget.emailController,
                     validator: Validators.validateEmail,
                   ),
                 ),
@@ -74,18 +85,19 @@ class _SignupFormState extends State<SignupForm> {
                   child: CustomTextField(
                     hintText: "Enter your phone number",
                     icon: Icons.phone,
-                    controller: phoneController,
+                    controller: widget.phoneController,
                     validator: Validators.validatePhone,
                   ),
                 ),
 
                 // Age & Gender Row
                 GenderAgeRowWidget(
-                  ageController: ageController,
-                  genderValue: genderValue,
-                  onGenderChanged: (value) {
-                    setState(() => genderValue = value);
-                  },
+                  ageController: widget
+                      .ageController, // this comes from your widget parameter
+                  genderValue: widget
+                      .genderValue, // this comes from your widget parameter
+                  onGenderChanged: widget
+                      .onGenderChanged, // this comes from your widget parameter
                 ),
 
                 // Place
@@ -98,7 +110,7 @@ class _SignupFormState extends State<SignupForm> {
                   child: CustomTextField(
                     hintText: "Enter your place",
                     icon: Icons.place,
-                    controller: placeController,
+                    controller: widget.placeController,
                     validator: Validators.validatePlace,
                   ),
                 ),
@@ -113,7 +125,7 @@ class _SignupFormState extends State<SignupForm> {
                   child: CustomTextField(
                     hintText: "Enter your password",
                     icon: Icons.password,
-                    controller: passwordController,
+                    controller: widget.passwordController,
                     obscureText: true,
                     validator: Validators.validatePassword,
                   ),
@@ -129,11 +141,11 @@ class _SignupFormState extends State<SignupForm> {
                   child: CustomTextField(
                     hintText: "Re-enter the password",
                     icon: Icons.password,
-                    controller: confirmPasswordController,
+                    controller: widget.confirmPasswordController,
                     obscureText: true,
                     validator: (value) => Validators.validateConfirmPassword(
                       value,
-                      passwordController.text,
+                      widget.passwordController.text,
                     ),
                   ),
                 ),

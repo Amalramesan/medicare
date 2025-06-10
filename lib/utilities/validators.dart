@@ -17,11 +17,11 @@ class Validators {
   //email validator
   static String? validateEmail(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Please enter email';
+      return 'Please enter email id';
     }
     final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
     if (!emailRegex.hasMatch(value)) {
-      return "Enter a valid email";
+      return "Enter a valid email id";
     }
     return null;
   }
@@ -30,8 +30,8 @@ class Validators {
     if (value == null || value.isEmpty) {
       return "Please enter phone number";
     }
-    if (value.length < 10) {
-      return "Phone number must contain at least 10 characters";
+    if (value.length < 10 || value.length > 10) {
+      return "Phone number should be 10 digits";
     }
     return null;
   }
