@@ -1,10 +1,13 @@
+import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:med_care/Services/api_services.dart';
 import 'package:med_care/views/Records/Widgets/description_record_field.dart';
 import 'package:med_care/views/Records/Widgets/dialog_button_widget.dart';
 import 'package:med_care/views/Records/Widgets/drope_down_field_widget.dart';
 import 'package:med_care/views/Records/Widgets/file_picker_buttton.dart';
-import 'package:logger/logger.dart';
 
 class Dropedownn extends StatefulWidget {
   const Dropedownn({super.key});
@@ -18,6 +21,16 @@ class _DropedownnState extends State<Dropedownn> {
   PlatformFile? selectedfile;
   String? selectedOption;
   final Logger logger = Logger();
+
+  // ✅ Define report type map
+  final Map<String, String> reportTypeOptions = {
+    'Blood Test': 'BLOOD',
+    'X-Ray': 'XRAY',
+    'MRI Scan': 'MRI',
+    'CT Scan': 'CT',
+    'Urine Test': 'URINE',
+    'Other': 'OTHER',
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +52,7 @@ class _DropedownnState extends State<Dropedownn> {
               ),
               const SizedBox(height: 16),
 
-              // Dropdown
+              /// Dropdown
               DropdownField(
                 selectedOption: selectedOption,
                 onChanged: (String? newValue) {
@@ -47,16 +60,17 @@ class _DropedownnState extends State<Dropedownn> {
                     selectedOption = newValue;
                   });
                 },
+                reportTypeOptions: reportTypeOptions,
               ),
 
               const SizedBox(height: 20),
 
-              // Description field
+              /// Description field
               DescriptionField(controller: descriptionctrl),
 
               const SizedBox(height: 16),
 
-              // File Picker
+              /// File Picker
               FilePickerButton(
                 onFilePicked: (file) {
                   setState(() {
@@ -67,17 +81,62 @@ class _DropedownnState extends State<Dropedownn> {
 
               const SizedBox(height: 24),
 
-              // Buttons
+              /// Buttons
               DialogButtons(
-                onClose: () {
-                  Navigator.pop(context);
-                },
-                onSubmit: () {
-                  logger.i("Selected Option: $selectedOption");
-                  logger.i("Description: ${descriptionctrl.text}");
-                  logger.i("File: ${selectedfile?.name ?? 'No file selected'}");
+                onClose: () => Navigator.pop(context),
+                onSubmit: () async {
+                  try {
+                    if (selectedOption == null || selectedfile == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("Please select report type and file."),
+                        ),
+                      );
+                      return;
+                    }
 
-                  Navigator.pop(context);
+                    final prefs = await SharedPreferences.getInstance();
+                    final patientId = prefs.getInt('patient_id');
+
+                    if (patientId == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("Patient ID not found.")),
+                      );
+                      return;
+                    }
+
+                    final file = File(selectedfile!.path!);
+
+                    final response = await ApiServices.uploadDocuments(
+                      documentFile: file,
+                      report:
+                          reportTypeOptions[selectedOption]!, // ✅ use backend code
+                      description: descriptionctrl.text,
+                      patientId: patientId,
+                    );
+
+                    if (!mounted) return;
+
+                    if (response != null) {
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            "Upload successful: ${response.message}",
+                          ),
+                        ),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("Upload failed.")),
+                      );
+                    }
+                  } catch (e) {
+                    logger.e("Error during upload", error: e);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("Something went wrong: $e")),
+                    );
+                  }
                 },
               ),
             ],

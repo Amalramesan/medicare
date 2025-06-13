@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:med_care/Services/api_services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dialog_date_widget.dart';
 import 'dialog_doctor_widget.dart';
 import 'dialog_timeslot_widget.dart';
@@ -98,7 +100,7 @@ class _AppointmentDialogState extends State<AppointmentDialog> {
                         onDoctorSelected: (doctor) {
                           setState(() {
                             selectedDoctor = doctor.name;
-                            selectedDoctorId = doctor.id;
+                            selectedDoctorId = doctor.id.toString();
                           });
                         },
                         onContinue: _nextStep,
@@ -120,26 +122,67 @@ class _AppointmentDialogState extends State<AppointmentDialog> {
                         selectedDate: selectedDate!,
                         selectedDoctorId: selectedDoctorId!,
                         onBack: _previousStep,
-                        onConfirm: (time) {
+                        onConfirm: (String time) async {
                           setState(() => selectedTime = time);
-                          showDialog(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                              title: const Text('Appointment Confirmed'),
-                              content: Text(
-                                'Your appointment with $selectedDoctor on ${selectedDate!.toLocal().toString().split(" ")[0]} at $time is confirmed.',
-                              ),
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: const Text('Done'),
+
+                          try {
+                            // Get patient ID from SharedPreferences
+                            final prefs = await SharedPreferences.getInstance();
+                            final patientId = prefs.getInt(
+                              'patient_id',
+                            ); // Make sure this is saved earlier
+
+                            if (patientId == null) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    "Patient ID not found. Please log in again.",
+                                  ),
                                 ),
-                              ],
-                            ),
-                          );
+                              );
+                              return;
+                            }
+
+                            // Send data to API
+                            final response = await ApiServices()
+                                .saveAppointment(
+                                  doctorId: int.parse(selectedDoctorId!),
+                                  patientId: patientId,
+                                  date: selectedDate!.toIso8601String().split(
+                                    "T",
+                                  )[0],
+                                  time: time,
+                                );
+
+                            // If successful, show confirmation dialog
+                            showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: const Text('Appointment Confirmed'),
+                                content: Text(
+                                  'Your appointment with ${response.data.doctorName} on ${response.data.date} at ${response.data.time} is confirmed.',
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(
+                                        context,
+                                      ).pop(); // Close dialog
+                                      Navigator.of(
+                                        context,
+                                      ).pop(); // Close main booking modal
+                                    },
+                                    child: const Text('Done'),
+                                  ),
+                                ],
+                              ),
+                            );
+                          } catch (e) {
+                            print(e);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text("Booking failed: $e")),
+                            );
+                          }
                         },
                       )
                     : const Padding(

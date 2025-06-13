@@ -1,67 +1,66 @@
 class LoginModel {
+  final String status;
+  final int statusCode;
+  final String message;
+  final Token data;
+
   LoginModel({
     required this.status,
     required this.statusCode,
     required this.message,
     required this.data,
   });
-  late final String status;
-  late final int statusCode;
-  late final String message;
-  late final Token data;
 
-  LoginModel.fromJson(Map<String, dynamic> json) {
-    status = json['status'];
-    statusCode = json['status_code'];
-    message = json['message'];
-    data = Token.fromJson(json['data']);
+  factory LoginModel.fromJson(Map<String, dynamic> json) {
+    return LoginModel(
+      status: json['status'] ?? '',
+      statusCode: json['status_code'] ?? 0,
+      message: json['message'] ?? '',
+      data: Token.fromJson(json['data']),
+    );
   }
 
   Map<String, dynamic> toJson() {
-    final datas = <String, dynamic>{};
-    datas['status'] = status;
-    datas['status_code'] = statusCode;
-    datas['message'] = message;
-    datas['data'] = data.toJson();
-    return datas;
+    return {
+      'status': status,
+      'status_code': statusCode,
+      'message': message,
+      'data': data.toJson(),
+    };
   }
 }
 
 class Token {
-  Token({required this.refresh, required this.access, required this.user});
-  late final String refresh;
-  late final String access;
-  late final LoginUser user;
+  final String refresh;
+  final String access;
+  final LoginUser user;
 
-  Token.fromJson(Map<String, dynamic> json) {
-    refresh = json['refresh'];
-    access = json['access'];
-    user = LoginUser.fromJson(json['user']);
+  Token({required this.refresh, required this.access, required this.user});
+
+  factory Token.fromJson(Map<String, dynamic> json) {
+    return Token(
+      refresh: json['refresh'] ?? '',
+      access: json['access'] ?? '',
+      user: LoginUser.fromJson(json['user']),
+    );
   }
 
   Map<String, dynamic> toJson() {
-    final tokendata = <String, dynamic>{};
-    tokendata['refresh'] = refresh;
-    tokendata['access'] = access;
-    tokendata['user'] = user.toJson();
-    return tokendata;
+    return {'refresh': refresh, 'access': access, 'user': user.toJson()};
   }
 }
 
 class LoginUser {
-  LoginUser({required this.id, required this.email});
-  late final int id;
-  late final String email;
+  final int id;
+  final String email;
 
-  LoginUser.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    email = json['email'];
+  LoginUser({required this.id, required this.email});
+
+  factory LoginUser.fromJson(Map<String, dynamic> json) {
+    return LoginUser(id: json['id'] ?? 0, email: json['email'] ?? '');
   }
 
   Map<String, dynamic> toJson() {
-    final userdata = <String, dynamic>{};
-    userdata['id'] = id;
-    userdata['email'] = email;
-    return userdata;
+    return {'id': id, 'email': email};
   }
 }

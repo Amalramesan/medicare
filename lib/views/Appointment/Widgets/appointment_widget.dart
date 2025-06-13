@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:med_care/views/Appointment/Widgets/appointment_data.dart';
-import 'package:med_care/views/Appointment/Widgets/appointment_list_widget.dart';
+import 'package:med_care/views/Appointment/Widgets/appointent_card.dart';
 import 'package:med_care/views/Appointment/Widgets/book_appointment_button_widget.dart';
 import 'package:med_care/views/Appointment/Widgets/greeting_widget.dart';
 import 'package:med_care/views/Appointment/Widgets/upcomming_appointment_title_widget.dart';
@@ -13,8 +12,6 @@ class HomeWidget extends StatefulWidget {
 }
 
 class _HomeWidgetState extends State<HomeWidget> {
-  final appointments = sampleAppointments;
-
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -40,7 +37,13 @@ class _HomeWidgetState extends State<HomeWidget> {
           AppointmentsTitleWidget(screenWidth: screenWidth),
 
           // List of Appointments
-          AppointmentsListWidget(appointments: sampleAppointments),
+          AppointmentList(
+            imagepath: 'assets/images/doctor2.png',
+            doctorName: 'hari',
+            speciality: 'eee',
+            date: '03-02-2023',
+            time: '10.30',
+          ),
         ],
       ),
     );

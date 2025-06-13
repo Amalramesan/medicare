@@ -23,13 +23,27 @@ class SelectDoctorStep extends StatefulWidget {
 class _SelectDoctorStepState extends State<SelectDoctorStep> {
   DoctorModel? selectedDoctor;
   late Future<List<DoctorModel>> doctorFuture;
+  Map<String, bool> doctorAvailability = {};
 
   @override
   void initState() {
     super.initState();
-    doctorFuture = ApiServices().fetchDoctorBytime(
-      widget.selectedDate.toIso8601String().split("T")[0],
-    );
+    doctorFuture = ApiServices().fetchDoctors();
+
+    doctorFuture.then((doctors) {
+      for (var doctor in doctors) {
+        ApiServices()
+            .isDoctorAvailable(
+              doctor.id.toString(),
+              widget.selectedDate.toIso8601String().split("T")[0],
+            )
+            .then((isAvailable) {
+              setState(() {
+                doctorAvailability[doctor.id.toString()] = isAvailable;
+              });
+            });
+      }
+    });
   }
 
   @override
@@ -64,111 +78,95 @@ class _SelectDoctorStepState extends State<SelectDoctorStep> {
                     style: TextStyle(color: Colors.grey),
                   ),
                   const SizedBox(height: 20),
-                  ...doctors.map(
-                    (doc) => GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          selectedDoctor = doc;
-                        });
-                        widget.onDoctorSelected(doc);
-                      },
-                      child: Container(
-                        margin: const EdgeInsets.only(bottom: 12),
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: selectedDoctor?.id == doc.id
-                              ? Colors.blue[50]
-                              : Colors.white,
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
+
+                  ...doctors.map((doc) {
+                    final isAvailable =
+                        doctorAvailability[doc.id.toString()] ?? false;
+
+                    return GestureDetector(
+                      onTap: isAvailable
+                          ? () {
+                              setState(() {
+                                selectedDoctor = doc;
+                              });
+                              widget.onDoctorSelected(doc);
+                              widget.onContinue();
+                            }
+                          : null,
+                      child: Opacity(
+                        opacity: isAvailable ? 1.0 : 0.5,
+                        child: Container(
+                          margin: const EdgeInsets.only(bottom: 12),
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
                             color: selectedDoctor?.id == doc.id
-                                ? Colors.blue
-                                : Colors.grey[300]!,
-                            width: 1.5,
+                                ? Colors.blue[50]
+                                : Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: selectedDoctor?.id == doc.id
+                                  ? Colors.blue
+                                  : Colors.grey[300]!,
+                              width: 1.5,
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Image.network(
+                                doc.imageUrl,
+                                width: 48,
+                                height: 48,
+                              ),
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      doc.name,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                    Text(
+                                      doc.specialization,
+                                      style: const TextStyle(
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                    Text(
+                                      doc.hospital,
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      isAvailable
+                                          ? "Available"
+                                          : "Not available",
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w600,
+                                        color: isAvailable
+                                            ? Colors.green
+                                            : Colors.red,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        child: Row(
-                          children: [
-                            Image.network(doc.imageUrl, width: 48, height: 48),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    doc.name,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                  Text(
-                                    doc.specialization,
-                                    style: const TextStyle(color: Colors.grey),
-                                  ),
-                                  Text(
-                                    doc.hospital,
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                  Align(
-                                    alignment: Alignment.centerRight,
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 8,
-                                        vertical: 4,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: doc.availableToday
-                                            ? Colors.green.withOpacity(0.1)
-                                            : Colors.red.withOpacity(0.1),
-                                        borderRadius: BorderRadius.circular(20),
-                                        border: Border.all(
-                                          color: doc.availableToday
-                                              ? Colors.green
-                                              : Colors.red,
-                                        ),
-                                      ),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Icon(
-                                            doc.availableToday
-                                                ? Icons.check_circle
-                                                : Icons.cancel,
-                                            color: doc.availableToday
-                                                ? Colors.green
-                                                : Colors.red,
-                                            size: 14,
-                                          ),
-                                          const SizedBox(width: 4),
-                                          Text(
-                                            doc.availableToday
-                                                ? "Available"
-                                                : "Not available",
-                                            style: TextStyle(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.bold,
-                                              color: doc.availableToday
-                                                  ? Colors.green
-                                                  : Colors.red,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
                       ),
-                    ),
-                  ),
+                    );
+                  }).toList(),
+
                   const SizedBox(height: 20),
+
                   Row(
                     children: [
                       OutlinedButton(

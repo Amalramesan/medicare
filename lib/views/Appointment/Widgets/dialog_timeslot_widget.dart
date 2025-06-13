@@ -60,7 +60,7 @@ class _SelectTimeStepState extends State<SelectTimeStep> {
           final slots = snapshot.data!.data.availableSlots;
 
           // Safely handle empty slots
-          if (slots == null || slots.isEmpty) {
+          if (slots.isEmpty) {
             return const Center(child: Text('No time slots available.'));
           }
 

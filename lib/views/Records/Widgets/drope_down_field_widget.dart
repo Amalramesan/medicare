@@ -4,18 +4,21 @@ class DropdownField extends StatelessWidget {
   final String? selectedOption;
   final Function(String?) onChanged;
 
-  const DropdownField({
+  DropdownField({
     super.key,
     required this.selectedOption,
     required this.onChanged,
+    required Map<String, String> reportTypeOptions,
   });
 
-  final List<String> dropdownItems = const [
-    'BLOOD RESULT',
-    'URIN TEST',
-    'TREATMENT PLANS',
-    'DISCHARGE SUMMARY',
-  ];
+  final Map<String, String> reportTypeOptions = {
+    'Blood Test': 'BLOOD',
+    'X-Ray': 'XRAY',
+    'MRI Scan': 'MRI',
+    'CT Scan': 'CT',
+    'Urine Test': 'URINE',
+    'Other': 'OTHER',
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -26,8 +29,8 @@ class DropdownField extends StatelessWidget {
         border: OutlineInputBorder(),
         contentPadding: EdgeInsets.symmetric(horizontal: 12),
       ),
-      items: dropdownItems
-          .map((item) => DropdownMenuItem(value: item, child: Text(item)))
+      items: reportTypeOptions.keys
+          .map((label) => DropdownMenuItem(value: label, child: Text(label)))
           .toList(),
       onChanged: onChanged,
     );

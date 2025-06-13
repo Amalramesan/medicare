@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:med_care/Models/register_model.dart';
 import 'package:med_care/Services/api_services.dart';
 import 'package:med_care/routes/app_routes.dart';
+import 'package:med_care/utilities/tokens.dart';
 import 'package:med_care/views/Registration/Widgets/registration_button_widget.dart';
 import 'package:med_care/views/Registration/Widgets/registration_form_widget.dart';
 import 'package:med_care/views/Registration/Widgets/registration_header_widget.dart';
@@ -50,6 +51,7 @@ class _SignupWidgetState extends State<SignupWidget> {
         );
 
         RegisterModel response = await apiServices.registerUser(user);
+        await saveUserName(response.data.name);
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Registration Success: ${response.message}")),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class CustomTextField extends StatelessWidget {
+class CustomTextField extends StatefulWidget {
   final String hintText;
   final IconData icon;
   final bool obscureText;
@@ -19,24 +19,49 @@ class CustomTextField extends StatelessWidget {
   });
 
   @override
+  State<CustomTextField> createState() => _CustomTextFieldState();
+}
+
+class _CustomTextFieldState extends State<CustomTextField> {
+  late bool _obscure;
+
+  @override
+  void initState() {
+    super.initState();
+    _obscure = widget.obscureText;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Card(
       color: Colors.grey[200],
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       child: TextFormField(
-        controller: controller,
-        obscureText: obscureText,
-        keyboardType: keyboardType,
-        validator: validator,
+        controller: widget.controller,
+        obscureText: _obscure,
+        keyboardType: widget.keyboardType,
+        validator: widget.validator,
         decoration: InputDecoration(
-          prefixIcon: Icon(icon),
-          hintText: hintText,
+          prefixIcon: Icon(widget.icon),
+          hintText: widget.hintText,
           contentPadding: const EdgeInsets.symmetric(
             horizontal: 10,
             vertical: 16,
           ),
           border: InputBorder.none,
+          suffixIcon: widget.obscureText
+              ? IconButton(
+                  icon: Icon(
+                    _obscure ? Icons.visibility_off : Icons.visibility,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _obscure = !_obscure;
+                    });
+                  },
+                )
+              : null,
         ),
       ),
     );
