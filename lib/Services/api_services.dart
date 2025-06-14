@@ -6,6 +6,7 @@ import 'package:med_care/Models/doctor_model.dart';
 import 'package:med_care/Models/login_model.dart';
 import 'package:med_care/Models/register_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:med_care/Models/report_fetch_model.dart';
 import 'package:med_care/Models/time_slote_model.dart';
 import 'package:med_care/Models/upload_model.dart';
 import 'package:med_care/utilities/tokens.dart';
@@ -16,6 +17,7 @@ class ApiServices {
   final String baseUrl = "http://192.168.29.40:8000/";
 
   // registration
+
   Future<RegisterModel> registerUser(User user) async {
     final url = Uri.parse("http://192.168.29.40:8000/api/register/");
     final response = await http.post(
@@ -23,10 +25,22 @@ class ApiServices {
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(user.toJson()),
     );
+
     if (response.statusCode == 200 || response.statusCode == 201) {
-      return RegisterModel.fromJson(jsonDecode(response.body));
+      final registerModel = RegisterModel.fromJson(jsonDecode(response.body));
+      final userData = registerModel.data;
+
+      // Save user data into SharedPreferences
+      await saveRegisteredUser(
+        name: userData.name,
+        email: userData.email,
+        place: userData.place,
+        phoneNumber: userData.phoneNumber,
+      );
+
+      return registerModel;
     } else {
-      throw Exception("regristration failed:${response.body}");
+      throw Exception("Registration failed: ${response.body}");
     }
   }
 
@@ -145,18 +159,52 @@ class ApiServices {
   }
 
   //appointment history
-  Future<List<AppointmentHistoryModel>> fetchPatientAppointments(
+  static Future<List<AppointmentHistoryModel>> fetchPatientAppointments(
     int patientId,
   ) async {
-    final response = await http.get(
-      Uri.parse("http://192.168.29.40:8000/api/appointments/history/"),
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('access_token');
+
+    final url = Uri.parse(
+      'http://192.168.29.40:8000/api/appointments/history/',
     );
 
+    final response = await http.get(
+      url,
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    print(' Status code: ${response.statusCode}');
+    print(' Response body: ${response.body}');
+
     if (response.statusCode == 200) {
-      final List data = jsonDecode(response.body);
-      return data.map((e) => AppointmentHistoryModel.fromJson(e)).toList();
+      final decoded = json.decode(response.body);
+
+      if (decoded is List) {
+        // Response is a plain list
+        return decoded
+            .map<AppointmentHistoryModel>(
+              (e) => AppointmentHistoryModel.fromJson(e),
+            )
+            .toList();
+      } else if (decoded is Map && decoded.containsKey('data')) {
+        // Response is a map with 'data' key
+        final List jsonData = decoded['data'];
+        return jsonData
+            .map<AppointmentHistoryModel>(
+              (e) => AppointmentHistoryModel.fromJson(e),
+            )
+            .toList();
+      } else {
+        throw Exception(" Unexpected response format: $decoded");
+      }
     } else {
-      throw Exception("Failed to load appointment history");
+      throw Exception(
+        'Failed to load appointment history (Status: ${response.statusCode})',
+      );
     }
   }
 
@@ -202,6 +250,26 @@ class ApiServices {
       return UploadModel.fromJson(json.decode(responseBody));
     } else {
       print("Upload failed ");
+      return null;
+    }
+  }
+
+  //fetch document
+  static Future<ReportFetchModel?> fetchReports() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('access_token');
+    final url = Uri.parse("http://192.168.29.40:8000/api/my-reports/");
+    final response = await http.get(
+      url,
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
+    if (response.statusCode == 200) {
+      return ReportFetchModel.fromJson(json.decode(response.body));
+    } else {
+      print("Error fetching reports:${response.body}");
       return null;
     }
   }

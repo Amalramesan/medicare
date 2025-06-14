@@ -1,20 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:med_care/Models/appointment_history_model.dart';
 
 class AppointmentList extends StatelessWidget {
-  final String imagepath;
-  final String doctorName;
-  final String speciality;
-  final String date;
-  final String time;
+  final AppointmentHistoryModel appointment;
 
-  const AppointmentList({
-    super.key,
-    required this.imagepath,
-    required this.doctorName,
-    required this.speciality,
-    required this.date,
-    required this.time,
-  });
+  const AppointmentList({super.key, required this.appointment});
 
   @override
   Widget build(BuildContext context) {
@@ -32,51 +22,34 @@ class AppointmentList extends StatelessWidget {
           ),
         ],
       ),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child: Image.asset(
-              imagepath,
-              height: 60,
-              width: 60,
-              fit: BoxFit.cover,
-            ),
+          // Doctor name
+          Text(
+            appointment.doctorName,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
-          const SizedBox(width: 15),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  doctorName,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  speciality,
-                  style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
-                ),
-                const SizedBox(height: 6),
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.calendar_today,
-                      size: 14,
-                      color: Colors.grey,
-                    ),
-                    const SizedBox(width: 4),
-                    Text(date, style: const TextStyle(fontSize: 13)),
-                    const SizedBox(width: 12),
-                    const Icon(Icons.access_time, size: 14, color: Colors.grey),
-                    const SizedBox(width: 4),
-                    Text(time, style: const TextStyle(fontSize: 13)),
-                  ],
-                ),
-              ],
-            ),
+
+          // Patient name
+          Text(
+            "Patient: ${appointment.patientName}",
+            style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+          ),
+
+          const SizedBox(height: 6),
+
+          // Date & Time
+          Row(
+            children: [
+              const Icon(Icons.calendar_today, size: 14, color: Colors.grey),
+              const SizedBox(width: 4),
+              Text(appointment.date, style: const TextStyle(fontSize: 13)),
+              const SizedBox(width: 12),
+              const Icon(Icons.access_time, size: 14, color: Colors.grey),
+              const SizedBox(width: 4),
+              Text(appointment.time, style: const TextStyle(fontSize: 13)),
+            ],
           ),
         ],
       ),

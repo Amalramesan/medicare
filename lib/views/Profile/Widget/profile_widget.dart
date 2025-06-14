@@ -1,9 +1,12 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:med_care/Models/register_model.dart';
 import 'package:med_care/views/Login/login_view.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:med_care/views/Profile/Widget/profile_textfield.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileWidget extends StatefulWidget {
   const ProfileWidget({super.key});
@@ -30,6 +33,22 @@ class _ProfileWidgetState extends State<ProfileWidget> {
         _imageFile = File(pickedFile.path);
       });
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  void _loadUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      nameController.text = prefs.getString('user_name') ?? '';
+      emailController.text = prefs.getString('user_email') ?? '';
+      phoneController.text = prefs.getString('user_phone') ?? '';
+      placeController.text = prefs.getString('user_place') ?? '';
+    });
   }
 
   @override

@@ -40,3 +40,28 @@ Future<int?> getPatientId() async {
   final prefs = await SharedPreferences.getInstance();
   return prefs.getInt('patient_id');
 }
+
+Future<void> saveRegisteredUser({
+  required String name,
+  required String email,
+  required String place,
+  required String phoneNumber,
+}) async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setString('user_name', name);
+  await prefs.setString('user_email', email);
+  await prefs.setString('user_place', place);
+  await prefs.setString('user_phone', phoneNumber);
+}
+
+Future<Map<String, dynamic>> getRegisteredUser() async {
+  final prefs = await SharedPreferences.getInstance();
+  return {
+    'name': prefs.getString('user_name') ?? '',
+    'email': prefs.getString('user_email') ?? '',
+    'age': prefs.getInt('user_age') ?? 0,
+    'place': prefs.getString('user_place') ?? '',
+    'gender': prefs.getString('user_gender') ?? '',
+    'phone': prefs.getString('user_phone') ?? '',
+  };
+}

@@ -1,5 +1,5 @@
-class AppointmentBookingHistory {
-  AppointmentBookingHistory({
+class AppointmentHistoryModel {
+  AppointmentHistoryModel({
     required this.id,
     required this.patient,
     required this.doctor,
@@ -7,31 +7,25 @@ class AppointmentBookingHistory {
     required this.time,
     required this.doctorName,
     required this.patientName,
-    required this.speciality,
-    required this.doctorImage,
   });
 
   final int id;
   final int patient;
   final int doctor;
-  final DateTime date;
+  final String date;
   final String time;
   final String doctorName;
   final String patientName;
-  final String speciality;
-  final String doctorImage;
 
-  factory AppointmentBookingHistory.fromJson(Map<String, dynamic> json) {
-    return AppointmentBookingHistory(
+  factory AppointmentHistoryModel.fromJson(Map<String, dynamic> json) {
+    return AppointmentHistoryModel(
       id: json['id'],
       patient: json['patient'],
       doctor: json['doctor'],
-      date: DateTime.parse(json['date']),
+      date: json['date'],
       time: json['time'],
       doctorName: json['doctor_name'],
       patientName: json['patient_name'],
-      speciality: json['speciality'] ?? 'General',
-      doctorImage: json['doctor_image'] ?? 'assets/images/default_doc.png',
     );
   }
 
@@ -40,12 +34,10 @@ class AppointmentBookingHistory {
       'id': id,
       'patient': patient,
       'doctor': doctor,
-      'date': date.toIso8601String(),
+      'date': date,
       'time': time,
       'doctor_name': doctorName,
       'patient_name': patientName,
-      'speciality': speciality,
-      'doctor_image': doctorImage,
     };
   }
 }
