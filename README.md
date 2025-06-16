@@ -47,52 +47,95 @@ lib/
 │
 ├── main.dart
 │
+├── common/
+│   └── custom_text_field.dart
+│
+├── controller/
+│   ├── login_controller.dart
+│   └── register_controller.dart
+│
 ├── Models/
-│ ├── appointment_model.dart
-│ ├── appointment_history_model.dart
-│ ├── doctor_model.dart
-│ ├── login_model.dart
-│ ├── register_model.dart
-│ ├── report_upload_model.dart
-│ └── report_fetch_model.dart
+│   ├── appointment_model.dart
+│   ├── appointment_history_model.dart
+│   ├── doctor_model.dart
+│   ├── login_model.dart
+│   ├── register_model.dart
+│   ├── report_upload_model.dart
+│   ├── date_model.dart
+│   ├── doctor_availability_model.dart
+│   ├── time_slot_model.dart
+│   └── report_fetch_model.dart
+│
+├── routes/
+│   └── app_routes.dart
 │
 ├── Services/
-│ └── api_services.dart # All HTTP logic (login, register, fetch, upload)
+│   └── api_services.dart
 │
 ├── Utils/
-│ └── token_storage.dart # SharedPreferences logic
+│   ├── validator/
+│   ├── clipper/
+│   ├── all_slots.dart
+│   └── token_storage.dart
 │
 ├── Views/
-│ ├── Auth/
-│ │ ├── login_page.dart
-│ │ └── register_page.dart
-│ │
-│ ├── Home/
-│ │ └── home_page.dart
-│ │
-│ ├── Appointment/
-│ │ ├── appointment_stepper.dart
-│ │ ├── appointment_history_page.dart
-│ │ └── Widgets/
-│ │ ├── appointment_card.dart
-│ │ └── doctor_card.dart
-│ │
-│ ├── Records/
-│ │ ├── record_upload_dialog.dart
-│ │ ├── record_list_page.dart
-│ │ └── Widgets/
-│ │ ├── dropdown_field_widget.dart
-│ │ ├── description_field_widget.dart
-│ │ └── dialog_button_widget.dart
-│ │
-│ └── Shared/
-│ ├── header_widget.dart
-│ ├── primary_button.dart
-│ └── spacing_utils.dart
-│
-└── Constants/
-└── app_colors.dart
-└── strings.dart
+│   ├── Appointment/
+│   │   ├── widget/
+│   │   │   ├── appointment_card.dart
+│   │   │   ├── appointment_booking_dialog_widget.dart
+│   │   │   ├── appointment_history.dart
+│   │   │   ├── appointment_widget.dart
+│   │   │   ├── book_appointment_button_widget.dart
+│   │   │   ├── custom_appbar_widget.dart
+│   │   │   ├── custom_button_nav_widget.dart
+│   │   │   ├── dialog_date_widget.dart
+│   │   │   ├── dialog_doctor_widget.dart
+│   │   │   ├── dialog_timeslot_widget.dart
+│   │   │   ├── greeting_widget.dart
+│   │   │   ├── home_content_widget.dart
+│   │   │   └── upcoming_appointment_title_widget.dart
+│   │   └── appointment_view.dart
+│   │
+│   ├── Login/
+│   │   ├── widget/
+│   │   │   ├── login_button_widget.dart
+│   │   │   ├── login_form_widget.dart
+│   │   │   ├── login_header_widget.dart
+│   │   │   ├── login_signup_button_widget.dart
+│   │   │   └── login_widget.dart
+│   │   └── login_view.dart
+│   │
+│   ├── Registration/
+│   │   ├── widget/
+│   │   │   ├── gender_and_age_widget.dart
+│   │   │   ├── registration_button_widget.dart
+│   │   │   ├── registration_form_widget.dart
+│   │   │   ├── registration_header_widget.dart
+│   │   │   ├── registration_widget.dart
+│   │   │   └── spacing_helper_widget.dart
+│   │   └── registration_view.dart
+│   │
+│   ├── Records/
+│   │   ├── widget/
+│   │   │   ├── description_record_field.dart
+│   │   │   ├── dialog_button_widget.dart
+│   │   │   ├── drop_down_file_widget.dart
+│   │   │   ├── file_picker_button.dart
+│   │   │   ├── record_widget.dart
+│   │   │   ├── record_appbar_widget.dart
+│   │   │   ├── upload_documents_widget.dart
+│   │   │   ├── upload_form_widget.dart
+│   │   │   └── record_list_widget.dart
+│   │   └── record_view.dart
+│   │
+│   ├── Profile/
+│   │   ├── widget/
+│   │   │   ├── profile_textfield.dart
+│   │   │   └── profile_widget.dart
+│   │   └── profile_view.dart
+│   │
+│   └── splash_screen.dart
+
 ```
 
 ---
