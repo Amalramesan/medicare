@@ -198,6 +198,8 @@ lib/
         flutter run
 
         ```
+📌 Notes
+- Ensure the backend API URLs match the local IP and port used in your Django project.
+- The app uses token-based authentication (access + refresh tokens).
 
-    ⚠️ Make sure your backend Django server is running and accessible (update IPs in API URLs if needed).
 
