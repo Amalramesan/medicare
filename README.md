@@ -197,76 +197,22 @@ MedCare is a patient-focused healthcare app built with Flutter and Django. It al
 
 ---
 
-## 🧱 Project Structure
 
-```
-lib/
-│
-├── main.dart
-│
-├── Models/
-│ ├── appointment_model.dart
-│ ├── appointment_history_model.dart
-│ ├── doctor_model.dart
-│ ├── login_model.dart
-│ ├── register_model.dart
-│ ├── report_upload_model.dart
-│ └── report_fetch_model.dart
-│
-├── Services/
-│ └── api_services.dart # All HTTP logic (login, register, fetch, upload)
-│
-├── Utils/
-│ └── token_storage.dart # SharedPreferences logic
-│
-├── Views/
-│ ├── Auth/
-│ │ ├── login_page.dart
-│ │ └── register_page.dart
-│ │
-│ ├── Home/
-│ │ └── home_page.dart
-│ │
-│ ├── Appointment/
-│ │ ├── appointment_stepper.dart
-│ │ ├── appointment_history_page.dart
-│ │ └── Widgets/
-│ │ ├── appointment_card.dart
-│ │ └── doctor_card.dart
-│ │
-│ ├── Records/
-│ │ ├── record_upload_dialog.dart
-│ │ ├── record_list_page.dart
-│ │ └── Widgets/
-│ │ ├── dropdown_field_widget.dart
-│ │ ├── description_field_widget.dart
-│ │ └── dialog_button_widget.dart
-│ │
-│ └── Shared/
-│ ├── header_widget.dart
-│ ├── primary_button.dart
-│ └── spacing_utils.dart
-│
-└── Constants/
-└── app_colors.dart
-└── strings.dart
-```
-
----
 
 ## 🛠️ Technologies Used
 
 ### Frontend
 
 - **Flutter** (Dart)
-- `http`, `shared_preferences`, `file_picker`
-
-### Backend
-
-- **Django REST Framework**
-- Handles user auth, appointment management, and file uploads
-
----
+   cupertino_icons: ^1.0.8
+  file_picker: ^10.1.9
+  image_picker: ^1.1.2
+  logger: ^2.5.0
+  http: ^1.4.0
+  shared_preferences: ^2.5.3
+  path: ^1.9.1
+  url_launcher: ^6.3.1
+  provider: ^6.1.5
 
 ## 📌 Future Improvements
 
