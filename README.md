@@ -5,8 +5,11 @@
 [![REST API](https://img.shields.io/badge/REST%20API-FF6C37?style=for-the-badge&logo=api&logoColor=white)]()
 
 ---
-
-MedCare is a patient-focused healthcare app built with Flutter and Django. It allows users to register, log in, book medical appointments, and upload/view medical records in PDF format.
+**MedCare** is a patient-centered healthcare mobile app built with **Flutter**. It allows patients to:
+- Register and log in
+- Book medical appointments
+- Upload and view medical reports (PDF)
+- View appointment history
 
 ---
 
