@@ -147,24 +147,17 @@ lib/
 - **Flutter SDK** – Cross-platform UI toolkit
 - **Dart** – Programming language for Flutter
 - **Packages Used:**
-  - `http` – For making API requests
-  - `shared_preferences` – To store access/refresh tokens
-  - `file_picker` – To pick PDF files from device storage
-  - `path`, `path_provider` – For file management (if used)
-  - `flutter/material.dart` – Flutter's core UI framework
+- cupertino_icons:OS-style icons support
+- file_picker:Pick PDF and other files from storage
+- image_picker:Image selection (currently unused in PDF workflow)
+- logger:Debug-friendly logging for development
+- http:HTTP client for REST API calls
+- shared_preferences:Store authentication tokens and user session locally
+- path:File path operations (used with file pickers or file handling)
+- url_launcher:Open URLs or files (e.g., opening uploaded PDF)
+- provider:State management (used to pass data between widgets and handle app state)
+- http_parser:Helps in defining MediaType for file uploads (like application/pdf)
 
-### 🌐 Backend (Django)
-
-- **Python**
-- **Django** – Web framework
-- **Django REST Framework (DRF)** – For building RESTful APIs
-- **SimpleJWT** – Token-based authentication (JWT)
-- **CORS Headers** – For cross-origin requests from Flutter
-- **Model/File handling** – Handling file uploads and database storage
-
-### 🗃️ Database
-
-- **SQLite** (default for dev) or **PostgreSQL** (recommended for prod)
 
 ### 📡 API Communication
 
@@ -178,10 +171,8 @@ lib/
   - Access & Refresh tokens
   - Token stored in Flutter using `shared_preferences`
 
-### 🧪 Testing/Debugging (Optional Tools)
-
+### 🧪 Testing (Optional Tools)
 - **Postman** – For API testing
-- **Flutter DevTools** – Debugging Flutter UI and performance
 
 ---
 
@@ -210,87 +201,3 @@ lib/
 
     ⚠️ Make sure your backend Django server is running and accessible (update IPs in API URLs if needed).
 
-# 🏥 MedCare App (Flutter + Django)
-
-MedCare is a patient-focused healthcare app built with Flutter and Django. It allows users to register, log in, book medical appointments, and upload/view medical records in PDF format.
-
----
-
-## 📲 Features
-
-### 👤 User Authentication
-
-- User **registration** and **login** using REST APIs.
-- Stores tokens securely using `SharedPreferences`.
-
-### 🗓️ Appointment Booking
-
-- **Stepper-based booking** flow:
-  1. Select date.
-  2. View only **available doctors**.
-  3. Pick a time slot.
-- Uses API to **fetch doctor availability** and **book appointments**.
-- Displays **appointment history** by patient.
-
-### 📄 Medical Records
-
-- Upload **PDF reports** with:
-  - Dropdown for report type.
-  - Optional description.
-  - File picker.
-- Send via `multipart/form-data` API request.
-- Fetch and display uploaded reports from the backend.
-
----
-
-
-
-## 🛠️ Technologies Used
-
-### Frontend
-
-- **Flutter** (Dart)
-   cupertino_icons: ^1.0.8
-  file_picker: ^10.1.9
-  image_picker: ^1.1.2
-  logger: ^2.5.0
-  http: ^1.4.0
-  shared_preferences: ^2.5.3
-  path: ^1.9.1
-  url_launcher: ^6.3.1
-  provider: ^6.1.5
-
-## 📌 Future Improvements
-
-- Edit/Delete uploaded reports
-- Profile screen with patient data
-- Doctor/admin role management
-- Enhanced UI with PDF preview
-- Appointment filtering and pagination
-
----
-
-## 🚀 Getting Started
-
-1. Clone the repository:
-
-   ```bash
-   git clone https://github.com/your-username/medcare_flutter.git
-   cd medcare_flutter
-
-   ```
-
-2. Install dependencies:
-
-```
-    flutter pub get
-```
-
-3.  Connect your device/emulator and run:
-
-        ```
-        flutter run
-
-        ```
-
-    ⚠️ Make sure your backend Django server is running and accessible (update IPs in API URLs if needed).
