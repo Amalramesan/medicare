@@ -181,7 +181,7 @@ lib/
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/your-username/medcare_flutter.git
+   git clone https://github.com/Amalramesan/medicare.git
    cd medcare_flutter
 
    ```
