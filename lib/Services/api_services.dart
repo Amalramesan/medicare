@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:med_care/Models/appointment_history_model.dart';
 import 'package:med_care/Models/appointment_model.dart';
 import 'package:med_care/Models/doctor_model.dart';
@@ -9,7 +10,9 @@ import 'package:http/http.dart' as http;
 import 'package:med_care/Models/report_fetch_model.dart';
 import 'package:med_care/Models/time_slote_model.dart';
 import 'package:med_care/Models/upload_model.dart';
+import 'package:med_care/controller/login_controller.dart';
 import 'package:med_care/utilities/tokens.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http_parser/http_parser.dart';
 
@@ -31,6 +34,8 @@ class ApiServices {
       final userData = registerModel.data;
 
       // Save user data into SharedPreferences
+      print("Saving name from registration: ${userData.name}");
+      await saveUserName(userData.name);
       await saveRegisteredUser(
         name: userData.name,
         email: userData.email,
@@ -43,8 +48,13 @@ class ApiServices {
       throw Exception("Registration failed: ${response.body}");
     }
   }
+  //login
 
-  Future<LoginModel> loginuser(String email, String password) async {
+  Future<LoginModel> loginuser(
+    BuildContext context,
+    email,
+    String password,
+  ) async {
     final url = Uri.parse("http://192.168.29.40:8000/api/login/");
     final response = await http.post(
       url,
@@ -53,7 +63,11 @@ class ApiServices {
     );
 
     if (response.statusCode == 200 || response.statusCode == 201) {
+      final data = jsonDecode(response.body);
+      final name = data['name'];
       final Map<String, dynamic> rawJson = jsonDecode(response.body);
+
+      print(rawJson);
 
       final loginModel = LoginModel.fromJson(rawJson);
 
@@ -62,11 +76,16 @@ class ApiServices {
       final user = loginModel.data.user;
 
       await saveTokens(access, refresh);
-      await saveUserName(user.email);
+      //await saveUserName(user.email);
       await savePatientId(user.id);
 
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('auth_token', access);
+      Provider.of<LoginController>(context, listen: false).setUser(
+        // use name if available
+        id: user.id,
+        email: user.email,
+      );
 
       return loginModel;
     } else {

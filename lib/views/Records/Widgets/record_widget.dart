@@ -22,7 +22,6 @@ class _DropedownnState extends State<Dropedownn> {
   String? selectedOption;
   final Logger logger = Logger();
 
-  // ✅ Define report type map
   final Map<String, String> reportTypeOptions = {
     'Blood Test': 'BLOOD',
     'X-Ray': 'XRAY',
@@ -109,8 +108,7 @@ class _DropedownnState extends State<Dropedownn> {
 
                     final response = await ApiServices.uploadDocuments(
                       documentFile: file,
-                      report:
-                          reportTypeOptions[selectedOption]!, // ✅ use backend code
+                      report: reportTypeOptions[selectedOption]!,
                       description: descriptionctrl.text,
                       patientId: patientId,
                     );

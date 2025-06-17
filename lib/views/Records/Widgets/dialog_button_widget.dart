@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:med_care/views/Records/Widgets/upload_form_widget.dart';
 
 class DialogButtons extends StatelessWidget {
   final VoidCallback onClose;

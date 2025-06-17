@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:med_care/utilities/tokens.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class GreetingWidget extends StatefulWidget {
   final double screenWidth;
@@ -22,11 +23,21 @@ class _GreetingWidgetState extends State<GreetingWidget> {
   void initState() {
     super.initState();
     loadUserName();
+    debugSharedPrefs();
   }
 
   void loadUserName() async {
-    userName = await getUserName();
-    setState(() {}); // Refresh the UI
+    final name = await getUserName();
+    print("Loaded name: $name");
+    setState(() {
+      userName = name;
+    });
+  }
+
+  void debugSharedPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    final savedName = prefs.getString('user_name');
+    print("DEBUG: user_name in SharedPreferences = $savedName");
   }
 
   @override
