@@ -33,7 +33,6 @@ class Data {
     required this.name,
     required this.email,
     required this.phoneNumber,
-    required this.isEmailVerified,
     required this.age,
     required this.place,
   });
@@ -41,7 +40,6 @@ class Data {
   late final String name;
   late final String email;
   late final String phoneNumber;
-  late final bool isEmailVerified;
   late final int age;
   late final String place;
 
@@ -60,7 +58,6 @@ class Data {
     datass['name'] = name;
     datass['email'] = email;
     datass['phone_number'] = phoneNumber;
-    datass['is_email_verified'] = isEmailVerified;
     datass['age'] = age;
     datass['place'] = place;
     return datass;

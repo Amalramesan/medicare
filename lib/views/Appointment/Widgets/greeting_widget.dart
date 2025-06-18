@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:med_care/utilities/tokens.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
+import 'package:med_care/controller/profile_controller.dart';
 
-class GreetingWidget extends StatefulWidget {
+class GreetingWidget extends StatelessWidget {
   final double screenWidth;
   final double screenHeight;
 
@@ -13,58 +13,32 @@ class GreetingWidget extends StatefulWidget {
   });
 
   @override
-  State<GreetingWidget> createState() => _GreetingWidgetState();
-}
-
-class _GreetingWidgetState extends State<GreetingWidget> {
-  String? userName;
-
-  @override
-  void initState() {
-    super.initState();
-    loadUserName();
-    debugSharedPrefs();
-  }
-
-  void loadUserName() async {
-    final name = await getUserName();
-    print("Loaded name: $name");
-    setState(() {
-      userName = name;
-    });
-  }
-
-  void debugSharedPrefs() async {
-    final prefs = await SharedPreferences.getInstance();
-    final savedName = prefs.getString('user_name');
-    print("DEBUG: user_name in SharedPreferences = $savedName");
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final profileProvider = Provider.of<ProfileController>(context);
+    final userName = profileProvider.userName;
+
     return Container(
       alignment: Alignment.centerLeft,
       padding: EdgeInsets.symmetric(
-        horizontal: widget.screenWidth * 0.07,
-        vertical: widget.screenHeight * 0.02,
+        horizontal: screenWidth * 0.07,
+        vertical: screenHeight * 0.02,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Hello,${userName ?? "User"}',
+            'Hello, ${userName.isNotEmpty ? userName : "User"}',
             style: TextStyle(
               fontFamily: 'oswald',
-              fontSize: widget.screenWidth * 0.07,
+              fontSize: screenWidth * 0.07,
               fontWeight: FontWeight.bold,
             ),
           ),
-
-          SizedBox(height: widget.screenHeight * 0.008),
+          SizedBox(height: screenHeight * 0.008),
           Text(
             'How are you feeling today',
             style: TextStyle(
-              fontSize: widget.screenWidth * 0.045,
+              fontSize: screenWidth * 0.045,
               color: Colors.grey[800],
             ),
           ),

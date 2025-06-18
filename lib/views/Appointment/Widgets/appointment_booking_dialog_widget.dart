@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:med_care/Services/api_services.dart';
+import 'package:med_care/controller/apoointment_history_controller.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dialog_date_widget.dart';
 import 'dialog_doctor_widget.dart';
@@ -165,6 +167,10 @@ class _AppointmentDialogState extends State<AppointmentDialog> {
                                 actions: [
                                   TextButton(
                                     onPressed: () {
+                                      Provider.of<AppointmentController>(
+                                        context,
+                                        listen: false,
+                                      ).fetchAppointments();
                                       Navigator.of(
                                         context,
                                       ).pop(); // Close dialog

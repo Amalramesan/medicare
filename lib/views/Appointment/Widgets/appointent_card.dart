@@ -3,8 +3,9 @@ import 'package:med_care/Models/appointment_history_model.dart';
 
 class AppointmentList extends StatelessWidget {
   final AppointmentHistoryModel appointment;
+  final VoidCallback? onCancel; // Optional cancel callback
 
-  const AppointmentList({super.key, required this.appointment});
+  const AppointmentList({super.key, required this.appointment, this.onCancel});
 
   @override
   Widget build(BuildContext context) {
@@ -25,10 +26,26 @@ class AppointmentList extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Doctor name
-          Text(
-            appointment.doctorName,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  appointment.doctorName,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              TextButton(
+                onPressed: onCancel,
+                style: TextButton.styleFrom(foregroundColor: Colors.red),
+                child: const Text(
+                  "Cancel",
+                  style: TextStyle(color: Colors.red),
+                ),
+              ),
+            ],
           ),
 
           // Patient name

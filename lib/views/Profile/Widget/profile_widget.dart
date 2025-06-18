@@ -1,12 +1,11 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:med_care/Models/register_model.dart';
+import 'package:med_care/controller/profile_controller.dart';
 import 'package:med_care/views/Login/login_view.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:med_care/views/Profile/Widget/profile_textfield.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
 
 class ProfileWidget extends StatefulWidget {
   const ProfileWidget({super.key});
@@ -38,17 +37,13 @@ class _ProfileWidgetState extends State<ProfileWidget> {
   @override
   void initState() {
     super.initState();
-    _loadUserData();
-  }
-
-  void _loadUserData() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      nameController.text = prefs.getString('user_name') ?? '';
-      emailController.text = prefs.getString('user_email') ?? '';
-      phoneController.text = prefs.getString('user_phone') ?? '';
-      placeController.text = prefs.getString('user_place') ?? '';
-    });
+    // _fetchProfileData();
+    Future.microtask(
+      () => Provider.of<ProfileController>(
+        context,
+        listen: false,
+      ).loadUserProfile(),
+    );
   }
 
   @override
@@ -57,6 +52,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
     final Size screenSize = MediaQuery.of(context).size;
     final double screenHeight = screenSize.height;
     final double screenWidth = screenSize.width;
+    final profileProvider = Provider.of<ProfileController>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -92,7 +88,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
             Padding(
               padding: EdgeInsets.all(screenWidth * 0.045),
               child: Text(
-                "Edit your profile",
+                "Your Profile",
                 style: TextStyle(
                   fontSize: screenWidth * 0.06,
                   fontWeight: FontWeight.w600,
@@ -139,14 +135,20 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                 child: Column(
                   children: [
                     Textfieldprofile(
-                      controller: nameController,
+                      controller: TextEditingController(
+                        text: profileProvider.userName,
+                      ),
+
                       icon: Icons.person,
                       label: "Full Name",
                       width: screenWidth,
+                      readOnly: true,
                     ),
                     SizedBox(height: screenHeight * 0.015),
                     Textfieldprofile(
-                      controller: emailController,
+                      controller: TextEditingController(
+                        text: profileProvider.email,
+                      ),
                       icon: Icons.email,
                       label: "Email",
                       width: screenWidth,
@@ -154,39 +156,24 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                     ),
                     SizedBox(height: screenHeight * 0.015),
                     Textfieldprofile(
-                      controller: phoneController,
+                      controller: TextEditingController(
+                        text: profileProvider.phone,
+                      ),
                       icon: Icons.phone,
                       label: "Phone number",
                       width: screenWidth,
                       inputType: TextInputType.number,
+                      readOnly: true,
                     ),
                     SizedBox(height: screenHeight * 0.015),
                     Textfieldprofile(
-                      controller: placeController,
+                      controller: TextEditingController(
+                        text: profileProvider.place,
+                      ),
                       icon: Icons.place,
                       label: "Place",
                       width: screenWidth,
-                    ),
-                    SizedBox(height: screenHeight * 0.03),
-                    SizedBox(
-                      width: double.infinity,
-                      height: screenHeight * 0.065,
-                      child: ElevatedButton(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.lightBlue,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        child: Text(
-                          "Update",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: screenWidth * 0.045,
-                          ),
-                        ),
-                      ),
+                      readOnly: true,
                     ),
                   ],
                 ),

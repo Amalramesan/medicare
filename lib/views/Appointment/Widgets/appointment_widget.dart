@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:med_care/Models/appointment_history_model.dart';
-import 'package:med_care/services/api_services.dart';
+import 'package:med_care/controller/apoointment_history_controller.dart';
 import 'package:med_care/views/Appointment/Widgets/appointent_card.dart';
 import 'package:med_care/views/Appointment/Widgets/book_appointment_button_widget.dart';
 import 'package:med_care/views/Appointment/Widgets/greeting_widget.dart';
 import 'package:med_care/views/Appointment/Widgets/upcomming_appointment_title_widget.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
 
 class HomeWidget extends StatefulWidget {
   const HomeWidget({super.key});
@@ -15,37 +14,26 @@ class HomeWidget extends StatefulWidget {
 }
 
 class _HomeWidgetState extends State<HomeWidget> {
-  Future<List<AppointmentHistoryModel>>? _appointments;
-
   @override
   void initState() {
     super.initState();
-    _loadAppointments(); // async method
-  }
-
-  Future<void> _loadAppointments() async {
-    int? patientId = await getPatientId();
-    if (patientId != null) {
-      setState(() {
-        _appointments = ApiServices.fetchPatientAppointments(patientId);
-      });
-    } else {
-      // fallback if patient ID not found
-      setState(() {
-        _appointments = Future.value([]);
-      });
-    }
-  }
-
-  Future<int?> getPatientId() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getInt('patient_id');
+    Future.microtask(() {
+      Provider.of<AppointmentController>(
+        context,
+        listen: false,
+      ).fetchAppointments();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
+
+    final appointmentProvider = Provider.of<AppointmentController>(context);
+    final isLoading = appointmentProvider.isLoading;
+    final error = appointmentProvider.error;
+    final appointments = appointmentProvider.appointments;
 
     return SingleChildScrollView(
       child: Column(
@@ -59,33 +47,40 @@ class _HomeWidgetState extends State<HomeWidget> {
           SizedBox(height: screenHeight * 0.02),
           AppointmentsTitleWidget(screenWidth: screenWidth),
 
-          // FutureBuilder only if _appointments is not null
-          if (_appointments != null)
-            FutureBuilder<List<AppointmentHistoryModel>>(
-              future: _appointments,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(child: Text("No appointments found."));
-                } else {
-                  return ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: snapshot.data!.length,
-                    itemBuilder: (context, index) {
-                      return AppointmentList(
-                        appointment: snapshot.data![index],
-                      );
-                    },
-                  );
-                }
-              },
-            )
+          if (isLoading)
+            const Center(child: CircularProgressIndicator())
+          else if (error != null)
+            Center(child: Text('Error: $error'))
+          else if (appointments.isEmpty)
+            const Center(child: Text("No appointments found."))
           else
-            const Center(child: CircularProgressIndicator()),
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: appointments.length,
+              itemBuilder: (context, index) {
+                return AppointmentList(
+                  appointment: appointments[index],
+                  onCancel: () async {
+                    await appointmentProvider.cancelAppointmentById(
+                      appointments[index].id.toString(),
+                    );
+
+                    if (appointmentProvider.error == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Appointment cancelled')),
+                      );
+                      // Refresh the list
+                      appointmentProvider.fetchAppointments();
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(appointmentProvider.error!)),
+                      );
+                    }
+                  },
+                );
+              },
+            ),
         ],
       ),
     );
