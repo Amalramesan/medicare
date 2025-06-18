@@ -57,15 +57,47 @@ class _RecordListWidgetState extends State<RecordListWidget> {
                   trailing: IconButton(
                     icon: const Icon(Icons.picture_as_pdf, color: Colors.red),
                     onPressed: () async {
-                      final url = Uri.encodeFull(record.document);
-                      if (await canLaunchUrl(Uri.parse(url))) {
-                        await launchUrl(
-                          Uri.parse(url),
+                      const baseUrl = 'http://192.168.29.40:8000';
+
+                      if (record.document.isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("Document path is empty."),
+                          ),
+                        );
+                        return;
+                      }
+
+                      final relativePath = record.document.startsWith('/')
+                          ? record.document
+                          : '/${record.document}';
+
+                      final fullUrl = record.document.startsWith('http')
+                          ? record.document
+                          : '$baseUrl$relativePath';
+
+                      final uri = Uri.parse(fullUrl);
+                      print("PDF URL: $fullUrl");
+                      print("Opening PDF at: $uri");
+
+                      if (await canLaunchUrl(uri)) {
+                        final success = await launchUrl(
+                          uri,
                           mode: LaunchMode.externalApplication,
                         );
+
+                        if (!success) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Failed to launch PDF viewer."),
+                            ),
+                          );
+                        }
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("Could not open PDF")),
+                          const SnackBar(
+                            content: Text("Could not open the PDF file."),
+                          ),
                         );
                       }
                     },
