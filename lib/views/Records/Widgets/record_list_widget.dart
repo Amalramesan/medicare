@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:med_care/Models/report_fetch_model.dart';
-import 'package:med_care/services/api_services.dart';
+import 'package:med_care/controller/report_fetch_controller.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class RecordListWidget extends StatefulWidget {
@@ -11,103 +11,74 @@ class RecordListWidget extends StatefulWidget {
 }
 
 class _RecordListWidgetState extends State<RecordListWidget> {
-  late Future<ReportFetchModel?> _futureReports;
-  @override
-  void initState() {
-    super.initState();
-    _futureReports = ApiServices.fetchReports();
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: FutureBuilder<ReportFetchModel?>(
-        future: _futureReports,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
+    try {
+      final controller = Provider.of<ReportFetchController>(context);
 
-          if (snapshot.hasError || snapshot.data == null) {
-            return const Center(child: Text("Failed to fetch records."));
-          }
+      if (controller.isLoading) {
+        return const Center(child: CircularProgressIndicator());
+      }
 
-          final dataList = snapshot.data!.data;
+      if (controller.reports.isEmpty) {
+        return const Center(child: Text("No records found."));
+      }
 
-          if (dataList.isEmpty) {
-            return const Center(child: Text("No records found."));
-          }
+      return ListView.builder(
+        itemCount: controller.reports.length,
+        itemBuilder: (context, index) {
+          final record = controller.reports[index];
 
-          return ListView.builder(
-            itemCount: dataList.length,
-            itemBuilder: (context, index) {
-              final record = dataList[index];
+          final reportName = record.report;
+          final description = record.description;
+          final uploadedAt = record.uploadedAt;
+          final document = record.document;
 
-              return Card(
-                margin: const EdgeInsets.all(8),
-                child: ListTile(
-                  title: Text(record.report),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("Description: ${record.description}"),
-                      Text("Uploaded: ${record.uploadedAt}"),
-                    ],
-                  ),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.picture_as_pdf, color: Colors.red),
-                    onPressed: () async {
-                      const baseUrl = 'http://192.168.29.40:8000';
+          return Card(
+            margin: const EdgeInsets.all(8),
+            child: ListTile(
+              title: Text(reportName),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("Description: $description"),
+                  Text("Uploaded: $uploadedAt"),
+                ],
+              ),
+              trailing: IconButton(
+                icon: const Icon(Icons.picture_as_pdf, color: Colors.red),
+                onPressed: () async {
+                  print("Document: $document");
 
-                      if (record.document.isEmpty) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text("Document path is empty."),
-                          ),
-                        );
-                        return;
-                      }
+                  if (document.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Invalid document link")),
+                    );
+                    return;
+                  }
 
-                      final relativePath = record.document.startsWith('/')
-                          ? record.document
-                          : '/${record.document}';
+                  final fullUrl = document.startsWith('http')
+                      ? document
+                      : 'http://192.168.29.40:8000/$document';
 
-                      final fullUrl = record.document.startsWith('http')
-                          ? record.document
-                          : '$baseUrl$relativePath';
-
-                      final uri = Uri.parse(fullUrl);
-                      print("PDF URL: $fullUrl");
-                      print("Opening PDF at: $uri");
-
-                      if (await canLaunchUrl(uri)) {
-                        final success = await launchUrl(
-                          uri,
-                          mode: LaunchMode.externalApplication,
-                        );
-
-                        if (!success) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text("Failed to launch PDF viewer."),
-                            ),
-                          );
-                        }
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text("Could not open the PDF file."),
-                          ),
-                        );
-                      }
-                    },
-                  ),
-                ),
-              );
-            },
+                  final uri = Uri.parse(fullUrl);
+                  if (await canLaunchUrl(uri)) {
+                    await launchUrl(uri, mode: LaunchMode.externalApplication);
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Could not open PDF.")),
+                    );
+                  }
+                },
+              ),
+            ),
           );
         },
-      ),
-    );
+      );
+    } catch (e, stackTrace) {
+      print(" Caught error in RecordListWidget: $e");
+      print(stackTrace);
+      return const Center(child: Text("Something went wrong. Check logs."));
+    }
   }
 }

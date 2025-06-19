@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:med_care/controller/apoointment_history_controller.dart';
+import 'package:med_care/controller/appointment_booking_controller.dart';
 import 'package:med_care/controller/bottamnav_controller.dart';
 import 'package:med_care/controller/login_controller.dart';
 import 'package:med_care/controller/profile_controller.dart';
 import 'package:med_care/controller/register_controller.dart';
+import 'package:med_care/controller/report_fetch_controller.dart';
+import 'package:med_care/controller/upload_controller.dart';
 import 'package:med_care/routes/app_routes.dart';
 import 'package:provider/provider.dart';
 
@@ -29,6 +32,11 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => AppointmentController()..fetchAppointments(),
         ),
+        ChangeNotifierProvider(create: (_) => UploadController()),
+        ChangeNotifierProvider(
+          create: (_) => ReportFetchController()..fetchReports(),
+        ),
+        ChangeNotifierProvider(create: (_) => AppointmentBookingController()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

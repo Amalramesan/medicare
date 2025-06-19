@@ -1,40 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:med_care/Services/api_services.dart';
+import 'package:med_care/controller/appointment_booking_controller.dart';
 import 'package:med_care/controller/apoointment_history_controller.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import 'dialog_date_widget.dart';
 import 'dialog_doctor_widget.dart';
 import 'dialog_timeslot_widget.dart';
 
-class AppointmentDialog extends StatefulWidget {
+class AppointmentDialog extends StatelessWidget {
   const AppointmentDialog({super.key});
 
-  @override
-  State<AppointmentDialog> createState() => _AppointmentDialogState();
-}
-
-class _AppointmentDialogState extends State<AppointmentDialog> {
-  int _currentStep = 0;
-  DateTime? selectedDate;
-  String? selectedDoctor;
-  String? selectedTime;
-  String? selectedDoctorId;
-
-  void _nextStep() {
-    setState(() {
-      if (_currentStep < 2) _currentStep++;
-    });
-  }
-
-  void _previousStep() {
-    setState(() {
-      if (_currentStep > 0) _currentStep--;
-    });
-  }
-
-  Widget _buildTab(String title, int index) {
-    final isActive = _currentStep == index;
+  Widget _buildTab(String title, int index, int currentStep) {
+    final isActive = currentStep == index;
     return Expanded(
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 12),
@@ -57,6 +36,12 @@ class _AppointmentDialogState extends State<AppointmentDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Provider.of<AppointmentBookingController>(context);
+    final currentStep = controller.currentStep;
+    final selectedDate = controller.selectedDate;
+    final selectedDoctor = controller.selectedDoctor;
+    final selectedDoctorId = controller.selectedDoctorId;
+
     final screenHeight = MediaQuery.of(context).size.height;
     final dialogHeight = screenHeight * 0.85;
 
@@ -82,32 +67,30 @@ class _AppointmentDialogState extends State<AppointmentDialog> {
                 ),
                 child: Row(
                   children: [
-                    _buildTab("Select Date", 0),
-                    _buildTab("Select Doctor", 1),
-                    _buildTab("Select Time", 2),
+                    _buildTab("Select Date", 0, currentStep),
+                    _buildTab("Select Doctor", 1, currentStep),
+                    _buildTab("Select Time", 2, currentStep),
                   ],
                 ),
               ),
               const SizedBox(height: 20),
 
-              if (_currentStep == 0)
+              if (currentStep == 0)
                 SelectDateStep(
                   selectedDate: selectedDate,
-                  onDateSelected: (date) => setState(() => selectedDate = date),
-                  onContinue: _nextStep,
+                  onDateSelected: (date) => controller.selectDate(date),
+                  onContinue: controller.nextStep,
                 )
-              else if (_currentStep == 1)
+              else if (currentStep == 1)
                 selectedDate != null
                     ? SelectDoctorStep(
-                        onDoctorSelected: (doctor) {
-                          setState(() {
-                            selectedDoctor = doctor.name;
-                            selectedDoctorId = doctor.id.toString();
-                          });
-                        },
-                        onContinue: _nextStep,
-                        onBack: _previousStep,
-                        selectedDate: selectedDate!,
+                        selectedDate: selectedDate,
+                        onDoctorSelected: (doctor) => controller.selectDoctor(
+                          name: doctor.name,
+                          id: doctor.id.toString(),
+                        ),
+                        onContinue: controller.nextStep,
+                        onBack: controller.previousStep,
                       )
                     : const Padding(
                         padding: EdgeInsets.all(12.0),
@@ -115,28 +98,25 @@ class _AppointmentDialogState extends State<AppointmentDialog> {
                           child: Text("Please select a date first"),
                         ),
                       )
-              else if (_currentStep == 2)
+              else if (currentStep == 2)
                 (selectedDoctor != null &&
                         selectedDate != null &&
                         selectedDoctorId != null)
                     ? SelectTimeStep(
-                        selectedDoctor: selectedDoctor!,
-                        selectedDate: selectedDate!,
-                        selectedDoctorId: selectedDoctorId!,
-                        onBack: _previousStep,
+                        selectedDoctor: selectedDoctor,
+                        selectedDate: selectedDate,
+                        selectedDoctorId: selectedDoctorId,
+                        onBack: controller.previousStep,
                         onConfirm: (String time) async {
-                          setState(() => selectedTime = time);
+                          controller.selectTime(time);
 
                           try {
-                            // Get patient ID from SharedPreferences
                             final prefs = await SharedPreferences.getInstance();
-                            final patientId = prefs.getInt(
-                              'patient_id',
-                            ); // Make sure this is saved earlier
+                            final patientId = prefs.getInt('patient_id');
 
                             if (patientId == null) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
+                                const SnackBar(
                                   content: Text(
                                     "Patient ID not found. Please log in again.",
                                   ),
@@ -145,18 +125,16 @@ class _AppointmentDialogState extends State<AppointmentDialog> {
                               return;
                             }
 
-                            // Send data to API
                             final response = await ApiServices()
                                 .saveAppointment(
-                                  doctorId: int.parse(selectedDoctorId!),
+                                  doctorId: int.parse(selectedDoctorId),
                                   patientId: patientId,
-                                  date: selectedDate!.toIso8601String().split(
+                                  date: selectedDate.toIso8601String().split(
                                     "T",
                                   )[0],
                                   time: time,
                                 );
 
-                            // If successful, show confirmation dialog
                             showDialog(
                               context: context,
                               builder: (context) => AlertDialog(
@@ -171,12 +149,14 @@ class _AppointmentDialogState extends State<AppointmentDialog> {
                                         context,
                                         listen: false,
                                       ).fetchAppointments();
+                                      controller.reset();
+
                                       Navigator.of(
                                         context,
-                                      ).pop(); // Close dialog
+                                      ).pop(); // close alert
                                       Navigator.of(
                                         context,
-                                      ).pop(); // Close main booking modal
+                                      ).pop(); // close dialog
                                     },
                                     child: const Text('Done'),
                                   ),
@@ -184,7 +164,6 @@ class _AppointmentDialogState extends State<AppointmentDialog> {
                               ),
                             );
                           } catch (e) {
-                            print(e);
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(content: Text("Booking failed: $e")),
                             );

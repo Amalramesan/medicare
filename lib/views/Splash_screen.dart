@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:med_care/views/Appointment/appointment_view.dart';
+import 'package:med_care/views/Login/login_view.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -11,14 +14,29 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    _navigate();
+    _checkLoginStatus();
   }
 
-  //function for navigate to another page
-  Future<void> _navigate() async {
-    await Future.delayed(Duration(seconds: 3));
+  Future<void> _checkLoginStatus() async {
+    await Future.delayed(const Duration(seconds: 2)); // show splash briefly
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('access_token');
+
     if (!mounted) return;
-    Navigator.pushReplacementNamed(context, '/login');
+
+    if (token != null && token.isNotEmpty) {
+      // Token exists → Go to home
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const HomePage()),
+      );
+    } else {
+      // Token missing → Go to login
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => LoginPage()),
+      );
+    }
   }
 
   @override

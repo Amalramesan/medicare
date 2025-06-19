@@ -5,6 +5,7 @@ import 'package:med_care/Models/appointment_history_model.dart';
 import 'package:med_care/Models/appointment_model.dart';
 import 'package:med_care/Models/doctor_model.dart';
 import 'package:med_care/Models/login_model.dart';
+import 'package:med_care/Models/logout_model.dart';
 import 'package:med_care/Models/profile_model.dart';
 import 'package:med_care/Models/register_model.dart';
 import 'package:http/http.dart' as http;
@@ -16,12 +17,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http_parser/http_parser.dart';
 
 class ApiServices {
-  final String baseUrl = "http://192.168.29.40:8000/";
+  final String baseUrl = "http://192.168.29.171:8000/";
 
   // registration
 
   Future<RegisterModel> registerUser(User user) async {
-    final url = Uri.parse("http://192.168.29.40:8000/api/register/");
+    final url = Uri.parse("http://192.168.29.171:8000//api/register/");
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -50,7 +51,7 @@ class ApiServices {
 
   //login
   Future<LoginModel> loginuser(String email, String password) async {
-    final url = Uri.parse("http://192.168.29.40:8000/api/login/");
+    final url = Uri.parse("http://192.168.29.171:8000/api/login/");
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -80,7 +81,7 @@ class ApiServices {
   // fetch all the doctors
   Future<List<DoctorModel>> fetchDoctors() async {
     final response = await http.get(
-      Uri.parse('http://192.168.29.40:8000/api/doctors/'),
+      Uri.parse('http://192.168.29.171:8000/api/doctors/'),
     );
     if (response.statusCode == 200) {
       List<dynamic> body = jsonDecode(response.body);
@@ -94,7 +95,7 @@ class ApiServices {
   Future<bool> isDoctorAvailable(String doctorId, String date) async {
     final response = await http.get(
       Uri.parse(
-        'http://192.168.29.40:8000/api/doctor/$doctorId/availability?date=$date',
+        'http://192.168.29.171:8000/api/doctor/$doctorId/availability?date=$date',
       ),
     );
 
@@ -110,7 +111,7 @@ class ApiServices {
   // timeslots
   Future<TimeSlots> fetchTimeSlots(String doctorId, String date) async {
     final url = Uri.parse(
-      'http://192.168.29.40:8000/api/doctor/$doctorId/timeslots?date=$date',
+      'http://192.168.29.171:8000/api/doctor/$doctorId/timeslots?date=$date',
     );
 
     final response = await http.get(url);
@@ -141,7 +142,7 @@ class ApiServices {
     }
 
     final response = await http.post(
-      Uri.parse('http://192.168.29.40:8000/api/book-appointment/'),
+      Uri.parse('http://192.168.29.171:8000/api/book-appointment/'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -169,7 +170,7 @@ class ApiServices {
     final token = prefs.getString('access_token');
 
     final url = Uri.parse(
-      'http://192.168.29.40:8000/api/appointments/history/',
+      'http://192.168.29.171:8000/api/appointments/history/',
     );
 
     final response = await http.get(
@@ -227,7 +228,7 @@ class ApiServices {
       throw Exception('Authentication or Patient ID not found');
     }
 
-    var uri = Uri.parse("http://192.168.29.40:8000/api/upload-report/");
+    var uri = Uri.parse("http://192.168.29.171:8000/api/upload-report/");
 
     var request = http.MultipartRequest("POST", uri)
       ..headers['Authorization'] = 'Bearer $token'
@@ -261,7 +262,7 @@ class ApiServices {
   static Future<ReportFetchModel?> fetchReports() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('access_token');
-    final url = Uri.parse("http://192.168.29.40:8000/api/my-reports/");
+    final url = Uri.parse("http://192.168.29.171:8000/api/my-reports/");
     final response = await http.get(
       url,
       headers: {
@@ -286,7 +287,7 @@ class ApiServices {
         print("Token not found");
         return null;
       }
-      final url = Uri.parse("http://192.168.29.40:8000/api/profile/");
+      final url = Uri.parse("http://192.168.29.171:8000/api/profile/");
       final response = await http.get(
         url,
         headers: {
@@ -299,6 +300,7 @@ class ApiServices {
         return ProfileModel.fromJson(jsonData);
       } else {
         print("Failed to load profile:${response.body}");
+
         return null;
       }
     } catch (e) {
@@ -321,7 +323,7 @@ class ApiServices {
 
       final response = await http.delete(
         Uri.parse(
-          'http://192.168.29.40:8000/api/appointment/$appointmentId/cancel/',
+          'http://192.168.29.171:8000/api/appointment/$appointmentId/cancel/',
         ),
         headers: {
           'Content-Type': 'application/json',
@@ -338,6 +340,39 @@ class ApiServices {
       }
     } catch (e) {
       print('Exception during cancel appointment: $e');
+      return null;
+    }
+  }
+
+  static Future<LogoutModel?> logout() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final accessToken = prefs.getString('access_token');
+      final refreshToken = prefs.getString('refresh_token');
+
+      if (accessToken == null || refreshToken == null) {
+        throw Exception('Missing token(s).');
+      }
+
+      final response = await http.post(
+        Uri.parse('http://192.168.29.171:8000/api/logout/'),
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({"refresh": refreshToken}),
+      );
+      print('Raw response: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final jsonResponse = json.decode(response.body);
+        return LogoutModel.fromJson(jsonResponse);
+      } else {
+        print('Logout failed: ${response.statusCode} - ${response.body}');
+        return null;
+      }
+    } catch (e) {
+      print('Exception during logout: $e');
       return null;
     }
   }

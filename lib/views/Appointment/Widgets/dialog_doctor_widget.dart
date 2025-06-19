@@ -26,23 +26,24 @@ class _SelectDoctorStepState extends State<SelectDoctorStep> {
   Map<String, bool> doctorAvailability = {};
 
   @override
+  @override
   void initState() {
     super.initState();
     doctorFuture = ApiServices().fetchDoctors();
 
-    doctorFuture.then((doctors) {
-      for (var doctor in doctors) {
-        ApiServices()
-            .isDoctorAvailable(
-              doctor.id.toString(),
-              widget.selectedDate.toIso8601String().split("T")[0],
-            )
-            .then((isAvailable) {
-              setState(() {
-                doctorAvailability[doctor.id.toString()] = isAvailable;
-              });
-            });
-      }
+    doctorFuture.then((doctors) async {
+      final futures = doctors.map((doctor) async {
+        final isAvailable = await ApiServices().isDoctorAvailable(
+          doctor.id.toString(),
+          widget.selectedDate.toIso8601String().split("T")[0],
+        );
+        return MapEntry(doctor.id.toString(), isAvailable);
+      });
+
+      final results = await Future.wait(futures);
+      setState(() {
+        doctorAvailability = Map.fromEntries(results);
+      });
     });
   }
 

@@ -1,11 +1,13 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:med_care/Services/api_services.dart';
 import 'package:med_care/controller/profile_controller.dart';
 import 'package:med_care/views/Login/login_view.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:med_care/views/Profile/Widget/profile_textfield.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileWidget extends StatefulWidget {
   const ProfileWidget({super.key});
@@ -19,21 +21,6 @@ class _ProfileWidgetState extends State<ProfileWidget> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController placeController = TextEditingController();
-  File? _imageFile;
-
-  Future<void> _pickImage() async {
-    final ImagePicker picker = ImagePicker();
-    final XFile? pickedFile = await picker.pickImage(
-      source: ImageSource.gallery,
-    );
-
-    if (pickedFile != null) {
-      setState(() {
-        _imageFile = File(pickedFile.path);
-      });
-    }
-  }
-
   @override
   void initState() {
     super.initState();
@@ -71,11 +58,27 @@ class _ProfileWidgetState extends State<ProfileWidget> {
             padding: EdgeInsets.only(right: screenWidth * 0.03),
             child: IconButton(
               icon: const Icon(Icons.logout, size: 27, color: Colors.red),
-              onPressed: () {
-                Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (context) => LoginPage()),
-                  (route) => false,
-                );
+              onPressed: () async {
+                final result =
+                    await ApiServices.logout(); // call the logout API
+
+                if (result != null && result.statusCode == 200) {
+                  // Clear shared preferences
+                  final prefs = await SharedPreferences.getInstance();
+                  await prefs.clear();
+
+                  // Navigate to login screen and remove all previous routes
+                  Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (context) => LoginPage()),
+                    (route) => false,
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Logout failed. Please try again.'),
+                    ),
+                  );
+                }
               },
             ),
           ),
@@ -97,37 +100,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
               ),
             ),
             SizedBox(height: screenHeight * 0.02),
-            Center(
-              child: GestureDetector(
-                onTap: _pickImage,
-                child: Stack(
-                  children: [
-                    CircleAvatar(
-                      radius: screenWidth * 0.15,
-                      backgroundImage: _imageFile != null
-                          ? FileImage(_imageFile!)
-                          : null,
-                      child: _imageFile == null
-                          ? Icon(Icons.person, size: screenWidth * 0.12)
-                          : null,
-                    ),
-                    Positioned(
-                      right: 5,
-                      bottom: 0,
-                      child: CircleAvatar(
-                        backgroundColor: Colors.blue,
-                        radius: screenWidth * 0.055,
-                        child: Icon(
-                          Icons.edit,
-                          color: Colors.white,
-                          size: screenWidth * 0.045,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+
             SizedBox(height: screenHeight * 0.03),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.045),

@@ -1,39 +1,38 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:med_care/controller/upload_controller.dart'; // <-- import your controller
+import 'package:provider/provider.dart';
 
-class FilePickerButton extends StatefulWidget {
+class FilePickerButton extends StatelessWidget {
   final void Function(PlatformFile?) onFilePicked;
 
   const FilePickerButton({super.key, required this.onFilePicked});
 
-  @override
-  State<FilePickerButton> createState() => _FilePickerButtonState();
-}
-
-class _FilePickerButtonState extends State<FilePickerButton> {
-  PlatformFile? _selectedFile;
-
-  Future<void> pickFile() async {
+  Future<void> pickFile(BuildContext context) async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['pdf'],
     );
+
     if (result != null) {
-      setState(() {
-        _selectedFile = result.files.first;
-      });
-      widget.onFilePicked(_selectedFile); // Send file to parent
+      final file = result.files.first;
+
+      // Update controller
+      Provider.of<UploadController>(context, listen: false).setPickedFile(file);
+
+      // Send file to parent if needed
+      onFilePicked(file);
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final pickedFile = context.watch<UploadController>().pickedFile;
+
     return ElevatedButton(
-      onPressed: pickFile,
+      onPressed: () => pickFile(context),
       child: Text(
-        _selectedFile == null
-            ? "Choose File"
-            : "Selected: ${_selectedFile!.name}",
+        pickedFile == null ? "Choose File" : "Selected: ${pickedFile.name}",
       ),
     );
   }
