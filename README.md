@@ -11,7 +11,6 @@
 
 =======
 **MedCare** is a patient-centered healthcare mobile app built with **Flutter**. It allows patients to:
->>>>>>> f4adbb8c06ac28929ed13a218b8f40e1f2768a87
 - Register and log in
 - Book medical appointments
 - Upload and view medical reports (PDF)
@@ -163,10 +162,7 @@ lib/
 - url_launcher:Open URLs or files (e.g., opening uploaded PDF)
 - provider:State management (used to pass data between widgets and handle app state)
 - http_parser:Helps in defining MediaType for file uploads (like application/pdf)
-<<<<<<< HEAD
-=======
 
->>>>>>> f4adbb8c06ac28929ed13a218b8f40e1f2768a87
 
 ### 📡 API Communication
 
@@ -181,10 +177,6 @@ lib/
   - Token stored in Flutter using `shared_preferences`
 
 ### 🧪 Testing (Optional Tools)
-<<<<<<< HEAD
-
-=======
->>>>>>> f4adbb8c06ac28929ed13a218b8f40e1f2768a87
 - **Postman** – For API testing
 
 ---
@@ -210,9 +202,6 @@ lib/
             ```
             flutter run
 
-<<<<<<< HEAD
-            ```
-
     📌 Notes
 
 - Ensure the backend API URLs match the local IP and port used in your Django project.
@@ -223,5 +212,3 @@ lib/
 - Ensure the backend API URLs match the local IP and port used in your Django project.
 - The app uses token-based authentication (access + refresh tokens).
 
-
->>>>>>> f4adbb8c06ac28929ed13a218b8f40e1f2768a87
