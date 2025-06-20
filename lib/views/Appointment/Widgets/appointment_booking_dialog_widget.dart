@@ -115,13 +115,15 @@ class AppointmentDialog extends StatelessWidget {
                             final patientId = prefs.getInt('patient_id');
 
                             if (patientId == null) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                    "Patient ID not found. Please log in again.",
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      "Patient ID not found. Please log in again.",
+                                    ),
                                   ),
-                                ),
-                              );
+                                );
+                              }
                               return;
                             }
 
@@ -134,39 +136,42 @@ class AppointmentDialog extends StatelessWidget {
                                   )[0],
                                   time: time,
                                 );
-
-                            showDialog(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                title: const Text('Appointment Confirmed'),
-                                content: Text(
-                                  'Your appointment with ${response.data.doctorName} on ${response.data.date} at ${response.data.time} is confirmed.',
-                                ),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () {
-                                      Provider.of<AppointmentController>(
-                                        context,
-                                        listen: false,
-                                      ).fetchAppointments();
-                                      controller.reset();
-
-                                      Navigator.of(
-                                        context,
-                                      ).pop(); // close alert
-                                      Navigator.of(
-                                        context,
-                                      ).pop(); // close dialog
-                                    },
-                                    child: const Text('Done'),
+                            if (context.mounted) {
+                              showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: const Text('Appointment Confirmed'),
+                                  content: Text(
+                                    'Your appointment with ${response.data.doctorName} on ${response.data.date} at ${response.data.time} is confirmed.',
                                   ),
-                                ],
-                              ),
-                            );
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Provider.of<AppointmentController>(
+                                          context,
+                                          listen: false,
+                                        ).fetchAppointments();
+                                        controller.reset();
+
+                                        Navigator.of(
+                                          context,
+                                        ).pop(); // close alert
+                                        Navigator.of(
+                                          context,
+                                        ).pop(); // close dialog
+                                      },
+                                      child: const Text('Done'),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }
                           } catch (e) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text("Booking failed: $e")),
-                            );
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text("Booking failed: $e")),
+                              );
+                            }
                           }
                         },
                       )

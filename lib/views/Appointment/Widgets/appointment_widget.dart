@@ -67,15 +67,21 @@ class _HomeWidgetState extends State<HomeWidget> {
                     );
 
                     if (appointmentProvider.error == null) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Appointment cancelled')),
-                      );
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Appointment cancelled'),
+                          ),
+                        );
+                      }
                       // Refresh the list
                       appointmentProvider.fetchAppointments();
                     } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(appointmentProvider.error!)),
-                      );
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(appointmentProvider.error!)),
+                        );
+                      }
                     }
                   },
                 );

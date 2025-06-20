@@ -18,20 +18,18 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _checkLoginStatus() async {
-    await Future.delayed(const Duration(seconds: 2)); // show splash briefly
+    await Future.delayed(const Duration(seconds: 2)); 
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('access_token');
 
     if (!mounted) return;
 
     if (token != null && token.isNotEmpty) {
-      // Token exists → Go to home
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => const HomePage()),
       );
     } else {
-      // Token missing → Go to login
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => LoginPage()),

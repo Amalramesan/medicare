@@ -78,7 +78,10 @@ class _SignupWidgetState extends State<SignupWidget> {
             placeController: placeController,
             genderValue: genderValue,
             onGenderChanged: (value) {
-              setState(() => genderValue = value);
+              Provider.of<RegisterContrller>(
+                context,
+                listen: false,
+              ).setGenderValue(value);
             },
           ),
           SpacingHelperWidget.verticalspacemediam,

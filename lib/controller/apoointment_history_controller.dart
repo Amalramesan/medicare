@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:med_care/Services/tokens_and_sharedpref.dart';
 import 'package:med_care/Models/appointment_history_model.dart';
 import 'package:med_care/Services/api_services.dart';
 
@@ -12,16 +12,18 @@ class AppointmentController with ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get error => _error;
 
+  void _setLoading(bool value) {
+    _isLoading = value;
+    notifyListeners();
+  }
+
   // FETCH APPOINTMENTS
   Future<void> fetchAppointments() async {
-    _isLoading = true;
+    _setLoading(true);
     _error = null;
-    notifyListeners();
 
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final patientId = prefs.getInt('patient_id');
-
+      final patientId = await getPatientId();
       if (patientId != null) {
         _appointments = await ApiServices.fetchPatientAppointments(patientId);
       } else {
@@ -29,12 +31,10 @@ class AppointmentController with ChangeNotifier {
         _error = "Patient ID not found.";
       }
     } catch (e) {
-      _error = e.toString();
       _appointments = [];
+      _error = e.toString();
     }
-
-    _isLoading = false;
-    notifyListeners();
+    _setLoading(false);
   }
 
   // CANCEL APPOINTMENT
@@ -60,7 +60,7 @@ class AppointmentController with ChangeNotifier {
   void clearData() {
     _appointments = [];
     _error = null;
-    _isLoading = false;
+    _setLoading(false);
     notifyListeners();
   }
 }

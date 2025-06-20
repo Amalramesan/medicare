@@ -13,10 +13,10 @@ class ReportFetchController with ChangeNotifier {
     try {
       final ReportFetchModel? result = await ApiServices.fetchReports();
 
-      if (result != null && result.data != null && result.data!.isNotEmpty) {
-        reports = result.data!;
+      if (result != null && result.data != null && result.data.isNotEmpty) {
+        reports = result.data;
       } else {
-        reports = []; // Handle empty or null data
+        reports = []; 
       }
     } catch (e) {
       print("Error fetching reports: $e");

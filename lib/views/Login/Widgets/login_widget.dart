@@ -38,23 +38,23 @@ class _LogindetailsState extends State<Logindetails> {
             passwordController: _passwordController,
           ),
           const SizedBox(height: 20),
-          loginController.isLoading
-              ? const CircularProgressIndicator()
-              : LoginButton(
-                  onSignInTap: () {
-                    if (_formKey.currentState!.validate()) {
-                      Provider.of<AppointmentController>(
-                        context,
-                        listen: false,
-                      ).clearData();
-                      loginController.login(
-                        email: _emailController.text.trim(),
-                        password: _passwordController.text,
-                        context: context,
-                      );
-                    }
-                  },
-                ),
+
+          LoginButton(
+            isLoading: loginController.isLoading,
+            onSignInTap: () {
+              if (_formKey.currentState!.validate()) {
+                Provider.of<AppointmentController>(
+                  context,
+                  listen: false,
+                ).clearData();
+                loginController.login(
+                  email: _emailController.text.trim(),
+                  password: _passwordController.text,
+                  context: context,
+                );
+              }
+            },
+          ),
           const SizedBox(height: 20),
           LoginButtonWidget(onTapp: _handleSignUp),
         ],

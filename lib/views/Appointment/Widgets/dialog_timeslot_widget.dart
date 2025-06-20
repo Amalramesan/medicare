@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:med_care/Models/time_slote_model.dart';
 import 'package:med_care/Services/api_services.dart';
@@ -38,7 +40,7 @@ class _SelectTimeStepState extends State<SelectTimeStep> {
     );
 
     // Optional: For debugging
-    print(
+    log(
       'Fetching time slots for doctorId: ${widget.selectedDoctorId}, date: ${widget.selectedDate.toIso8601String().split("T")[0]}',
     );
   }

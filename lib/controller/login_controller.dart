@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:med_care/Models/login_model.dart';
 import 'package:med_care/Services/api_services.dart';
-import 'package:med_care/utilities/tokens.dart';
+import 'package:med_care/Services/tokens_and_sharedpref.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginController with ChangeNotifier {
@@ -25,27 +25,29 @@ class LoginController with ChangeNotifier {
 
     try {
       LoginModel response = await _apiServices.loginuser(email, password);
-
       _loggedUser = response;
-
       await saveTokens(response.data.access, response.data.refresh);
-
       final prefs = await SharedPreferences.getInstance();
       prefs.setInt('patient_id', response.data.user.id);
-
       _isLoading = false;
       notifyListeners();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Login success: ${response.message}")),
-      );
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Login success: ${response.message}")),
+        );
+      }
+
       Navigator.pushReplacementNamed(context, '/home');
     } catch (e) {
       _isLoading = false;
       _error = e.toString();
       notifyListeners();
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("Login failed: $_error")));
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("Login failed: $_error")));
+      }
     }
   }
 

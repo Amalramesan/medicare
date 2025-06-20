@@ -164,7 +164,7 @@ class _SelectDoctorStepState extends State<SelectDoctorStep> {
                         ),
                       ),
                     );
-                  }).toList(),
+                  }),
 
                   const SizedBox(height: 20),
 

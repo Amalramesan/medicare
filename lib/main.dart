@@ -28,7 +28,6 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => ProfileController()..loadUserProfile(),
         ),
-
         ChangeNotifierProvider(
           create: (_) => AppointmentController()..fetchAppointments(),
         ),
