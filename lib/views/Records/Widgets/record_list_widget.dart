@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:med_care/controller/report_fetch_controller.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -11,6 +12,7 @@ class RecordListWidget extends StatefulWidget {
 }
 
 class _RecordListWidgetState extends State<RecordListWidget> {
+  final logger = Logger();
   @override
   Widget build(BuildContext context) {
     try {
@@ -48,7 +50,7 @@ class _RecordListWidgetState extends State<RecordListWidget> {
               trailing: IconButton(
                 icon: const Icon(Icons.picture_as_pdf, color: Colors.red),
                 onPressed: () async {
-                  print("Document: $document");
+                  logger.e("Document: $document");
 
                   if (document.isEmpty) {
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -65,9 +67,11 @@ class _RecordListWidgetState extends State<RecordListWidget> {
                   if (await canLaunchUrl(uri)) {
                     await launchUrl(uri, mode: LaunchMode.externalApplication);
                   } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
+                    if(context.mounted){
+                      ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text("Could not open PDF.")),
                     );
+                    }
                   }
                 },
               ),
@@ -76,8 +80,8 @@ class _RecordListWidgetState extends State<RecordListWidget> {
         },
       );
     } catch (e, stackTrace) {
-      print(" Caught error in RecordListWidget: $e");
-      print(stackTrace);
+      logger.e(" Caught error in RecordListWidget: $e");
+      logger.e(stackTrace);
       return const Center(child: Text("Something went wrong. Check logs."));
     }
   }

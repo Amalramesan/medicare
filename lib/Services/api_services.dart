@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'package:med_care/Models/appointment_cancel_model.dart';
 import 'package:med_care/Models/appointment_history_model.dart';
@@ -12,17 +13,17 @@ import 'package:http/http.dart' as http;
 import 'package:med_care/Models/report_fetch_model.dart';
 import 'package:med_care/Models/time_slote_model.dart';
 import 'package:med_care/Models/upload_model.dart';
-import 'package:med_care/utilities/tokens.dart';
+import 'package:med_care/Services/tokens_and_sharedpref.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http_parser/http_parser.dart';
 
 class ApiServices {
-  final String baseUrl = "http://192.168.29.171:8000/";
+  final String baseUrl = "http://192.168.29.40:8000/";
 
   // registration
 
   Future<RegisterModel> registerUser(User user) async {
-    final url = Uri.parse("http://192.168.29.171:8000//api/register/");
+    final url = Uri.parse("http://192.168.29.40:8000//api/register/");
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -34,7 +35,7 @@ class ApiServices {
       final userData = registerModel.data;
 
       // Save user data into SharedPreferences
-      print("Saving name from registration: ${userData.name}");
+      log("Saving name from registration: ${userData.name}");
       await saveUserName(userData.name);
       await saveRegisteredUser(
         name: userData.name,
@@ -51,7 +52,7 @@ class ApiServices {
 
   //login
   Future<LoginModel> loginuser(String email, String password) async {
-    final url = Uri.parse("http://192.168.29.171:8000/api/login/");
+    final url = Uri.parse("http://192.168.29.40:8000/api/login/");
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -81,7 +82,7 @@ class ApiServices {
   // fetch all the doctors
   Future<List<DoctorModel>> fetchDoctors() async {
     final response = await http.get(
-      Uri.parse('http://192.168.29.171:8000/api/doctors/'),
+      Uri.parse('http://192.168.29.40:8000/api/doctors/'),
     );
     if (response.statusCode == 200) {
       List<dynamic> body = jsonDecode(response.body);
@@ -95,7 +96,7 @@ class ApiServices {
   Future<bool> isDoctorAvailable(String doctorId, String date) async {
     final response = await http.get(
       Uri.parse(
-        'http://192.168.29.171:8000/api/doctor/$doctorId/availability?date=$date',
+        'http://192.168.29.40:8000/api/doctor/$doctorId/availability?date=$date',
       ),
     );
 
@@ -111,14 +112,14 @@ class ApiServices {
   // timeslots
   Future<TimeSlots> fetchTimeSlots(String doctorId, String date) async {
     final url = Uri.parse(
-      'http://192.168.29.171:8000/api/doctor/$doctorId/timeslots?date=$date',
+      'http://192.168.29.40:8000/api/doctor/$doctorId/timeslots?date=$date',
     );
 
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
       final jsonData = jsonDecode(response.body);
-      print("TimeSlots API Response: $jsonData");
+      log("TimeSlots API Response: $jsonData");
       return TimeSlots.fromJson(jsonData);
     } else {
       throw Exception(
@@ -142,7 +143,7 @@ class ApiServices {
     }
 
     final response = await http.post(
-      Uri.parse('http://192.168.29.171:8000/api/book-appointment/'),
+      Uri.parse('http://192.168.29.40:8000/api/book-appointment/'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -170,7 +171,7 @@ class ApiServices {
     final token = prefs.getString('access_token');
 
     final url = Uri.parse(
-      'http://192.168.29.171:8000/api/appointments/history/',
+      'http://192.168.29.40:8000/api/appointments/history/',
     );
 
     final response = await http.get(
@@ -181,8 +182,8 @@ class ApiServices {
       },
     );
 
-    print(' Status code: ${response.statusCode}');
-    print(' Response body: ${response.body}');
+    log(' Status code: ${response.statusCode}');
+    log(' Response body: ${response.body}');
 
     if (response.statusCode == 200) {
       final decoded = json.decode(response.body);
@@ -228,7 +229,7 @@ class ApiServices {
       throw Exception('Authentication or Patient ID not found');
     }
 
-    var uri = Uri.parse("http://192.168.29.171:8000/api/upload-report/");
+    var uri = Uri.parse("http://192.168.29.40:8000/api/upload-report/");
 
     var request = http.MultipartRequest("POST", uri)
       ..headers['Authorization'] = 'Bearer $token'
@@ -246,14 +247,14 @@ class ApiServices {
     var streamedResponse = await request.send();
     final responseBody = await streamedResponse.stream.bytesToString();
 
-    print('Status Code: ${streamedResponse.statusCode}');
-    print('Response Body: $responseBody');
+    log('Status Code: ${streamedResponse.statusCode}');
+    log('Response Body: $responseBody');
 
     if (streamedResponse.statusCode == 200 ||
         streamedResponse.statusCode == 201) {
       return UploadModel.fromJson(json.decode(responseBody));
     } else {
-      print("Upload failed ");
+      log("Upload failed ");
       return null;
     }
   }
@@ -262,7 +263,7 @@ class ApiServices {
   static Future<ReportFetchModel?> fetchReports() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('access_token');
-    final url = Uri.parse("http://192.168.29.171:8000/api/my-reports/");
+    final url = Uri.parse("http://192.168.29.40:8000/api/my-reports/");
     final response = await http.get(
       url,
       headers: {
@@ -273,7 +274,7 @@ class ApiServices {
     if (response.statusCode == 200) {
       return ReportFetchModel.fromJson(json.decode(response.body));
     } else {
-      print("Error fetching reports:${response.body}");
+      log("Error fetching reports:${response.body}");
       return null;
     }
   }
@@ -284,10 +285,10 @@ class ApiServices {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('access_token');
       if (token == null) {
-        print("Token not found");
+        log("Token not found");
         return null;
       }
-      final url = Uri.parse("http://192.168.29.171:8000/api/profile/");
+      final url = Uri.parse("http://192.168.29.40:8000/api/profile/");
       final response = await http.get(
         url,
         headers: {
@@ -299,12 +300,12 @@ class ApiServices {
         final jsonData = jsonDecode(response.body);
         return ProfileModel.fromJson(jsonData);
       } else {
-        print("Failed to load profile:${response.body}");
+        log("Failed to load profile:${response.body}");
 
         return null;
       }
     } catch (e) {
-      print("Error fetching profile:$e");
+      log("Error fetching profile:$e");
       return null;
     }
   }
@@ -323,7 +324,7 @@ class ApiServices {
 
       final response = await http.delete(
         Uri.parse(
-          'http://192.168.29.171:8000/api/appointment/$appointmentId/cancel/',
+          'http://192.168.29.40:8000/api/appointment/$appointmentId/cancel/',
         ),
         headers: {
           'Content-Type': 'application/json',
@@ -335,11 +336,11 @@ class ApiServices {
         final json = jsonDecode(response.body);
         return AppointmentCancelModel.fromJson(json);
       } else {
-        print('Failed to cancel appointment: ${response.body}');
+        log('Failed to cancel appointment: ${response.body}');
         return null;
       }
     } catch (e) {
-      print('Exception during cancel appointment: $e');
+      log('Exception during cancel appointment: $e');
       return null;
     }
   }
@@ -355,24 +356,24 @@ class ApiServices {
       }
 
       final response = await http.post(
-        Uri.parse('http://192.168.29.171:8000/api/logout/'),
+        Uri.parse('http://192.168.29.40:8000/api/logout/'),
         headers: {
           'Authorization': 'Bearer $accessToken',
           'Content-Type': 'application/json',
         },
         body: jsonEncode({"refresh": refreshToken}),
       );
-      print('Raw response: ${response.body}');
+      log('Raw response: ${response.body}');
 
       if (response.statusCode == 200) {
         final jsonResponse = json.decode(response.body);
         return LogoutModel.fromJson(jsonResponse);
       } else {
-        print('Logout failed: ${response.statusCode} - ${response.body}');
+        log('Logout failed: ${response.statusCode} - ${response.body}');
         return null;
       }
     } catch (e) {
-      print('Exception during logout: $e');
+      log('Exception during logout: $e');
       return null;
     }
   }

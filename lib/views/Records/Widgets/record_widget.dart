@@ -98,11 +98,13 @@ class _DropedownnBodyState extends State<_DropedownnBody> {
                         final patientId = prefs.getInt('patient_id');
 
                         if (patientId == null) {
-                          ScaffoldMessenger.of(context).showSnackBar(
+                         if(context.mounted){
+                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content: Text("Patient ID not found."),
                             ),
                           );
+                         }
                           controller.setLoading(false);
                           return;
                         }
@@ -121,7 +123,8 @@ class _DropedownnBodyState extends State<_DropedownnBody> {
                         controller.setLoading(false);
 
                         if (response != null) {
-                          Navigator.pop(context);
+                         if(context.mounted){
+                           Navigator.pop(context);
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
@@ -129,17 +132,22 @@ class _DropedownnBodyState extends State<_DropedownnBody> {
                               ),
                             ),
                           );
+                         }
                         } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
+                          if(context.mounted){
+                            ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(content: Text("Upload failed.")),
                           );
+                          }
                         }
                       } catch (e) {
                         logger.e("Upload failed", error: e);
                         controller.setLoading(false);
-                        ScaffoldMessenger.of(context).showSnackBar(
+                       if(context.mounted){
+                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text("Something went wrong: $e")),
                         );
+                       }
                       }
                     },
                   ),

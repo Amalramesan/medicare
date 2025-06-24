@@ -36,7 +36,7 @@ class User {
     required this.gender,
     required this.phoneNumber,
     this.password,
-    this.confirm_password,
+    this.confirmpassword,
   });
   late final String name;
   late final String email;
@@ -45,7 +45,7 @@ class User {
   late final String gender;
   late final String phoneNumber;
   String? password;
-  String? confirm_password;
+  String? confirmpassword;
 
   User.fromJson(Map<String, dynamic> json) {
     name = json['name'];
@@ -65,7 +65,7 @@ class User {
     data['gender'] = gender;
     data['phone_number'] = phoneNumber;
     data['password'] = password;
-    data['confirm_password'] = confirm_password;
+    data['confirm_password'] = confirmpassword;
     return data;
   }
 }

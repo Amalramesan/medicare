@@ -23,9 +23,12 @@ class DialogButtons extends StatelessWidget {
               await onSubmit();
             } catch (e) {
               debugPrint('Error submitting upload form: $e');
-              ScaffoldMessenger.of(context).showSnackBar(
+              if(context.mounted){
+                ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text("Something went wrong: $e")),
               );
+              }
+             
             }
           },
           child: const Text("Submit"),

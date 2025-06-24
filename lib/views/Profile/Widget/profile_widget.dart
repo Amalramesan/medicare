@@ -1,10 +1,9 @@
-import 'dart:io';
+
 
 import 'package:flutter/material.dart';
 import 'package:med_care/Services/api_services.dart';
 import 'package:med_care/controller/profile_controller.dart';
 import 'package:med_care/views/Login/login_view.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:med_care/views/Profile/Widget/profile_textfield.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -22,16 +21,20 @@ class _ProfileWidgetState extends State<ProfileWidget> {
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController placeController = TextEditingController();
   @override
-  void initState() {
-    super.initState();
-    // _fetchProfileData();
-    Future.microtask(
-      () => Provider.of<ProfileController>(
+@override
+void initState() {
+  super.initState();
+
+  Future.microtask(() {
+    if (mounted) {
+      Provider.of<ProfileController>(
         context,
         listen: false,
-      ).loadUserProfile(),
-    );
-  }
+      ).loadUserProfile();
+    }
+  });
+}
+
 
   @override
   @override
@@ -68,16 +71,22 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                   await prefs.clear();
 
                   // Navigate to login screen and remove all previous routes
-                  Navigator.of(context).pushAndRemoveUntil(
+                  if(context.mounted){
+                   Navigator.of(context).pushAndRemoveUntil(
                     MaterialPageRoute(builder: (context) => LoginPage()),
                     (route) => false,
                   );
+                  }
+                  
                 } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
+
+                if(context.mounted){
+                    ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       content: Text('Logout failed. Please try again.'),
                     ),
                   );
+                }
                 }
               },
             ),
@@ -107,7 +116,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
               child: Form(
                 child: Column(
                   children: [
-                    Textfieldprofile(
+                    textfieldprofile(
                       controller: TextEditingController(
                         text: profileProvider.userName,
                       ),
@@ -118,7 +127,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                       readOnly: true,
                     ),
                     SizedBox(height: screenHeight * 0.015),
-                    Textfieldprofile(
+                    textfieldprofile(
                       controller: TextEditingController(
                         text: profileProvider.email,
                       ),
@@ -128,7 +137,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                       readOnly: true,
                     ),
                     SizedBox(height: screenHeight * 0.015),
-                    Textfieldprofile(
+                    textfieldprofile(
                       controller: TextEditingController(
                         text: profileProvider.phone,
                       ),
@@ -139,7 +148,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                       readOnly: true,
                     ),
                     SizedBox(height: screenHeight * 0.015),
-                    Textfieldprofile(
+                    textfieldprofile(
                       controller: TextEditingController(
                         text: profileProvider.place,
                       ),

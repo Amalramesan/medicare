@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-Widget Textfieldprofile({
+Widget textfieldprofile({
   required TextEditingController controller,
   required IconData icon,
   required String label,

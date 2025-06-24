@@ -15,7 +15,7 @@ class UploadForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final uploadProvider = Provider.of<UploadController>(context, listen: true);
-    final TextEditingController _descriptionController =
+    final TextEditingController descriptionController =
         TextEditingController();
 
     final Map<String, String> reportTypeOptions = {
@@ -27,7 +27,7 @@ class UploadForm extends StatelessWidget {
       'Other': 'OTHER',
     };
 
-    Future<void> _handleSubmit() async {
+    Future<void> handleSubmit() async {
       if (uploadProvider.selectedReportType == null ||
           uploadProvider.pickedFile == null) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -50,11 +50,13 @@ class UploadForm extends StatelessWidget {
       }
 
       if (uploadProvider.pickedFile?.path == null) {
-        ScaffoldMessenger.of(
+        if(context.mounted){
+          ScaffoldMessenger.of(
           context,
         ).showSnackBar(const SnackBar(content: Text("Invalid file selected.")));
         uploadProvider.setLoading(false);
         return;
+        }
       }
 
       final file = File(uploadProvider.pickedFile!.path!);
@@ -62,21 +64,25 @@ class UploadForm extends StatelessWidget {
       final response = await ApiServices.uploadDocuments(
         documentFile: file,
         report: reportTypeOptions[uploadProvider.selectedReportType]!,
-        description: _descriptionController.text,
+        description: descriptionController.text,
         patientId: patientId,
       );
 
       uploadProvider.setLoading(false);
 
       if (response != null) {
-        Navigator.of(context).pop();
+       if(context.mounted){
+         Navigator.of(context).pop();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Upload successful: ${response.message}")),
         );
+       }
       } else {
-        ScaffoldMessenger.of(
+       if(context.mounted){
+         ScaffoldMessenger.of(
           context,
         ).showSnackBar(const SnackBar(content: Text("Upload failed")));
+       }
       }
     }
 
@@ -92,7 +98,7 @@ class UploadForm extends StatelessWidget {
               reportTypeOptions: reportTypeOptions,
             ),
             const SizedBox(height: 12),
-            DescriptionField(controller: _descriptionController),
+            DescriptionField(controller: descriptionController),
             const SizedBox(height: 12),
             FilePickerButton(
               onFilePicked: (file) => uploadProvider.setPickedFile(file),
@@ -105,7 +111,7 @@ class UploadForm extends StatelessWidget {
             ? const CircularProgressIndicator()
             : DialogButtons(
                 onClose: () => Navigator.pop(context),
-                onSubmit: _handleSubmit,
+                onSubmit: handleSubmit,
               ),
       ],
     );

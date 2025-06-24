@@ -15,15 +15,18 @@ class HomeWidget extends StatefulWidget {
 
 class _HomeWidgetState extends State<HomeWidget> {
   @override
-  void initState() {
-    super.initState();
-    Future.microtask(() {
+void initState() {
+  super.initState();
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    if (mounted) {
       Provider.of<AppointmentController>(
         context,
         listen: false,
       ).fetchAppointments();
-    });
-  }
+    }
+  });
+}
+
 
   @override
   Widget build(BuildContext context) {

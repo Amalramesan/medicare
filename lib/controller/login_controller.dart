@@ -36,8 +36,10 @@ class LoginController with ChangeNotifier {
           SnackBar(content: Text("Login success: ${response.message}")),
         );
       }
-
-      Navigator.pushReplacementNamed(context, '/home');
+       if(context.mounted){
+       Navigator.pushReplacementNamed(context, '/home');
+       }
+      
     } catch (e) {
       _isLoading = false;
       _error = e.toString();

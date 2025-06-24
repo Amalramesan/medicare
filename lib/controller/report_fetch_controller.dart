@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:med_care/Models/report_fetch_model.dart';
 import 'package:med_care/services/api_services.dart';
@@ -13,13 +15,13 @@ class ReportFetchController with ChangeNotifier {
     try {
       final ReportFetchModel? result = await ApiServices.fetchReports();
 
-      if (result != null && result.data != null && result.data.isNotEmpty) {
+      if (result != null && result.data.isNotEmpty) {
         reports = result.data;
       } else {
         reports = []; 
       }
     } catch (e) {
-      print("Error fetching reports: $e");
+      log("Error fetching reports: $e");
       reports = [];
     }
 

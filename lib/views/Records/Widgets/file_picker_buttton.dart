@@ -18,7 +18,9 @@ class FilePickerButton extends StatelessWidget {
       final file = result.files.first;
 
       // Update controller
-      Provider.of<UploadController>(context, listen: false).setPickedFile(file);
+      if(context.mounted){
+        Provider.of<UploadController>(context, listen: false).setPickedFile(file);
+      }
 
       // Send file to parent if needed
       onFilePicked(file);

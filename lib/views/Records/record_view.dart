@@ -7,6 +7,9 @@ class RecordPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(appBar: RecordsAppBar(), body: RecordListWidget());
+    return const Scaffold(
+      appBar: RecordsAppBar(), 
+      body: RecordListWidget()
+      );
   }
 }
