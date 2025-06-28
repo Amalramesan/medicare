@@ -1,6 +1,6 @@
 // home_page.dart
 import 'package:flutter/material.dart';
-import 'package:med_care/controller/bottamnav_controller.dart';
+import 'package:med_care/View_model/controller/bottamnav_controller.dart';
 import 'package:med_care/views/Appointment/Widgets/custom_appbar_widget.dart';
 import 'package:med_care/views/Appointment/Widgets/custom_bottam_nav_widget.dart';
 import 'package:med_care/views/Appointment/Widgets/home_content_widget.dart';

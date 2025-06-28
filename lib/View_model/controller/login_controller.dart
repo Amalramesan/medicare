@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:med_care/Models/login_model.dart';
-import 'package:med_care/Services/api_services.dart';
-import 'package:med_care/Services/tokens_and_sharedpref.dart';
+import 'package:med_care/Resporitary/auth_resporitary.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginController with ChangeNotifier {
-  final ApiServices _apiServices = ApiServices();
+  final AuthRepository _authRepository = AuthRepository();
+
   bool _isLoading = false;
   String? _error;
   LoginModel? _loggedUser;
@@ -19,47 +19,45 @@ class LoginController with ChangeNotifier {
     required String password,
     required BuildContext context,
   }) async {
-    _isLoading = true;
-    _error = null;
-    notifyListeners();
+    _setLoading(true);
 
     try {
-      LoginModel response = await _apiServices.loginuser(email, password);
+      final response = await _authRepository.loginUser(email, password);
       _loggedUser = response;
-      await saveTokens(response.data.access, response.data.refresh);
-      final prefs = await SharedPreferences.getInstance();
-      prefs.setInt('patient_id', response.data.user.id);
-      _isLoading = false;
-      notifyListeners();
+      _setLoading(false);
+
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Login success: ${response.message}")),
         );
+        Navigator.pushReplacementNamed(context, '/home');
       }
-       if(context.mounted){
-       Navigator.pushReplacementNamed(context, '/home');
-       }
-      
     } catch (e) {
-      _isLoading = false;
+      _setLoading(false);
       _error = e.toString();
-      notifyListeners();
-
       if (context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text("Login failed: $_error")));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Login failed: $_error")),
+        );
       }
     }
   }
 
-  logout() async {
+  void _setLoading(bool value) {
+    _isLoading = value;
+    notifyListeners();
+  }
+
+  Future<void> logout() async {
     _loggedUser = null;
-    _isLoading = false;
+    _setLoading(false);
     _error = null;
     notifyListeners();
+
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('patient_id');
-    await clearTokens();
+    await prefs.remove('auth_token');
+    await prefs.remove('access_token');
+    await prefs.remove('refresh_token');
   }
 }

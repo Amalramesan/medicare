@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:med_care/Common/custom_text_field.dart';
-import 'package:med_care/Services/validators.dart';
+import 'package:med_care/Res/custom_text_field.dart';
+
+import 'package:med_care/View_model/services/validators.dart';
 import 'package:med_care/views/Registration/Widgets/gender_and_age_widget.dart';
 import 'package:med_care/views/Registration/Widgets/spacing_helper_widget.dart';
 

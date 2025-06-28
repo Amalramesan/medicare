@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:med_care/Services/tokens_and_sharedpref.dart';
 import 'package:med_care/Models/appointment_history_model.dart';
-import 'package:med_care/Services/api_services.dart';
+import 'package:med_care/Models/appointment_cancel_model.dart';
+import 'package:med_care/Resporitary/appointment_resporitary.dart';
+import 'package:med_care/View_model/services/tokens_and_sharedpref.dart';
 
 class AppointmentController with ChangeNotifier {
+  final AppointmentRepository _repository = AppointmentRepository();
+
   List<AppointmentHistoryModel> _appointments = [];
   bool _isLoading = false;
   String? _error;
@@ -17,7 +20,7 @@ class AppointmentController with ChangeNotifier {
     notifyListeners();
   }
 
-  // FETCH APPOINTMENTS
+  /// FETCH APPOINTMENTS
   Future<void> fetchAppointments() async {
     _setLoading(true);
     _error = null;
@@ -25,7 +28,7 @@ class AppointmentController with ChangeNotifier {
     try {
       final patientId = await getPatientId();
       if (patientId != null) {
-        _appointments = await ApiServices.fetchPatientAppointments(patientId);
+        _appointments = await _repository.fetchPatientAppointments(patientId);
       } else {
         _appointments = [];
         _error = "Patient ID not found.";
@@ -33,30 +36,27 @@ class AppointmentController with ChangeNotifier {
     } catch (e) {
       _appointments = [];
       _error = e.toString();
+    } finally {
+      _setLoading(false);
     }
-    _setLoading(false);
   }
 
-  // CANCEL APPOINTMENT
+  /// CANCEL APPOINTMENT
   Future<void> cancelAppointmentById(String appointmentId) async {
     try {
-      final result = await ApiServices().cancelAppointment(appointmentId);
+      AppointmentCancelModel? result = await _repository.cancelAppointment(appointmentId);
       if (result != null && result.status.toLowerCase() == 'success') {
-        _appointments.removeWhere(
-          (appt) => appt.id.toString() == appointmentId,
-        );
-        notifyListeners();
+        _appointments.removeWhere((appt) => appt.id.toString() == appointmentId);
       } else {
         _error = "Failed to cancel appointment.";
-        notifyListeners();
       }
     } catch (e) {
       _error = e.toString();
-      notifyListeners();
     }
+    notifyListeners();
   }
 
-  // CLEAR STATE WHEN NEW USER LOGS IN
+  /// CLEAR STATE WHEN USER LOGS OUT / SWITCHES
   void clearData() {
     _appointments = [];
     _error = null;

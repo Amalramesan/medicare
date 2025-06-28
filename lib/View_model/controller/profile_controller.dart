@@ -1,8 +1,12 @@
+// lib/View_model/profile_controller.dart
+
 import 'package:flutter/material.dart';
-import 'package:med_care/Services/api_services.dart';
 import 'package:med_care/Models/profile_model.dart';
+import 'package:med_care/Resporitary/profile_resporitary.dart';
 
 class ProfileController with ChangeNotifier {
+  final ProfileRepository _profileRepository = ProfileRepository();
+
   ProfileModel? _profile;
 
   ProfileModel? get profile => _profile;
@@ -12,9 +16,9 @@ class ProfileController with ChangeNotifier {
   String get place => _profile?.data.place ?? '';
 
   Future<void> loadUserProfile() async {
-    final fetchProfile = await ApiServices().fetchUserProfile();
-    if (fetchProfile != null) {
-      _profile = fetchProfile;
+    final fetchedProfile = await _profileRepository.fetchUserProfile();
+    if (fetchedProfile != null) {
+      _profile = fetchedProfile;
       notifyListeners();
     }
   }

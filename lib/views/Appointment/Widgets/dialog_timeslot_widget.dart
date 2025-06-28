@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:med_care/Models/time_slote_model.dart';
-import 'package:med_care/Services/api_services.dart';
+import 'package:med_care/services/api_services.dart';
 
 class SelectTimeStep extends StatefulWidget {
   final VoidCallback onBack;

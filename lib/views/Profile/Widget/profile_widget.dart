@@ -1,8 +1,8 @@
 
 
 import 'package:flutter/material.dart';
-import 'package:med_care/Services/api_services.dart';
-import 'package:med_care/controller/profile_controller.dart';
+import 'package:med_care/Resporitary/logout_resporitary.dart' as ApiServices;
+import 'package:med_care/View_model/controller/profile_controller.dart';
 import 'package:med_care/views/Login/login_view.dart';
 import 'package:med_care/views/Profile/Widget/profile_textfield.dart';
 import 'package:provider/provider.dart';
@@ -62,8 +62,8 @@ void initState() {
             child: IconButton(
               icon: const Icon(Icons.logout, size: 27, color: Colors.red),
               onPressed: () async {
-                final result =
-                    await ApiServices.logout(); // call the logout API
+                final logoutRepo = ApiServices.AuthLogoutRepository();
+                 final result = await logoutRepo.logout(); // call the logout API
 
                 if (result != null && result.statusCode == 200) {
                   // Clear shared preferences

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:med_care/controller/apoointment_history_controller.dart';
-import 'package:med_care/controller/login_controller.dart';
-import 'package:med_care/routes/app_routes.dart';
+import 'package:med_care/View_model/controller/apoointment_history_controller.dart';
+import 'package:med_care/View_model/controller/login_controller.dart';
+import 'package:med_care/Routes/app_routes.dart';
 import 'package:med_care/views/Login/Widgets/login_button_widget.dart';
 import 'package:med_care/views/Login/Widgets/login_signup_button_widget.dart';
 import 'package:provider/provider.dart';

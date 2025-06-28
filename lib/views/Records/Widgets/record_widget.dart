@@ -1,10 +1,10 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:med_care/Resporitary/documents.dart' as ApiServices;
 import 'package:provider/provider.dart';
 import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:med_care/Services/api_services.dart';
-import 'package:med_care/controller/upload_controller.dart';
+import 'package:med_care/View_model/controller/upload_controller.dart';
 import 'package:med_care/views/Records/Widgets/description_record_field.dart';
 import 'package:med_care/views/Records/Widgets/dialog_button_widget.dart';
 import 'package:med_care/views/Records/Widgets/drope_down_field_widget.dart';
@@ -110,7 +110,8 @@ class _DropedownnBodyState extends State<_DropedownnBody> {
                         }
 
                         final file = File(controller.pickedFile!.path!);
-                        final response = await ApiServices.uploadDocuments(
+                        final documentRepo = ApiServices.DocumentRepository();
+                        final response = await documentRepo.uploadDocument(
                           documentFile: file,
                           report:
                               reportTypeOptions[controller.selectedReportType]!,

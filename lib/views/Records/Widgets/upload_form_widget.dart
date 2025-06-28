@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:med_care/Services/api_services.dart';
-import 'package:med_care/controller/upload_controller.dart';
+import 'package:med_care/Resporitary/documents.dart' as ApiServices;
+import 'package:med_care/View_model/controller/upload_controller.dart';
 import 'package:med_care/views/Records/Widgets/description_record_field.dart';
 import 'package:med_care/views/Records/Widgets/drope_down_field_widget.dart';
 import 'package:med_care/views/Records/Widgets/file_picker_buttton.dart';
@@ -42,6 +42,7 @@ class UploadForm extends StatelessWidget {
       final patientId = prefs.getInt('patient_id');
 
       if (patientId == null) {
+        if(!context.mounted) return;
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(const SnackBar(content: Text("Patient ID not found")));
@@ -60,8 +61,8 @@ class UploadForm extends StatelessWidget {
       }
 
       final file = File(uploadProvider.pickedFile!.path!);
-
-      final response = await ApiServices.uploadDocuments(
+      final documentRepo = ApiServices.DocumentRepository();
+      final response = await documentRepo.uploadDocument(
         documentFile: file,
         report: reportTypeOptions[uploadProvider.selectedReportType]!,
         description: descriptionController.text,

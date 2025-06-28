@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:med_care/Services/api_services.dart';
-import 'package:med_care/controller/appointment_booking_controller.dart';
-import 'package:med_care/controller/apoointment_history_controller.dart';
+
+import 'package:med_care/View_model/controller/appointment_booking_controller.dart';
+import 'package:med_care/View_model/controller/apoointment_history_controller.dart';
+import 'package:med_care/services/api_services.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

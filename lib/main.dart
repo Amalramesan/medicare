@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:med_care/controller/apoointment_history_controller.dart';
-import 'package:med_care/controller/appointment_booking_controller.dart';
-import 'package:med_care/controller/bottamnav_controller.dart';
-import 'package:med_care/controller/login_controller.dart';
-import 'package:med_care/controller/profile_controller.dart';
-import 'package:med_care/controller/register_controller.dart';
-import 'package:med_care/controller/report_fetch_controller.dart';
-import 'package:med_care/controller/upload_controller.dart';
-import 'package:med_care/routes/app_routes.dart';
+import 'package:med_care/View_model/controller/apoointment_history_controller.dart';
+import 'package:med_care/View_model/controller/appointment_booking_controller.dart';
+import 'package:med_care/View_model/controller/bottamnav_controller.dart';
+import 'package:med_care/View_model/controller/login_controller.dart';
+import 'package:med_care/View_model/controller/profile_controller.dart';
+import 'package:med_care/View_model/controller/register_controller.dart';
+import 'package:med_care/View_model/controller/report_fetch_controller.dart';
+import 'package:med_care/View_model/controller/upload_controller.dart';
+import 'package:med_care/Routes/app_routes.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => LoginController()),
-        ChangeNotifierProvider(create: (_) => RegisterContrller()),
+        ChangeNotifierProvider(create: (_) => RegisterController()),
         ChangeNotifierProvider(create: (_) => BottamnavController()),
         ChangeNotifierProvider(
           create: (_) => ProfileController()..loadUserProfile(),

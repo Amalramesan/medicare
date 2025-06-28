@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:med_care/controller/apoointment_history_controller.dart';
+import 'package:med_care/View_model/controller/apoointment_history_controller.dart';
 import 'package:med_care/views/Appointment/Widgets/appointent_card.dart';
 import 'package:med_care/views/Appointment/Widgets/book_appointment_button_widget.dart';
 import 'package:med_care/views/Appointment/Widgets/greeting_widget.dart';

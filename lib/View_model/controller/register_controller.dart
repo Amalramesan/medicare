@@ -1,20 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:med_care/Models/register_model.dart';
-import 'package:med_care/Services/api_services.dart';
-import 'package:med_care/Services/tokens_and_sharedpref.dart';
+import 'package:med_care/Resporitary/auth_resporitary.dart';
 
-class RegisterContrller extends ChangeNotifier {
-  final ApiServices _apiServices = ApiServices();
+class RegisterController extends ChangeNotifier {
+  final AuthRepository _authRepository = AuthRepository();
 
-  // Loading & response state
   bool _isLoading = false;
   String? _error;
-  RegisterModel? _regsteredUser;
+  RegisterModel? _registeredUser;
 
-  // Gender
   String? _genderValue;
 
-  // Form & input controllers
   GlobalKey<FormState>? formKey;
   TextEditingController? nameController,
       emailController,
@@ -27,7 +23,7 @@ class RegisterContrller extends ChangeNotifier {
   // Getters
   bool get isLoading => _isLoading;
   String? get error => _error;
-  RegisterModel? get regsteredUser => _regsteredUser;
+  RegisterModel? get registeredUser => _registeredUser;
   String? get genderValue => _genderValue;
 
   // Setters
@@ -58,31 +54,24 @@ class RegisterContrller extends ChangeNotifier {
     placeController = place;
   }
 
-  // Main register function
   Future<void> register(User user, BuildContext context) async {
-    _isLoading = true;
-    _error = null;
-    notifyListeners();
+    _setLoading(true);
 
     try {
-      RegisterModel response = await _apiServices.registerUser(user);
-      _regsteredUser = response;
+      final response = await _authRepository.registerUser(user);
+      _registeredUser = response;
 
-      await saveUserName(response.data.name);
+      _setLoading(false);
 
-      _isLoading = false;
-      notifyListeners();
-     if(context.mounted){
-       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Registration success: ${response.message}")),
-      );
-  Navigator.pushNamed(context, '/login');
-     }
-     
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Registration success: ${response.message}")),
+        );
+        Navigator.pushNamed(context, '/login');
+      }
     } catch (e) {
-      _isLoading = false;
+      _setLoading(false);
       _error = e.toString();
-      notifyListeners();
 
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -90,5 +79,10 @@ class RegisterContrller extends ChangeNotifier {
         );
       }
     }
+  }
+
+  void _setLoading(bool value) {
+    _isLoading = value;
+    notifyListeners();
   }
 }
