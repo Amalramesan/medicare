@@ -134,7 +134,8 @@ class AppointmentDialog extends StatelessWidget {
                                   date: selectedDate.toIso8601String().split(
                                     "T",
                                   )[0],
-                                  time: time, token: '',
+                                  time: time,
+                                  token: '',
                                 );
                             if (context.mounted) {
                               showDialog(
