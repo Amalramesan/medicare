@@ -3,16 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:med_care/Models/report_fetch_model.dart';
 import 'package:med_care/Resporitary/documents.dart';
 import 'package:med_care/View_model/services/store_auth_details.dart';
+import 'package:med_care/data/response/api_response.dart';
 
 class ReportFetchController with ChangeNotifier {
   final _repository = DocumentRepository();
   final _storage = LocalStorageService();
 
-  bool isLoading = false;
-  List<Data> reports = [];
+  ApiResponse<List<Data>> reportsResponse = ApiResponse.loading();
 
   Future<void> fetchReports() async {
-    isLoading = true;
+    reportsResponse = ApiResponse.loading();
     notifyListeners();
 
     try {
@@ -25,16 +25,15 @@ class ReportFetchController with ChangeNotifier {
       final result = await _repository.fetchReports(token: token);
 
       if (result != null && result.data.isNotEmpty) {
-        reports = result.data;
+        reportsResponse = ApiResponse.completed(result.data);
       } else {
-        reports = [];
+        reportsResponse = ApiResponse.error("No reports found");
       }
     } catch (e) {
       log("Error fetching reports: $e");
-      reports = [];
+      reportsResponse = ApiResponse.error("Something went wrong: $e");
     }
 
-    isLoading = false;
     notifyListeners();
   }
 }

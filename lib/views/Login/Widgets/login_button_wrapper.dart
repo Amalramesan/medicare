@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:med_care/View_model/controller/apoointment_history_controller.dart';
 import 'package:med_care/View_model/controller/login_controller.dart';
 import 'package:med_care/Routes/app_routes.dart';
+import 'package:med_care/data/response/status.dart';
 import 'package:med_care/views/Login/Widgets/login_button_widget.dart';
 import 'package:med_care/views/Login/Widgets/login_signup_button_widget.dart';
 import 'package:provider/provider.dart';
@@ -29,7 +30,7 @@ class LoginButtonWrapper extends StatelessWidget {
     return Column(
       children: [
         LoginButton(
-          isLoading: loginController.isLoading,
+          isLoading: loginController.loginResponse.status == Status.loading,//loading
           onSignInTap: () {
             if (formKey.currentState!.validate()) {
               Provider.of<AppointmentController>(
@@ -44,6 +45,12 @@ class LoginButtonWrapper extends StatelessWidget {
             }
           },
         ),
+        const SizedBox(height: 10),
+        if (loginController.loginResponse.status == Status.error) //error
+          Text(
+            loginController.loginResponse.message ?? 'Login failed',
+            style: const TextStyle(color: Colors.red),
+          ),
         const SizedBox(height: 20),
         LoginButtonWidget(onTapp: () => _handleSignUp(context)),
       ],

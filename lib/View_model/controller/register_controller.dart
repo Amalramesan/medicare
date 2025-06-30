@@ -2,15 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:med_care/Models/register_model.dart';
 import 'package:med_care/Resporitary/auth_resporitary.dart';
 import 'package:med_care/View_model/services/store_auth_details.dart';
+import 'package:med_care/data/response/api_response.dart';
 
 class RegisterController extends ChangeNotifier {
   final AuthRepository _authRepository = AuthRepository();
   final LocalStorageService _storageService = LocalStorageService();
 
-  // UI state
-  bool _isLoading = false;
-  String? _error;
-  RegisterModel? _registeredUser;
+ApiResponse<RegisterModel> _registerResponse = ApiResponse.loading();
+ApiResponse<RegisterModel> get registerResponse => _registerResponse;
   String? _genderValue;
 
   // Form & controllers
@@ -23,10 +22,7 @@ class RegisterController extends ChangeNotifier {
       ageController,
       placeController;
 
-  // Getters
-  bool get isLoading => _isLoading;
-  String? get error => _error;
-  RegisterModel? get registeredUser => _registeredUser;
+
   String? get genderValue => _genderValue;
 
   // Setters
@@ -58,35 +54,35 @@ class RegisterController extends ChangeNotifier {
   }
 
   /// Register user and save locally after success
-  Future<void> register(User user, BuildContext context) async {
-    _setLoading(true);
-    _error = null;
+Future<void> register(User user, BuildContext context) async {
+  _registerResponse = ApiResponse.loading();
+  notifyListeners();
 
-    try {
-      final response = await _authRepository.registerUser(user);
-      _registeredUser = response;
+  try {
+    final response = await _authRepository.registerUser(user);
+    _registerResponse = ApiResponse.completed(response);
+    notifyListeners();
 
-      // Save to local storage
-      final userData = response.data;
-      await _storageService.saveUserName(userData.name);
-      await _storageService.saveRegisteredUser(
-        name: userData.name,
-        email: userData.email,
-        place: userData.place,
-        phoneNumber: userData.phoneNumber,
-      );
+    final userData = response.data;
+    await _storageService.saveUserName(userData.name);
+    await _storageService.saveRegisteredUser(
+      name: userData.name,
+      email: userData.email,
+      place: userData.place,
+      phoneNumber: userData.phoneNumber,
+    );
 
-      _showMessage(context, "Registration success: ${response.message}");
-      if (context.mounted) {
-        Navigator.pushNamed(context, '/login');
-      }
-    } catch (e) {
-      _error = e.toString();
-      _showMessage(context, "Registration failed: $_error");
-    } finally {
-      _setLoading(false);
+    _showMessage(context, "Registration success: ${response.message}");
+    if (context.mounted) {
+      Navigator.pushNamed(context, '/login');
     }
+  } catch (e) {
+    _registerResponse = ApiResponse.error(e.toString());
+    notifyListeners();
+    _showMessage(context, "Registration failed: ${e.toString()}");
   }
+}
+
 
   /// Show snack message
   void _showMessage(BuildContext context, String message) {
@@ -97,9 +93,4 @@ class RegisterController extends ChangeNotifier {
     }
   }
 
-  /// Set loading state
-  void _setLoading(bool value) {
-    _isLoading = value;
-    notifyListeners();
-  }
 }

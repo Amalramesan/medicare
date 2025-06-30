@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:med_care/Resporitary/logout_resporitary.dart';
 import 'package:med_care/View_model/services/store_auth_details.dart';
 import 'package:med_care/Models/logout_model.dart';
+import 'package:med_care/data/response/api_response.dart';
 
 class LogoutController extends ChangeNotifier {
   final AuthLogoutRepository _logoutRepository = AuthLogoutRepository();
   final LocalStorageService _storage = LocalStorageService();
+  ApiResponse<LogoutModel> _logoutResponse = ApiResponse.loading();
+  ApiResponse<LogoutModel> get logoutResponse => _logoutResponse;
 
   bool _isLoading = false;
   String? _error;
@@ -15,8 +18,8 @@ class LogoutController extends ChangeNotifier {
   String? get error => _error;
 
   Future<void> logout(BuildContext context) async {
-    _setLoading(true);
-    _error = null;
+    _logoutResponse = ApiResponse.loading(); //loading
+    notifyListeners();
 
     try {
       final accessToken = _storage.accessToken;
@@ -31,26 +34,21 @@ class LogoutController extends ChangeNotifier {
         refreshToken: refreshToken,
       );
 
-      _logoutModel = result;
-
+      _logoutResponse = ApiResponse.completed(result);
+      notifyListeners();
 
       if (context.mounted) {
         Navigator.pushNamedAndRemoveUntil(context, '/login', (_) => false);
       }
     } catch (e) {
-      _error = e.toString();
+      _logoutResponse = ApiResponse.error(e.toString());
+      notifyListeners();
+
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Logout failed: $_error")),
+          SnackBar(content: Text("Logout failed: ${e.toString()}")),
         );
       }
-    } finally {
-      _setLoading(false);
     }
-  }
-
-  void _setLoading(bool value) {
-    _isLoading = value;
-    notifyListeners();
   }
 }

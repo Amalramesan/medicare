@@ -1,13 +1,13 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:med_care/data/response/status.dart';
 import 'package:provider/provider.dart';
-import 'package:med_care/Resporitary/documents.dart' as ApiServices;
-import 'package:med_care/View_model/controller/upload_controller.dart';
-import 'package:med_care/View_model/services/store_auth_details.dart';
-import 'package:med_care/views/Records/Widgets/description_record_field.dart';
-import 'package:med_care/views/Records/Widgets/drope_down_field_widget.dart';
-import 'package:med_care/views/Records/Widgets/file_picker_buttton.dart';
-import 'package:med_care/views/Records/Widgets/dialog_button_widget.dart';
+import 'package:med_care/view_model/controller/upload_controller.dart';
+import 'package:med_care/view_model/services/store_auth_details.dart';
+import 'package:med_care/views/records/Widgets/description_record_field.dart';
+import 'package:med_care/views/records/Widgets/drope_down_field_widget.dart';
+import 'package:med_care/views/records/Widgets/file_picker_buttton.dart';
+import 'package:med_care/views/records/Widgets/dialog_button_widget.dart';
 
 class UploadForm extends StatefulWidget {
   const UploadForm({super.key});
@@ -36,66 +36,28 @@ class _UploadFormState extends State<UploadForm> {
   }
 
   Future<void> handleSubmit(UploadController controller) async {
-    if (controller.selectedReportType == null || controller.pickedFile == null) {
-      if (!mounted) return;
+    if (controller.selectedReportType == null ||
+        controller.pickedFile == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Please select report type and file.")),
       );
       return;
     }
 
-    final token = _storage.accessToken;
-    final patientId = _storage.patientId;
+    await controller.uploadFile();
 
-    if (token == null || patientId == null) {
+    final response = controller.uploadResponse;
+
+    if (response.status == Status.completed) {
+      if (!mounted) return;
+      Navigator.of(context).pop();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(response.data ?? "Upload completed")),
+      );
+    } else if (response.status == Status.error) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Patient ID or token not found.")),
-      );
-      return;
-    }
-
-    if (controller.pickedFile?.path == null) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Invalid file selected.")),
-      );
-      return;
-    }
-
-    controller.setLoading(true);
-
-    try {
-      final file = File(controller.pickedFile!.path!);
-      final documentRepo = ApiServices.DocumentRepository();
-
-      final response = await documentRepo.uploadDocument(
-        documentFile: file,
-        report: reportTypeOptions[controller.selectedReportType]!,
-        description: descriptionController.text,
-        patientId: patientId,
-        token: token,
-      );
-
-      controller.setLoading(false);
-
-      if (!mounted) return;
-
-      if (response != null) {
-        Navigator.of(context).pop();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Upload successful: ${response.message}")),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Upload failed")),
-        );
-      }
-    } catch (e) {
-      controller.setLoading(false);
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Something went wrong: $e")),
+        SnackBar(content: Text(response.message ?? "Something went wrong")),
       );
     }
   }
@@ -123,8 +85,11 @@ class _UploadFormState extends State<UploadForm> {
         ),
       ),
       actions: [
-        controller.isLoading
-            ? const CircularProgressIndicator()
+        controller.uploadResponse.status == Status.loading//loading
+            ? const Padding(
+                padding: EdgeInsets.symmetric(vertical: 12),
+                child: CircularProgressIndicator(),
+              )
             : DialogButtons(
                 onClose: () => Navigator.pop(context),
                 onSubmit: () => handleSubmit(controller),
