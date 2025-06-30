@@ -5,7 +5,6 @@
 [![REST API](https://img.shields.io/badge/REST%20API-FF6C37?style=for-the-badge&logo=api&logoColor=white)]()
 
 ---
-<<<<<<< HEAD
 
 **MedCare** is a patient-centered healthcare mobile app built with **Flutter**. It allows patients to:
 
