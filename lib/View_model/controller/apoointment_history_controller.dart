@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:med_care/Models/appointment_history_model.dart';
-import 'package:med_care/Models/appointment_cancel_model.dart';
 import 'package:med_care/Resporitary/appointment_resporitary.dart';
 import 'package:med_care/View_model/services/tokens_and_sharedpref.dart';
 
@@ -26,16 +25,21 @@ class AppointmentController with ChangeNotifier {
     _error = null;
 
     try {
+      final token = await getAccessToken();
       final patientId = await getPatientId();
-      if (patientId != null) {
-        _appointments = await _repository.fetchPatientAppointments(patientId);
-      } else {
+
+      if (token == null || patientId == null) {
+        _error = "Token or Patient ID not found.";
         _appointments = [];
-        _error = "Patient ID not found.";
+      } else {
+        _appointments = await _repository.fetchPatientAppointments(
+          patientId: patientId,
+          token: token,
+        );
       }
     } catch (e) {
       _appointments = [];
-      _error = e.toString();
+      _error = "Failed to fetch appointments: $e";
     } finally {
       _setLoading(false);
     }
@@ -44,23 +48,33 @@ class AppointmentController with ChangeNotifier {
   /// CANCEL APPOINTMENT
   Future<void> cancelAppointmentById(String appointmentId) async {
     try {
-      AppointmentCancelModel? result = await _repository.cancelAppointment(appointmentId);
+      final token = await getAccessToken();
+
+      if (token == null) {
+        _error = "Access token not available.";
+        return;
+      }
+
+      final result = await _repository.cancelAppointment(
+        appointmentId: appointmentId,
+        token: token,
+      );
+
       if (result != null && result.status.toLowerCase() == 'success') {
         _appointments.removeWhere((appt) => appt.id.toString() == appointmentId);
       } else {
         _error = "Failed to cancel appointment.";
       }
     } catch (e) {
-      _error = e.toString();
+      _error = "Error cancelling appointment: $e";
     }
+
     notifyListeners();
   }
-
-  /// CLEAR STATE WHEN USER LOGS OUT / SWITCHES
   void clearData() {
     _appointments = [];
     _error = null;
-    _setLoading(false);
+    _isLoading = false;
     notifyListeners();
   }
 }

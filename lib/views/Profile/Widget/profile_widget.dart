@@ -1,7 +1,6 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:med_care/Resporitary/logout_resporitary.dart' as ApiServices;
+import 'package:med_care/View_model/controller/logout_controller.dart';
 import 'package:med_care/View_model/controller/profile_controller.dart';
 import 'package:med_care/views/Login/login_view.dart';
 import 'package:med_care/views/Profile/Widget/profile_textfield.dart';
@@ -21,20 +20,19 @@ class _ProfileWidgetState extends State<ProfileWidget> {
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController placeController = TextEditingController();
   @override
-@override
-void initState() {
-  super.initState();
+  @override
+  void initState() {
+    super.initState();
 
-  Future.microtask(() {
-    if (mounted) {
-      Provider.of<ProfileController>(
-        context,
-        listen: false,
-      ).loadUserProfile();
-    }
-  });
-}
-
+    Future.microtask(() {
+      if (mounted) {
+        Provider.of<ProfileController>(
+          context,
+          listen: false,
+        ).loadUserProfile();
+      }
+    });
+  }
 
   @override
   @override
@@ -61,33 +59,12 @@ void initState() {
             padding: EdgeInsets.only(right: screenWidth * 0.03),
             child: IconButton(
               icon: const Icon(Icons.logout, size: 27, color: Colors.red),
-              onPressed: () async {
-                final logoutRepo = ApiServices.AuthLogoutRepository();
-                 final result = await logoutRepo.logout(); // call the logout API
-
-                if (result != null && result.statusCode == 200) {
-                  // Clear shared preferences
-                  final prefs = await SharedPreferences.getInstance();
-                  await prefs.clear();
-
-                  // Navigate to login screen and remove all previous routes
-                  if(context.mounted){
-                   Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(builder: (context) => LoginPage()),
-                    (route) => false,
-                  );
-                  }
-                  
-                } else {
-
-                if(context.mounted){
-                    ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Logout failed. Please try again.'),
-                    ),
-                  );
-                }
-                }
+              onPressed: () {
+                final logoutController = Provider.of<LogoutController>(
+                  context,
+                  listen: false,
+                );
+                logoutController.logout(context);
               },
             ),
           ),

@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:med_care/Models/time_slote_model.dart';
-import 'package:med_care/services/api_services.dart';
+import 'package:med_care/Resporitary/timeslot_resporitary.dart' as _timeSlotRepo;
 
 class SelectTimeStep extends StatefulWidget {
   final VoidCallback onBack;
@@ -30,20 +30,14 @@ class _SelectTimeStepState extends State<SelectTimeStep> {
   late Future<TimeSlots> timeSlotsFuture;
 
   @override
-  void initState() {
-    super.initState();
+void initState() {
+  super.initState();
 
-    // Corrected: use selectedDoctorId
-    timeSlotsFuture = ApiServices().fetchTimeSlots(
-      widget.selectedDoctorId,
-      widget.selectedDate.toIso8601String().split('T')[0],
-    );
-
-    // Optional: For debugging
-    log(
-      'Fetching time slots for doctorId: ${widget.selectedDoctorId}, date: ${widget.selectedDate.toIso8601String().split("T")[0]}',
-    );
-  }
+  timeSlotsFuture = _timeSlotRepo.fetchTimeSlots(
+    widget.selectedDoctorId,
+    widget.selectedDate.toIso8601String().split('T')[0],
+  );
+}
 
   @override
   Widget build(BuildContext context) {

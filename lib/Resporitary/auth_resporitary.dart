@@ -1,52 +1,40 @@
-import 'package:med_care/Data/Network/base_api_service.dart';
-import 'package:med_care/Data/Network/networ_api_service.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:med_care/Models/login_model.dart';
 import 'package:med_care/Models/register_model.dart';
 import 'package:med_care/Res/app_url.dart';
-import 'package:med_care/View_model/services/tokens_and_sharedpref.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:med_care/View_model/services/store_auth_details.dart';
 
 class AuthRepository {
-  final BaseApiService _apiService = NetworkApiService();
-
   Future<RegisterModel> registerUser(User user) async {
-    final response = await _apiService.getPostApiResponse(
-      AppUrl.register,
-      user.toJson(),
+    final url = Uri.parse(AppUrl.register);
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(user.toJson()),
     );
 
-    final registerModel = RegisterModel.fromJson(response);
-    final userData = registerModel.data;
-
-    // Save user data into SharedPreferences
-    await saveUserName(userData.name);
-    await saveRegisteredUser(
-      name: userData.name,
-      email: userData.email,
-      place: userData.place,
-      phoneNumber: userData.phoneNumber,
-    );
-
-    return registerModel;
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return RegisterModel.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception("Registration failed: ${response.body}");
+    }
   }
 
-  Future<LoginModel> loginUser(String email, String password) async {
-    final response = await _apiService.getPostApiResponse(
-      AppUrl.login,
-      {'email': email, 'password': password},
+
+Future<LoginModel> loginUser(String email, String password) async {
+    final url = Uri.parse(AppUrl.login);
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'email': email, 'password': password}),
     );
 
-    final loginModel = LoginModel.fromJson(response);
-    final access = loginModel.data.access;
-    final refresh = loginModel.data.refresh;
-    final user = loginModel.data.user;
-
-    await saveTokens(access, refresh);
-    await savePatientId(user.id);
-
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('auth_token', access);
-
-    return loginModel;
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      final Map<String, dynamic> rawJson = jsonDecode(response.body);
+      return LoginModel.fromJson(rawJson);
+    } else {
+      throw Exception("Login failed: ${response.body}");
+    }
   }
 }

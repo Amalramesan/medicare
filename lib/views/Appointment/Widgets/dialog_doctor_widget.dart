@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:med_care/Models/doctor_model.dart';
-import 'package:med_care/services/api_services.dart';
+import 'package:med_care/Resporitary/doctor_reporitary.dart';
+
 
 class SelectDoctorStep extends StatefulWidget {
   final VoidCallback onContinue;
@@ -29,11 +30,11 @@ class _SelectDoctorStepState extends State<SelectDoctorStep> {
   @override
   void initState() {
     super.initState();
-    doctorFuture = ApiServices().fetchDoctors();
+    doctorFuture = DoctorRepository().fetchDoctors();
 
     doctorFuture.then((doctors) async {
       final futures = doctors.map((doctor) async {
-        final isAvailable = await ApiServices().isDoctorAvailable(
+        final isAvailable = await DoctorRepository().isDoctorAvailable(
           doctor.id.toString(),
           widget.selectedDate.toIso8601String().split("T")[0],
         );

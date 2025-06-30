@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:med_care/Models/login_model.dart';
 import 'package:med_care/Resporitary/auth_resporitary.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:med_care/View_model/services/store_auth_details.dart';
 
 class LoginController with ChangeNotifier {
   final AuthRepository _authRepository = AuthRepository();
+  final LocalStorageService _storage = LocalStorageService();
 
   bool _isLoading = false;
   String? _error;
@@ -14,33 +15,47 @@ class LoginController with ChangeNotifier {
   String? get error => _error;
   LoginModel? get loggedUser => _loggedUser;
 
+  /// Login and save tokens/user ID
   Future<void> login({
     required String email,
     required String password,
     required BuildContext context,
   }) async {
     _setLoading(true);
+    _error = null;
 
     try {
       final response = await _authRepository.loginUser(email, password);
       _loggedUser = response;
-      _setLoading(false);
+
+      final user = response.data.user;
+      final access = response.data.access;
+      final refresh = response.data.refresh;
+
+      await _storage.saveTokens(access, refresh);
+      await _storage.savePatientId(user.id);
+
+      _showMessage(context, "Login success: ${response.message}");
 
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Login success: ${response.message}")),
-        );
         Navigator.pushReplacementNamed(context, '/home');
       }
     } catch (e) {
-      _setLoading(false);
       _error = e.toString();
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Login failed: $_error")),
-        );
-      }
+      _showMessage(context, "Login failed: $_error");
+    } finally {
+      _setLoading(false);
     }
+  }
+
+  /// Logout and clear saved user info
+  Future<void> logout() async {
+    _loggedUser = null;
+    _error = null;
+    _setLoading(false);
+    notifyListeners();
+
+
   }
 
   void _setLoading(bool value) {
@@ -48,16 +63,11 @@ class LoginController with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> logout() async {
-    _loggedUser = null;
-    _setLoading(false);
-    _error = null;
-    notifyListeners();
-
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('patient_id');
-    await prefs.remove('auth_token');
-    await prefs.remove('access_token');
-    await prefs.remove('refresh_token');
+  void _showMessage(BuildContext context, String message) {
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message)),
+      );
+    }
   }
 }

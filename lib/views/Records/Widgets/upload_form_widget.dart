@@ -1,91 +1,108 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:med_care/Resporitary/documents.dart' as ApiServices;
 import 'package:med_care/View_model/controller/upload_controller.dart';
+import 'package:med_care/View_model/services/store_auth_details.dart';
 import 'package:med_care/views/Records/Widgets/description_record_field.dart';
 import 'package:med_care/views/Records/Widgets/drope_down_field_widget.dart';
 import 'package:med_care/views/Records/Widgets/file_picker_buttton.dart';
 import 'package:med_care/views/Records/Widgets/dialog_button_widget.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:provider/provider.dart';
 
-class UploadForm extends StatelessWidget {
+class UploadForm extends StatefulWidget {
   const UploadForm({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final uploadProvider = Provider.of<UploadController>(context, listen: true);
-    final TextEditingController descriptionController =
-        TextEditingController();
+  State<UploadForm> createState() => _UploadFormState();
+}
 
-    final Map<String, String> reportTypeOptions = {
-      'Blood Test': 'BLOOD',
-      'X-Ray': 'XRAY',
-      'MRI Scan': 'MRI',
-      'CT Scan': 'CT',
-      'Urine Test': 'URINE',
-      'Other': 'OTHER',
-    };
+class _UploadFormState extends State<UploadForm> {
+  final TextEditingController descriptionController = TextEditingController();
+  final LocalStorageService _storage = LocalStorageService();
 
-    Future<void> handleSubmit() async {
-      if (uploadProvider.selectedReportType == null ||
-          uploadProvider.pickedFile == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Please select report type and file.")),
-        );
-        return;
-      }
+  final Map<String, String> reportTypeOptions = {
+    'Blood Test': 'BLOOD',
+    'X-Ray': 'XRAY',
+    'MRI Scan': 'MRI',
+    'CT Scan': 'CT',
+    'Urine Test': 'URINE',
+    'Other': 'OTHER',
+  };
 
-      uploadProvider.setLoading(true);
+  @override
+  void dispose() {
+    descriptionController.dispose();
+    super.dispose();
+  }
 
-      final prefs = await SharedPreferences.getInstance();
-      final patientId = prefs.getInt('patient_id');
+  Future<void> handleSubmit(UploadController controller) async {
+    if (controller.selectedReportType == null || controller.pickedFile == null) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please select report type and file.")),
+      );
+      return;
+    }
 
-      if (patientId == null) {
-        if(!context.mounted) return;
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text("Patient ID not found")));
-        uploadProvider.setLoading(false);
-        return;
-      }
+    final token = _storage.accessToken;
+    final patientId = _storage.patientId;
 
-      if (uploadProvider.pickedFile?.path == null) {
-        if(context.mounted){
-          ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text("Invalid file selected.")));
-        uploadProvider.setLoading(false);
-        return;
-        }
-      }
+    if (token == null || patientId == null) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Patient ID or token not found.")),
+      );
+      return;
+    }
 
-      final file = File(uploadProvider.pickedFile!.path!);
+    if (controller.pickedFile?.path == null) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Invalid file selected.")),
+      );
+      return;
+    }
+
+    controller.setLoading(true);
+
+    try {
+      final file = File(controller.pickedFile!.path!);
       final documentRepo = ApiServices.DocumentRepository();
+
       final response = await documentRepo.uploadDocument(
         documentFile: file,
-        report: reportTypeOptions[uploadProvider.selectedReportType]!,
+        report: reportTypeOptions[controller.selectedReportType]!,
         description: descriptionController.text,
         patientId: patientId,
+        token: token,
       );
 
-      uploadProvider.setLoading(false);
+      controller.setLoading(false);
+
+      if (!mounted) return;
 
       if (response != null) {
-       if(context.mounted){
-         Navigator.of(context).pop();
+        Navigator.of(context).pop();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Upload successful: ${response.message}")),
         );
-       }
       } else {
-       if(context.mounted){
-         ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text("Upload failed")));
-       }
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Upload failed")),
+        );
       }
+    } catch (e) {
+      controller.setLoading(false);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Something went wrong: $e")),
+      );
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = Provider.of<UploadController>(context);
 
     return AlertDialog(
       title: const Text("Upload Medical Record"),
@@ -94,25 +111,23 @@ class UploadForm extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             DropdownField(
-              selectedOption: uploadProvider.selectedReportType,
-              onChanged: (value) => uploadProvider.setReportType(value),
+              selectedOption: controller.selectedReportType,
+              onChanged: controller.setReportType,
               reportTypeOptions: reportTypeOptions,
             ),
             const SizedBox(height: 12),
             DescriptionField(controller: descriptionController),
             const SizedBox(height: 12),
-            FilePickerButton(
-              onFilePicked: (file) => uploadProvider.setPickedFile(file),
-            ),
+            FilePickerButton(onFilePicked: controller.setPickedFile),
           ],
         ),
       ),
       actions: [
-        uploadProvider.isLoading
+        controller.isLoading
             ? const CircularProgressIndicator()
             : DialogButtons(
                 onClose: () => Navigator.pop(context),
-                onSubmit: handleSubmit,
+                onSubmit: () => handleSubmit(controller),
               ),
       ],
     );

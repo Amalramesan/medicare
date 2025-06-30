@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:med_care/Resporitary/appointment_resporitary.dart';
 
 import 'package:med_care/View_model/controller/appointment_booking_controller.dart';
 import 'package:med_care/View_model/controller/apoointment_history_controller.dart';
-import 'package:med_care/services/api_services.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'dialog_date_widget.dart';
 import 'dialog_doctor_widget.dart';
 import 'dialog_timeslot_widget.dart';
@@ -128,7 +127,7 @@ class AppointmentDialog extends StatelessWidget {
                               return;
                             }
 
-                            final response = await ApiServices()
+                            final response = await AppointmentRepository()
                                 .saveAppointment(
                                   doctorId: int.parse(selectedDoctorId),
                                   patientId: patientId,

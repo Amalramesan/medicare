@@ -6,28 +6,44 @@ import 'package:med_care/Res/app_url.dart';
 class DoctorRepository {
   final BaseApiService _apiService = NetworkApiService();
 
-  // Fetch all doctors
+  /// Fetch list of all doctors
   Future<List<DoctorModel>> fetchDoctors() async {
-    final response = await _apiService.getGetApiResponse(AppUrl.doctors);
+    try {
+      final response = await _apiService.getGetApiResponse(
+        AppUrl.doctors,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
 
-    if (response is List) {
-      return response.map((e) => DoctorModel.fromJson(e)).toList();
-    } else {
-      throw Exception('Unexpected response format: $response');
+      if (response is List) {
+        return response.map((e) => DoctorModel.fromJson(e)).toList();
+      } else {
+        throw Exception('Unexpected response format: $response');
+      }
+    } catch (e) {
+      throw Exception('Failed to fetch doctors: $e');
     }
   }
 
-  // Check doctor availability
+  /// Check a doctor's availability on a given date
   Future<bool> isDoctorAvailable(String doctorId, String date) async {
-    final response = await _apiService.getGetApiResponse(
-      AppUrl.doctorAvailability(doctorId, date),
-    );
+    try {
+      final response = await _apiService.getGetApiResponse(
+        AppUrl.doctorAvailability(doctorId, date),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
 
-    if (response is Map && response.containsKey("data")) {
-      final data = response["data"];
-      return data is List && data.isNotEmpty;
-    } else {
-      throw Exception("Invalid response format: $response");
+      if (response is Map && response.containsKey("data")) {
+        final data = response["data"];
+        return data is List && data.isNotEmpty;
+      } else {
+        throw Exception("Invalid response format: $response");
+      }
+    } catch (e) {
+      throw Exception('Failed to check doctor availability: $e');
     }
   }
 }
