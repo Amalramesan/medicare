@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:med_care/utilities/validators.dart';
+import 'package:med_care/Services/validators.dart';
 import 'package:med_care/views/Registration/Widgets/spacing_helper_widget.dart';
 
 class GenderAgeRowWidget extends StatelessWidget {

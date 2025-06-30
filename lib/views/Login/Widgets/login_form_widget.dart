@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:med_care/Common/custom_text_field.dart';
-import 'package:med_care/utilities/validators.dart';
+import 'package:med_care/Services/validators.dart';
+
 
 class LoginWidget extends StatelessWidget {
   final GlobalKey<FormState> formKey;

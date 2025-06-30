@@ -12,7 +12,7 @@ import 'package:http/http.dart' as http;
 import 'package:med_care/Models/report_fetch_model.dart';
 import 'package:med_care/Models/time_slote_model.dart';
 import 'package:med_care/Models/upload_model.dart';
-import 'package:med_care/utilities/tokens.dart';
+import 'package:med_care/Services/tokens_and_sharedpref.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http_parser/http_parser.dart';
 
