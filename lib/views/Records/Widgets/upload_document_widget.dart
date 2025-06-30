@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:med_care/views/Records/Widgets/record_widget.dart';
+import 'package:med_care/views/records/Widgets/record_widget.dart';
 
 class Recordpagewidget extends StatelessWidget {
   const Recordpagewidget({super.key});
@@ -8,7 +8,7 @@ class Recordpagewidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        showDialog(context: context, builder: (context) => Dropedownn());
+        // showDialog(context: context, builder: (context) => Dropedownn());
       },
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),

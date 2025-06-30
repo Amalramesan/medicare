@@ -1,5 +1,5 @@
 class AppUrl {
-  static const String base = "http://192.168.29.40:8000";
+  static const String base = "http://192.168.29.112:8000/";
 
   // register and login Endpoints
   static const String register = "$base/api/register/";

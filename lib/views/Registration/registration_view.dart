@@ -10,15 +10,17 @@ class Signup extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          SignupHeaderWidget(),//header widget
-          SpacingHelperWidget.verticalspacesmall,//for spacing
-          SignupFormWrapper(),//textfields
-           SpacingHelperWidget.verticalspacemediam,
-          SignupButtonWrapper(),//signup buttons
-        ],
-      )
-      );
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            SignupHeaderWidget(), //header widget
+            SpacingHelperWidget.verticalspacesmall, //for spacing
+            SignupFormWrapper(), //textfields
+            SpacingHelperWidget.verticalspacemediam,
+            SignupButtonWrapper(), //signup buttons
+          ],
+        ),
+      ),
+    );
   }
 }

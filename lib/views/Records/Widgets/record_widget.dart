@@ -2,35 +2,24 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
-
-import 'package:med_care/Resporitary/documents.dart' as ApiServices;
 import 'package:med_care/View_model/controller/upload_controller.dart';
-import 'package:med_care/View_model/services/store_auth_details.dart';
+
 import 'package:med_care/views/Records/Widgets/description_record_field.dart';
 import 'package:med_care/views/Records/Widgets/dialog_button_widget.dart';
 import 'package:med_care/views/Records/Widgets/drope_down_field_widget.dart';
 import 'package:med_care/views/Records/Widgets/file_picker_buttton.dart';
+import 'package:med_care/data/response/status.dart';
 
-class Dropedownn extends StatelessWidget {
-  const Dropedownn({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const _DropedownnBody();
-  }
-}
-
-class _DropedownnBody extends StatefulWidget {
-  const _DropedownnBody();
+class DropedownnBodyState extends StatefulWidget {
+  const DropedownnBodyState({super.key});
 
   @override
-  State<_DropedownnBody> createState() => _DropedownnBodyState();
+  _DropedownnBodyState createState() => _DropedownnBodyState();
 }
 
-class _DropedownnBodyState extends State<_DropedownnBody> {
+class _DropedownnBodyState extends State<DropedownnBodyState> {
   final TextEditingController descriptionCtrl = TextEditingController();
   final Logger logger = Logger();
-  final _storage = LocalStorageService();
 
   final Map<String, String> reportTypeOptions = {
     'Blood Test': 'BLOOD',
@@ -44,6 +33,7 @@ class _DropedownnBodyState extends State<_DropedownnBody> {
   @override
   Widget build(BuildContext context) {
     final controller = Provider.of<UploadController>(context);
+    final status = controller.uploadResponse.status;
 
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -59,7 +49,6 @@ class _DropedownnBodyState extends State<_DropedownnBody> {
             ),
             const SizedBox(height: 16),
 
-            /// Dropdown
             DropdownField(
               selectedOption: controller.selectedReportType,
               onChanged: controller.setReportType,
@@ -67,85 +56,50 @@ class _DropedownnBodyState extends State<_DropedownnBody> {
             ),
             const SizedBox(height: 20),
 
-            /// Description
             DescriptionField(controller: descriptionCtrl),
             const SizedBox(height: 16),
 
-            /// File Picker
             FilePickerButton(onFilePicked: controller.setPickedFile),
             const SizedBox(height: 24),
 
-            /// Buttons
-            controller.isLoading
-                ? const CircularProgressIndicator()
-                : DialogButtons(
-                    onClose: () => Navigator.pop(context),
-                    onSubmit: () async {
-                      if (controller.selectedReportType == null || controller.pickedFile == null) {
-                        if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text("Please select report type and file."),
-                            ),
-                          );
-                        }
-                        return;
-                      }
+            if (status == Status.loading)
+              const CircularProgressIndicator()
+            else
+              DialogButtons(
+                onClose: () => Navigator.pop(context),
+                onSubmit: () async {
+                  if (controller.selectedReportType == null || controller.pickedFile == null) {
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("Please select report type and file.")),
+                      );
+                    }
+                    return;
+                  }
 
-                      controller.setLoading(true);
+                  await controller.uploadFile();
 
-                      try {
-                        final token = _storage.accessToken;
-                        final patientId = _storage.patientId;
+                  if (!context.mounted) return;
 
-                        if (token == null || patientId == null) {
-                          if (context.mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text("Patient ID or token not found.")),
-                            );
-                          }
-                          controller.setLoading(false);
-                          return;
-                        }
+                  switch (controller.uploadResponse.status) {
+                    case Status.completed:
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(controller.uploadResponse.data ?? "Upload complete")),
+                      );
+                      break;
 
-                        final file = File(controller.pickedFile!.path!);
-                        final documentRepo = ApiServices.DocumentRepository();
+                    case Status.error:
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(controller.uploadResponse.message ?? "Upload failed")),
+                      );
+                      break;
 
-                        final response = await documentRepo.uploadDocument(
-                          documentFile: file,
-                          report: reportTypeOptions[controller.selectedReportType]!,
-                          description: descriptionCtrl.text,
-                          patientId: patientId,
-                          token: token,
-                        );
-
-                        controller.setLoading(false);
-
-                        if (!context.mounted) return;
-
-                        if (response != null) {
-                          Navigator.pop(context);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text("Upload successful: ${response.message}"),
-                            ),
-                          );
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text("Upload failed.")),
-                          );
-                        }
-                      } catch (e) {
-                        logger.e("Upload failed", error: e);
-                        controller.setLoading(false);
-                        if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text("Something went wrong: $e")),
-                          );
-                        }
-                      }
-                    },
-                  ),
+                    default:
+                      break;
+                  }
+                },
+              ),
           ],
         ),
       ),
