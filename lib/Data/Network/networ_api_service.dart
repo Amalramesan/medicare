@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http_parser/http_parser.dart';
-import 'package:med_care/Data/Network/base_api_service.dart';
-import 'package:med_care/Data/Response/app_excpetion.dart';
+import 'package:med_care/data/Network/base_api_service.dart';
+import 'package:med_care/data/Response/app_excpetion.dart';
 import 'package:http/http.dart' as http;
 
 class NetworkApiService implements BaseApiService {

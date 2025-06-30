@@ -3,7 +3,6 @@ import 'package:http/http.dart' as http;
 import 'package:med_care/Models/login_model.dart';
 import 'package:med_care/Models/register_model.dart';
 import 'package:med_care/Res/app_url.dart';
-import 'package:med_care/View_model/services/store_auth_details.dart';
 
 class AuthRepository {
   Future<RegisterModel> registerUser(User user) async {

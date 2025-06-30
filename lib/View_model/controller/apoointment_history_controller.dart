@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:med_care/Models/appointment_history_model.dart';
-import 'package:med_care/Resporitary/appointment_resporitary.dart';
-import 'package:med_care/View_model/services/tokens_and_sharedpref.dart';
+import 'package:med_care/models/appointment_history_model.dart';
+import 'package:med_care/resporitary/appointment_resporitary.dart';
+import 'package:med_care/view_model/services/tokens_and_sharedpref.dart';
 
 class AppointmentController with ChangeNotifier {
   final AppointmentRepository _repository = AppointmentRepository();
@@ -47,6 +47,8 @@ class AppointmentController with ChangeNotifier {
 
   /// CANCEL APPOINTMENT
   Future<void> cancelAppointmentById(String appointmentId) async {
+    _error = null;
+
     try {
       final token = await getAccessToken();
 
@@ -71,6 +73,7 @@ class AppointmentController with ChangeNotifier {
 
     notifyListeners();
   }
+
   void clearData() {
     _appointments = [];
     _error = null;

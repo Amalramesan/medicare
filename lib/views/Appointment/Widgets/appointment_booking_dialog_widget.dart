@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:med_care/Resporitary/appointment_resporitary.dart';
 
-import 'package:med_care/View_model/controller/appointment_booking_controller.dart';
-import 'package:med_care/View_model/controller/apoointment_history_controller.dart';
+import 'package:med_care/view_model/controller/appointment_booking_controller.dart';
+import 'package:med_care/view_model/controller/apoointment_history_controller.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dialog_date_widget.dart';
@@ -134,7 +134,7 @@ class AppointmentDialog extends StatelessWidget {
                                   date: selectedDate.toIso8601String().split(
                                     "T",
                                   )[0],
-                                  time: time,
+                                  time: time, token: '',
                                 );
                             if (context.mounted) {
                               showDialog(

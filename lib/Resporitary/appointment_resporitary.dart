@@ -1,16 +1,16 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:http/http.dart' as http;
-import 'package:med_care/Data/Network/base_api_service.dart';
-import 'package:med_care/Data/Network/networ_api_service.dart';
-import 'package:med_care/Models/appointment_cancel_model.dart';
-import 'package:med_care/Models/appointment_history_model.dart';
-import 'package:med_care/Models/appointment_model.dart';
+import 'package:med_care/data/Network/base_api_service.dart';
+import 'package:med_care/data/Network/networ_api_service.dart';
+import 'package:med_care/models/appointment_cancel_model.dart';
+import 'package:med_care/models/appointment_history_model.dart';
+import 'package:med_care/models/appointment_model.dart';
 import 'package:med_care/Res/app_url.dart';
 
 class AppointmentRepository {
   final BaseApiService _apiService = NetworkApiService();
-
+//booking
   Future<AppointmentBooking> saveAppointment({
     required int doctorId,
     required int patientId,
@@ -36,7 +36,7 @@ class AppointmentRepository {
 
     return AppointmentBooking.fromJson(response);
   }
-
+//history
   Future<List<AppointmentHistoryModel>> fetchPatientAppointments({
     required int patientId,
     required String token,
@@ -64,7 +64,7 @@ class AppointmentRepository {
       throw Exception("Unexpected response format: $response");
     }
   }
-
+//cancel
   Future<AppointmentCancelModel?> cancelAppointment({
     required String appointmentId,
     required String token,

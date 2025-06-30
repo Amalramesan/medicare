@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:med_care/Models/appointment_history_model.dart';
+import 'package:med_care/models/appointment_history_model.dart';
 
 class AppointmentList extends StatelessWidget {
   final AppointmentHistoryModel appointment;
