@@ -62,27 +62,129 @@ lib/
 
 ```
 lib/
+│
 ├── main.dart
-├── common/                     # Shared custom widgets
+│
+├── common/ ← Optional (can delete if contents moved to res/)
+│ └── custom_text_field.dart
+│
 ├── data/
-│   ├── network/                # API service layer
-│   └── response/               # API response & error handling
-├── Models/                    # All data models
-├── repository/                # API logic
-├── res/                       # App-wide constants
-├── routes/                    # App routing
-├── Utils/                     # Token handling, validators, etc.
+│ ├── network/
+│ │ ├── base_api_service.dart
+│ │ └── network_api_service.dart
+│ │
+│ └── response/
+│ ├── api_response.dart
+│ ├── app_exception.dart
+│ └── status.dart
+│
+├── Models/
+│ ├── appointment_model.dart
+│ ├── appointment_history_model.dart
+│ ├── doctor_model.dart
+│ ├── login_model.dart
+│ ├── register_model.dart
+│ ├── report_upload_model.dart
+│ ├── date_model.dart
+│ ├── doctor_availability_model.dart
+│ ├── time_slot_model.dart
+│ └── report_fetch_model.dart
+│
+├── repository/
+│ ├── appointment_repository.dart
+│ ├── auth_repository.dart
+│ ├── doctor_repository.dart
+│ ├── documents_repository.dart
+│ ├── logout_repository.dart
+│ ├── profile_repository.dart
+│ └── timeslot_repository.dart
+│
+├── res/
+│ ├── app_url.dart
+│ └── custom_text_field.dart ← moved from common/
+│
+├── routes/
+│ └── app_routes.dart
+│
+├── Utils/
+│ ├── validator/
+│ ├── clipper/
+│ ├── all_slots.dart
+│ └── token_storage.dart
+│
 ├── view_model/
-│   ├── controller/            # ViewModels
-│   └── services/
-├── Views/                     # UI views organized by feature
-│   ├── Appointment/
-│   ├── Login/
-│   ├── Registration/
-│   ├── Records/
-│   ├── Profile/
-│   └── splash_screen.dart
-```
+│ ├── controller/
+│ │ ├── appointment_booking_controller.dart
+│ │ ├── appointment_history_controller.dart
+│ │ ├── bottomnav_controller.dart
+│ │ ├── login_controller.dart
+│ │ ├── profile_controller.dart
+│ │ ├── register_controller.dart
+│ │ ├── report_fetch_controller.dart
+│ │ └── upload_controller.dart
+│ │
+│ └── services/
+│ ├── store_auth_details.dart
+│ └── validators.dart
+│
+├── Views/
+│ ├── Appointment/
+│ │ ├── widget/
+│ │ │ ├── appointment_card.dart
+│ │ │ ├── appointment_booking_dialog_widget.dart
+│ │ │ ├── appointment_history.dart
+│ │ │ ├── appointment_widget.dart
+│ │ │ ├── book_appointment_button_widget.dart
+│ │ │ ├── custom_appbar_widget.dart
+│ │ │ ├── custom_button_nav_widget.dart
+│ │ │ ├── dialog_date_widget.dart
+│ │ │ ├── dialog_doctor_widget.dart
+│ │ │ ├── dialog_timeslot_widget.dart
+│ │ │ ├── greeting_widget.dart
+│ │ │ ├── home_content_widget.dart
+│ │ │ └── upcoming_appointment_title_widget.dart
+│ │ └── appointment_view.dart
+│ │
+│ ├── Login/
+│ │ ├── widget/
+│ │ │ ├── login_button_widget.dart
+│ │ │ ├── login_form_widget.dart
+│ │ │ ├── login_header_widget.dart
+│ │ │ ├── login_signup_button_widget.dart
+│ │ │ └── login_widget.dart
+│ │ └── login_view.dart
+│ │
+│ ├── Registration/
+│ │ ├── widget/
+│ │ │ ├── gender_and_age_widget.dart
+│ │ │ ├── registration_button_widget.dart
+│ │ │ ├── registration_form_widget.dart
+│ │ │ ├── registration_header_widget.dart
+│ │ │ ├── registration_widget.dart
+│ │ │ └── spacing_helper_widget.dart
+│ │ └── registration_view.dart
+│ │
+│ ├── Records/
+│ │ ├── widget/
+│ │ │ ├── description_record_field.dart
+│ │ │ ├── dialog_button_widget.dart
+│ │ │ ├── drop_down_file_widget.dart
+│ │ │ ├── file_picker_button.dart
+│ │ │ ├── record_widget.dart
+│ │ │ ├── record_appbar_widget.dart
+│ │ │ ├── upload_documents_widget.dart
+│ │ │ ├── upload_form_widget.dart
+│ │ │ └── record_list_widget.dart
+│ │ └── record_view.dart
+│ │
+│ ├── Profile/
+│ │ ├── widget/
+│ │ │ ├── profile_textfield.dart
+│ │ │ └── profile_widget.dart
+│ │ └── profile_view.dart
+│ │
+│ └── splash_screen.dart
+
 
 ---
 
