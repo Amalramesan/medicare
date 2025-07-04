@@ -190,45 +190,54 @@ lib/
 
 ## 🧰 Tech Stack
 
-### 💻 Frontend
-- **Flutter SDK** – UI framework
-- **Dart** – Programming language
+### 💻 Frontend Technologies
 
-### 📦 Packages Used
-- `cupertino_icons` – iOS-style icons
-- `file_picker` – Pick files from device
-- `image_picker` – (Unused currently)
-- `logger` – For logging/debugging
-- `http` – For API calls
-- `shared_preferences` – Local storage (tokens/sessions)
-- `path` – File path utilities
-- `url_launcher` – Open URLs/files
-- `provider` – State management
-- `http_parser` – For `MediaType` in file uploads
+The MedCare app is built using the **Flutter SDK**, a powerful UI framework for crafting natively compiled applications for mobile, web, and desktop from a single codebase. It uses **Dart** as the primary programming language, known for its speed and developer-friendly syntax.
+
+### 📦 Packages Utilized
+
+To enhance functionality and maintain a smooth user experience, the app integrates several Flutter packages:
+
+- `cupertino_icons`: Provides iOS-style icons for a native look and feel.
+- `file_picker`: Enables users to select and upload files (like PDFs) from their device.
+- `image_picker`: (Currently unused) Intended for picking images from the gallery or camera.
+- `logger`: Helps with structured logging for debugging.
+- `http`: Handles communication with REST APIs.
+- `shared_preferences`: Used for storing user tokens and session data locally.
+- `path`: Assists in managing file paths.
+- `url_launcher`: Allows the app to open URLs and files in the appropriate external apps.
+- `provider`: Implements state management across the app.
+- `http_parser`: Helps define content types during multipart uploads.
 
 ### 📡 API Communication
-- **POST**: login, registration, report upload
-- **GET**: appointments, doctor list, uploaded reports
 
-### 🔐 Authentication
-- **JWT-based authentication**
-  - Access & Refresh tokens
-  - Stored securely using `shared_preferences`
+The app communicates with a backend server using standard REST API methods:
+
+- `POST` requests are used for user login, registration, and uploading medical reports.
+- `GET` requests are used to retrieve appointment data, doctor listings, and uploaded documents.
+
+### 🔐 Authentication Strategy
+
+MedCare uses **JWT-based authentication**, which includes both **access** and **refresh tokens**. These tokens are stored securely on the device using `shared_preferences`, allowing the app to maintain secure sessions across launches.
 
 ---
 
-## 🧪 Testing (Optional)
-- **Postman** – For API testing and backend validation
+## 🧪 Testing
+
+For API and backend testing, **Postman** has been used extensively to validate request/response structures, headers, and error handling. This ensures seamless integration between frontend and backend systems.
 
 ---
 
 ## 🚀 Getting Started
 
-### 1. Clone the repository
+To run the MedCare Flutter application on your local machine, follow these steps:
+
+### 1. Clone the Repository
+
 ```bash
 git clone https://github.com/Amalramesan/medicare.git
 cd medcare_flutter
-```
+
 
 ### 2. Install dependencies
 ```bash
