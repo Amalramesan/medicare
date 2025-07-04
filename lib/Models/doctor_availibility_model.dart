@@ -1,33 +1,45 @@
 class AvailabilityModel {
+  final String status;
+  final int statusCode;
+  final String message;
+  final List<Data> data;
+
   AvailabilityModel({
     required this.status,
     required this.statusCode,
     required this.message,
     required this.data,
   });
-  late final String status;
-  late final int statusCode;
-  late final String message;
-  late final List<Data> data;
 
-  AvailabilityModel.fromJson(Map<String, dynamic> json) {
-    status = json['status'];
-    statusCode = json['status_code'];
-    message = json['message'];
-    data = List.from(json['data']).map((e) => Data.fromJson(e)).toList();
+  factory AvailabilityModel.fromJson(Map<String, dynamic> json) {
+    return AvailabilityModel(
+      status: json['status'] ?? '',
+      statusCode: json['status_code'] ?? 0,
+      message: json['message'] ?? '',
+      data: (json['data'] as List<dynamic>?)
+              ?.map((e) => Data.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [],
+    );
   }
 
   Map<String, dynamic> toJson() {
-    final datas = <String, dynamic>{};
-    datas['status'] = status;
-    datas['status_code'] = statusCode;
-    datas['message'] = message;
-    datas['data'] = data.map((e) => e.toJson()).toList();
-    return datas;
+    return {
+      'status': status,
+      'status_code': statusCode,
+      'message': message,
+      'data': data.map((e) => e.toJson()).toList(),
+    };
   }
 }
 
 class Data {
+  final String startDate;
+  final String endDate;
+  final String startTime;
+  final String endTime;
+  final dynamic repeatDays;
+
   Data({
     required this.startDate,
     required this.endDate,
@@ -35,27 +47,24 @@ class Data {
     required this.endTime,
     this.repeatDays,
   });
-  late final String startDate;
-  late final String endDate;
-  late final String startTime;
-  late final String endTime;
-  late final Null repeatDays;
 
-  Data.fromJson(Map<String, dynamic> json) {
-    startDate = json['start_date'];
-    endDate = json['end_date'];
-    startTime = json['start_time'];
-    endTime = json['end_time'];
-    repeatDays = null;
+  factory Data.fromJson(Map<String, dynamic> json) {
+    return Data(
+      startDate: json['start_date'] ?? '',
+      endDate: json['end_date'] ?? '',
+      startTime: json['start_time'] ?? '',
+      endTime: json['end_time'] ?? '',
+      repeatDays: json['repeat_days'], // nullable and flexible
+    );
   }
 
   Map<String, dynamic> toJson() {
-    final datass = <String, dynamic>{};
-    datass['start_date'] = startDate;
-    datass['end_date'] = endDate;
-    datass['start_time'] = startTime;
-    datass['end_time'] = endTime;
-    datass['repeat_days'] = repeatDays;
-    return datass;
+    return {
+      'start_date': startDate,
+      'end_date': endDate,
+      'start_time': startTime,
+      'end_time': endTime,
+      'repeat_days': repeatDays,
+    };
   }
 }

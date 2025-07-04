@@ -28,7 +28,7 @@ class LoginController with ChangeNotifier {
       final user = response.data.user;
       final access = response.data.access;
       final refresh = response.data.refresh;
-
+     await _storage.init(); 
       await _storage.saveTokens(access, refresh);
       await _storage.savePatientId(user.id);
 
@@ -46,6 +46,8 @@ class LoginController with ChangeNotifier {
 
   /// Logout and clear saved user info
   Future<void> logout() async {
+    await _storage.init(); 
+    await _storage.clearTokens();
     _loginResponse = ApiResponse.loading(); // or null/initial state
     notifyListeners();
   }

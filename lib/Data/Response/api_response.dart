@@ -1,4 +1,6 @@
-import 'package:med_care/data/Response/status.dart';
+
+
+import 'package:med_care/Data/response/status.dart';
 
 class ApiResponse<T> {
   Status? status;

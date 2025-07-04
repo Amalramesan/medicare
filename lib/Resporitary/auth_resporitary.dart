@@ -1,39 +1,36 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:med_care/Models/login_model.dart';
 import 'package:med_care/Models/register_model.dart';
 import 'package:med_care/Res/app_url.dart';
+import 'package:med_care/Data/Network/base_api_service.dart';
+import 'package:med_care/Data/Network/networ_api_service.dart';
 
 class AuthRepository {
-  Future<RegisterModel> registerUser(User user) async {
-    final url = Uri.parse(AppUrl.register);
-    final response = await http.post(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(user.toJson()),
-    );
+  final BaseApiService _apiService = NetworApiService();
 
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      return RegisterModel.fromJson(jsonDecode(response.body));
-    } else {
-      throw Exception("Registration failed: ${response.body}");
+  Future<RegisterModel> registerUser(User user) async {
+    try {
+      final response = await _apiService.postApi(
+        payload: user.toJson(),
+        endPoint: AppUrl.register,
+        isAuth: false,
+      );
+      return RegisterModel.fromJson(response);
+    } catch (e) {
+      throw Exception("Registration failed: $e");
     }
   }
 
-
-Future<LoginModel> loginUser(String email, String password) async {
-    final url = Uri.parse(AppUrl.login);
-    final response = await http.post(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'email': email, 'password': password}),
-    );
-
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      final Map<String, dynamic> rawJson = jsonDecode(response.body);
-      return LoginModel.fromJson(rawJson);
-    } else {
-      throw Exception("Login failed: ${response.body}");
+  Future<LoginModel> loginUser(String email, String password) async {
+    try {
+      final response = await _apiService.postApi(
+        payload: {'email': email, 'password': password},
+        endPoint: AppUrl.login,
+        isAuth: false,
+      );
+      return LoginModel.fromJson(response);
+    } catch (e) {
+      throw Exception("Login failed: $e");
     }
   }
 }

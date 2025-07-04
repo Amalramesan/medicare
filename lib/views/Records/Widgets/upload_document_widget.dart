@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:med_care/View_model/controller/report_fetch_controller.dart';
 import 'package:med_care/views/records/Widgets/record_widget.dart';
+import 'package:provider/provider.dart';
 
 class Recordpagewidget extends StatelessWidget {
   const Recordpagewidget({super.key});
@@ -7,9 +9,19 @@ class Recordpagewidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
-        // showDialog(context: context, builder: (context) => Dropedownn());
-      },
+     onTap: () async {
+  final controller = Provider.of<ReportFetchController>(context, listen: false);
+  await controller.fetchReports();
+
+  if (context.mounted) {
+    showDialog(
+      context: context,
+      builder: (_) => const DropedownnBodyState(),
+    );
+  }
+},
+
+
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),

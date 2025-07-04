@@ -1,8 +1,15 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:med_care/Data/Network/base_api_service.dart';
+import 'package:med_care/Data/Network/networ_api_service.dart';
+import 'package:med_care/Res/app_url.dart';
+
 import 'package:med_care/data/response/api_response.dart';
 
 class UploadController with ChangeNotifier {
+  final BaseApiService _apiService = NetworApiService(); 
+
   String? selectedReportType;
   PlatformFile? pickedFile;
   ApiResponse<String> uploadResponse = ApiResponse<String>.loading();
@@ -17,17 +24,29 @@ class UploadController with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> uploadFile() async {
-    if (pickedFile == null) return;
+  Future<void> uploadFile({String? description}) async {
+    if (pickedFile == null || selectedReportType == null) {
+      uploadResponse = ApiResponse.error("Report type and file are required.");
+      notifyListeners();
+      return;
+    }
 
     uploadResponse = ApiResponse.loading();
     notifyListeners();
 
     try {
-      // Simulate API upload
-      await Future.delayed(const Duration(seconds: 2));
+      final result = await _apiService.uploadMultipartFile(
+        endPoint: AppUrl.uploadDocument,
+        fields: {
+          "report": selectedReportType!,
+          if (description != null && description.isNotEmpty)
+            "description": description,
+        },
+        file: File(pickedFile!.path!),
+        fileField: "document",
+        isAuth: true, // ✅ Automatically adds token
+      );
 
-      // You would normally make an API call here and check response
       uploadResponse = ApiResponse.completed("File uploaded successfully");
     } catch (e) {
       uploadResponse = ApiResponse.error("Upload failed: ${e.toString()}");

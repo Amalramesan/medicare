@@ -35,32 +35,32 @@ class _UploadFormState extends State<UploadForm> {
     super.dispose();
   }
 
-  Future<void> handleSubmit(UploadController controller) async {
-    if (controller.selectedReportType == null ||
-        controller.pickedFile == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please select report type and file.")),
-      );
-      return;
-    }
-
-    await controller.uploadFile();
-
-    final response = controller.uploadResponse;
-
-    if (response.status == Status.completed) {
-      if (!mounted) return;
-      Navigator.of(context).pop();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(response.data ?? "Upload completed")),
-      );
-    } else if (response.status == Status.error) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(response.message ?? "Something went wrong")),
-      );
-    }
+Future<void> handleSubmit(UploadController controller) async {
+  if (controller.selectedReportType == null || controller.pickedFile == null) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Please select report type and file.")),
+    );
+    return;
   }
+
+  await controller.uploadFile(description: descriptionController.text.trim());
+
+  final response = controller.uploadResponse;
+
+  if (!mounted) return;
+
+  if (response.status == Status.completed) {
+    Navigator.of(context).pop();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(response.data ?? "Upload completed")),
+    );
+  } else if (response.status == Status.error) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(response.message ?? "Something went wrong")),
+    );
+  }
+}
+
 
   @override
   Widget build(BuildContext context) {

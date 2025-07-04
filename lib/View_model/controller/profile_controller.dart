@@ -21,16 +21,8 @@ class ProfileController with ChangeNotifier {
     _profileResponse = ApiResponse.loading();
     notifyListeners();
 
-    final token = _storage.accessToken;
-
-    if (token == null) {
-      _profileResponse = ApiResponse.error('Access token not found');
-      notifyListeners();
-      return;
-    }
-
     try {
-      final fetchedProfile = await _profileRepository.fetchUserProfile(token: token);
+      final fetchedProfile = await _profileRepository.fetchUserProfile();
 
       if (fetchedProfile != null) {
         _profileResponse = ApiResponse.completed(fetchedProfile);
@@ -38,7 +30,14 @@ class ProfileController with ChangeNotifier {
         _profileResponse = ApiResponse.error('Failed to load profile');
       }
     } catch (e) {
-      _profileResponse = ApiResponse.error("Error: ${e.toString()}");
+      final errorMsg = e.toString();
+
+      if (errorMsg.contains('token_not_valid') || errorMsg.contains('Token is expired')) {
+        await _storage.clearTokens();
+        _profileResponse = ApiResponse.error("Session expired. Please login again.");
+      } else {
+        _profileResponse = ApiResponse.error("Error: $errorMsg");
+      }
     }
 
     notifyListeners();

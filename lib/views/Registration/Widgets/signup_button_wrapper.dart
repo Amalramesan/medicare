@@ -32,7 +32,7 @@ class SignupButtonWrapper extends StatelessWidget {
       confirmpassword: controller.confirmPasswordController!.text.trim(),
     );
 
-    // Show loading dialog
+    //Show loading dialog
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -49,7 +49,8 @@ class SignupButtonWrapper extends StatelessWidget {
 
     // Show error from ApiResponse if registration failed
     final response = controller.registerResponse;
-    if (response.status == Status.error && response.message != null) {//error check
+    if (response.status == Status.error && response.message != null) {
+      //error check
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Registration failed: ${response.message}")),
       );

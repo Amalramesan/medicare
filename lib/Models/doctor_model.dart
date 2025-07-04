@@ -1,11 +1,11 @@
 class DoctorModel {
-  int id;
-  int user;
-  String name;
-  String specialization;
-  String hospital;
-  bool availableToday;
-  String imageUrl;
+  final int id;
+  final int user;
+  final String name;
+  final String specialization;
+  final String hospital;
+  final bool availableToday;
+  final String imageUrl;
 
   DoctorModel({
     required this.id,
@@ -19,13 +19,17 @@ class DoctorModel {
 
   factory DoctorModel.fromJson(Map<String, dynamic> json) {
     return DoctorModel(
-      id: json['id'],
-      user: json['user'],
-      name: json['name'],
-      specialization: json['specialization'],
-      hospital: json['hospital'],
+      id: json['id'] is int
+          ? json['id']
+          : int.tryParse(json['id'].toString()) ?? 0,
+      user: json['user'] is int
+          ? json['user']
+          : int.tryParse(json['user'].toString()) ?? 0,
+      name: json['name']?.toString() ?? '',
+      specialization: json['specialization']?.toString() ?? '',
+      hospital: json['hospital']?.toString() ?? '',
       availableToday: json['available_today'] == true,
-      imageUrl: json['image'] ?? "",
+      imageUrl: json['image']?.toString() ?? '',
     );
   }
 
@@ -36,7 +40,7 @@ class DoctorModel {
       'name': name,
       'specialization': specialization,
       'hospital': hospital,
-      'availableToday': availableToday,
+      'available_today': availableToday,
       'image': imageUrl,
     };
   }

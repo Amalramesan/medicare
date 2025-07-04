@@ -3,7 +3,6 @@ import 'package:med_care/View_model/controller/apoointment_history_controller.da
 import 'package:med_care/View_model/controller/appointment_booking_controller.dart';
 import 'package:med_care/View_model/controller/bottamnav_controller.dart';
 import 'package:med_care/View_model/controller/login_controller.dart';
-import 'package:med_care/View_model/controller/logout_controller.dart';
 import 'package:med_care/View_model/controller/profile_controller.dart';
 import 'package:med_care/View_model/controller/register_controller.dart';
 import 'package:med_care/View_model/controller/report_fetch_controller.dart';
@@ -14,7 +13,8 @@ import 'package:provider/provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await LocalStorageService().init();
+  final storage = LocalStorageService();
+  await storage.init();
   runApp(const MyApp());
 }
 
@@ -39,7 +39,7 @@ class MyApp extends StatelessWidget {
           create: (_) => ReportFetchController()..fetchReports(),
         ),
         ChangeNotifierProvider(create: (_) => AppointmentBookingController()),
-        ChangeNotifierProvider(create: (_) => LogoutController()),
+        ChangeNotifierProvider(create: (_) => LoginController()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

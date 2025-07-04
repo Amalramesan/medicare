@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:med_care/View_model/services/store_auth_details.dart';
 import 'package:med_care/models/appointment_history_model.dart';
 import 'package:med_care/resporitary/appointment_resporitary.dart';
-import 'package:med_care/view_model/services/tokens_and_sharedpref.dart';
 
 class AppointmentController with ChangeNotifier {
   final AppointmentRepository _repository = AppointmentRepository();
+  final LocalStorageService _storage = LocalStorageService();
 
   List<AppointmentHistoryModel> _appointments = [];
   bool _isLoading = false;
@@ -20,50 +21,46 @@ class AppointmentController with ChangeNotifier {
   }
 
   /// FETCH APPOINTMENTS
-  Future<void> fetchAppointments() async {
-    _setLoading(true);
-    _error = null;
+Future<void> fetchAppointments() async {
+  _setLoading(true);
+  _error = null;
 
-    try {
-      final token = await getAccessToken();
-      final patientId = await getPatientId();
+  try {
+    await _storage.init();
+    final patientId = _storage.patientId;
+    debugPrint("Patient ID: $patientId");
 
-      if (token == null || patientId == null) {
-        _error = "Token or Patient ID not found.";
-        _appointments = [];
-      } else {
-        _appointments = await _repository.fetchPatientAppointments(
-          patientId: patientId,
-          token: token,
-        );
-      }
-    } catch (e) {
+    if (patientId == null) {
+      _error = "Patient ID not found.";
       _appointments = [];
-      _error = "Failed to fetch appointments: $e";
-    } finally {
-      _setLoading(false);
+    } else {
+      _appointments = await _repository.fetchPatientAppointments(
+        patientId: patientId,
+      );
     }
+  } catch (e) {
+    _appointments = [];
+    _error = "Failed to fetch appointments: $e";
+    debugPrint("Error fetching appointments: $e");
+  } finally {
+    _setLoading(false);
   }
+}
+
 
   /// CANCEL APPOINTMENT
   Future<void> cancelAppointmentById(String appointmentId) async {
     _error = null;
 
     try {
-      final token = await getAccessToken();
-
-      if (token == null) {
-        _error = "Access token not available.";
-        return;
-      }
-
       final result = await _repository.cancelAppointment(
         appointmentId: appointmentId,
-        token: token,
       );
 
       if (result != null && result.status.toLowerCase() == 'success') {
-        _appointments.removeWhere((appt) => appt.id.toString() == appointmentId);
+        _appointments.removeWhere(
+          (appt) => appt.id.toString() == appointmentId,
+        );
       } else {
         _error = "Failed to cancel appointment.";
       }

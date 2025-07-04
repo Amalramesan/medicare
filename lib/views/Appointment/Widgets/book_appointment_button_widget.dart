@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:med_care/view_model/controller/appointment_booking_controller.dart';
+import 'package:provider/provider.dart';
 import 'appointment_booking_dialog_widget.dart';
 
 class BookAppointmentButton extends StatelessWidget {
@@ -17,7 +19,10 @@ class BookAppointmentButton extends StatelessWidget {
       onTap: () {
         showDialog(
           context: context,
-          builder: (context) => const AppointmentDialog(),
+          builder: (context) => ChangeNotifierProvider(
+            create: (_) => AppointmentBookingController(),
+            child: const AppointmentDialog(),
+          ),
         );
       },
       child: Container(

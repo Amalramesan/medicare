@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:med_care/View_model/controller/logout_controller.dart';
 import 'package:med_care/View_model/controller/profile_controller.dart';
+import 'package:med_care/View_model/services/store_auth_details.dart';
 import 'package:med_care/data/response/status.dart';
 import 'package:med_care/views/Profile/Widget/profile_textfield.dart';
 import 'package:provider/provider.dart';
@@ -52,23 +52,18 @@ class _ProfileWidgetState extends State<ProfileWidget> {
             child: IconButton(
               icon: const Icon(Icons.logout, size: 27, color: Colors.red),
               onPressed: () async {
-                final logoutController = Provider.of<LogoutController>(
-                  context,
-                  listen: false,
-                );
+                // Initialize storage and clear tokens
+                final storage = LocalStorageService();
+                await storage.init();
+                await storage.clearTokens();
 
-                // Show loading dialog
-                showDialog(
-                  context: context,
-                  barrierDismissible: false,
-                  builder: (context) =>
-                      const Center(child: CircularProgressIndicator()),
-                );
-
-                await logoutController.logout(context);
-
+                // Navigate to login screen and remove all previous routes
                 if (context.mounted) {
-                  Navigator.of(context, rootNavigator: true).pop();
+                  Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    '/login',
+                    (_) => false,
+                  );
                 }
               },
             ),

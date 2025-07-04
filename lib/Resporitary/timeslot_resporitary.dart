@@ -1,20 +1,26 @@
-
 import 'dart:developer';
-import 'package:med_care/data/Network/networ_api_service.dart';
+import 'package:med_care/Data/Network/base_api_service.dart';
+import 'package:med_care/Data/Network/networ_api_service.dart';
 import 'package:med_care/Models/time_slote_model.dart';
 import 'package:med_care/Res/app_url.dart';
 
-Future<TimeSlots> fetchTimeSlots(String doctorId, String date) async {
-  try {
-    final url = AppUrl.fetchTimeSlots(doctorId, date); 
-    final _apiService = NetworkApiService();
+class TimeSlotRepository {
+  final BaseApiService _apiService = NetworApiService();
 
-    final responseJson = await _apiService.getGetApiResponse(url);
+  Future<TimeSlots> fetchTimeSlots(String doctorId, String date) async {
+    try {
+      final url = AppUrl.fetchTimeSlots(doctorId, date);
 
-    log("TimeSlots API Response: $responseJson");
-    return TimeSlots.fromJson(responseJson);
-  } catch (e) {
-    log("Error fetching time slots: $e");
-    rethrow; 
+      final responseJson = await _apiService.getApi(
+        endPoint: url,
+        isAuth: true, // Set to true if token is required
+      );
+
+      log("TimeSlots API Response: $responseJson");
+      return TimeSlots.fromJson(responseJson);
+    } catch (e) {
+      log("Error fetching time slots: $e");
+      rethrow;
+    }
   }
 }
