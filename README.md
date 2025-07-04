@@ -187,62 +187,63 @@ lib/
 
 
 ---
-
 ## 🧰 Tech Stack
 
 ### 💻 Frontend
-- **Flutter SDK** – UI framework
-- **Dart** – Programming language
+- 🎯 **Dart** – Primary language for Flutter
+- 🖼️ **Flutter SDK** – Cross-platform UI framework
 
 ### 📦 Packages Used
-- `cupertino_icons` – iOS-style icons
-- `file_picker` – Pick files from device
-- `image_picker` – (Unused currently)
-- `logger` – For logging/debugging
-- `http` – For API calls
-- `shared_preferences` – Local storage (tokens/sessions)
-- `path` – File path utilities
-- `url_launcher` – Open URLs/files
-- `provider` – State management
-- `http_parser` – For `MediaType` in file uploads
-
-### 📡 API Communication
-- **POST**: login, registration, report upload
-- **GET**: appointments, doctor list, uploaded reports
-
-### 🔐 Authentication
-- **JWT-based authentication**
-  - Access & Refresh tokens
-  - Stored securely using `shared_preferences`
+| Package             | Purpose                                    |
+|---------------------|--------------------------------------------|
+| `cupertino_icons`   | iOS-style icons                            |
+| `file_picker`       | Pick files (PDFs, etc.) from device        |
+| `image_picker`      | *(Currently unused)* Image selection       |
+| `logger`            | Debug logging                              |
+| `http`              | HTTP networking                            |
+| `shared_preferences`| Local storage for session/token            |
+| `path`              | File system path utilities                 |
+| `url_launcher`      | Launch external URLs or files              |
+| `provider`          | State management                           |
+| `http_parser`       | Handle content types for file uploads      |
 
 ---
 
-## 🧪 Testing (Optional)
-- **Postman** – For API testing and backend validation
+### 📡 API Communication
+- `POST`:  
+  - User **login**
+  - User **registration**
+  - **Report upload** (multipart)
+- `GET`:  
+  - **Appointments**
+  - **Doctor list**
+  - **Uploaded medical reports**
+
+---
+
+### 🔐 Authentication
+- 🛡️ **JWT Token-Based Authentication**
+  - Stores **Access** and **Refresh tokens**
+  - Secured using `SharedPreferences`
+
+---
+
+## 🧪 Testing
+- 🧪 **Postman** – For testing and validating backend API endpoints.
 
 ---
 
 ## 🚀 Getting Started
 
-### 1. Clone the repository
-```bash
-git clone https://github.com/Amalramesan/medicare.git
-cd medcare_flutter
-```
-
-### 2. Install dependencies
-```bash
-flutter pub get
-```
-
-### 3. Run the app
-```bash
-flutter run
-```
+### 🔧 Prerequisites
+- ✅ Flutter SDK installed (https://docs.flutter.dev/get-started/install)
+- ✅ Dart SDK installed (usually bundled with Flutter)
+- ✅ Connected Android/iOS device or emulator
 
 ---
 
-## 📌 Notes
-- Ensure API URLs match your **local IP and port** (e.g., Django backend).
-- The app uses **token-based authentication** (Access + Refresh tokens).
-- If you change your backend URL, update `res/app_url.dart`.
+### 1️⃣ Clone the Repository
+```bash
+git clone https://github.com/Amalramesan/medicare.git
+cd medcare_flutter
+
