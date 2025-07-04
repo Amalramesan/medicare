@@ -188,13 +188,13 @@ lib/
 
 ---
 
-## 🧰 Tech Stack
+ 🧰 Tech Stack
 
-### 💻 Frontend
+💻 Frontend
 - **Flutter SDK** – UI framework
 - **Dart** – Programming language
 
-### 📦 Packages Used
+📦 Packages Used
 - `cupertino_icons` – iOS-style icons
 - `file_picker` – Pick files from device
 - `image_picker` – (Unused currently)
@@ -210,19 +210,19 @@ lib/
 - **POST**: login, registration, report upload
 - **GET**: appointments, doctor list, uploaded reports
 
-### 🔐 Authentication
+ 🔐 Authentication
 - **JWT-based authentication**
   - Access & Refresh tokens
   - Stored securely using `shared_preferences`
 
 ---
 
-## 🧪 Testing (Optional)
+🧪 Testing (Optional)
 - **Postman** – For API testing and backend validation
 
 ---
 
-## 🚀 Getting Started
+ 🚀 Getting Started
 
 ### 1. Clone the repository
 ```bash
