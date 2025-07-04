@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:med_care/Models/login_model.dart';
 import 'package:med_care/Models/register_model.dart';
 import 'package:med_care/Res/app_url.dart';

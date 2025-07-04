@@ -182,7 +182,7 @@ class AppointmentDialog extends StatelessWidget {
                         child: Center(
                           child: Text("Please select a date and doctor first"),
                         ),
-                      ),
+                     ),
             ],
           ),
         ),
