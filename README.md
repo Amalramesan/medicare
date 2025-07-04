@@ -188,43 +188,59 @@ lib/
 
 ---
 
-🧰 Tech Stack
-💻 Frontend (Flutter)
-Flutter SDK – Cross-platform UI toolkit
-Dart – Programming language for Flutter
-Packages Used:
-cupertino_icons:OS-style icons support
-file_picker:Pick PDF and other files from storage
-image_picker:Image selection (currently unused in PDF workflow)
-logger:Debug-friendly logging for development
-http:HTTP client for REST API calls
-shared_preferences:Store authentication tokens and user session locally
-path:File path operations (used with file pickers or file handling)
-url_launcher:Open URLs or files (e.g., opening uploaded PDF)
-provider:State management (used to pass data between widgets and handle app state)
-http_parser:Helps in defining MediaType for file uploads (like application/pdf)
-📡 API Communication
-REST APIs using:
-POST for login, registration, uploading reports
-GET for fetching appointments, reports, doctors
-🔐 Authentication
-JWT (JSON Web Tokens):
-Access & Refresh tokens
-Token stored in Flutter using shared_preferences
-🧪 Testing (Optional Tools)
-Postman – For API testing
-🚀 Getting Started
-Clone the repository:
+## 🧰 Tech Stack
 
+### 💻 Frontend
+- **Flutter SDK** – UI framework
+- **Dart** – Programming language
+
+### 📦 Packages Used
+- `cupertino_icons` – iOS-style icons
+- `file_picker` – Pick files from device
+- `image_picker` – (Unused currently)
+- `logger` – For logging/debugging
+- `http` – For API calls
+- `shared_preferences` – Local storage (tokens/sessions)
+- `path` – File path utilities
+- `url_launcher` – Open URLs/files
+- `provider` – State management
+- `http_parser` – For `MediaType` in file uploads
+
+### 📡 API Communication
+- **POST**: login, registration, report upload
+- **GET**: appointments, doctor list, uploaded reports
+
+### 🔐 Authentication
+- **JWT-based authentication**
+  - Access & Refresh tokens
+  - Stored securely using `shared_preferences`
+
+---
+
+## 🧪 Testing (Optional)
+- **Postman** – For API testing and backend validation
+
+---
+
+## 🚀 Getting Started
+
+### 1. Clone the repository
+```bash
 git clone https://github.com/Amalramesan/medicare.git
 cd medcare_flutter
-Install dependencies:
+```
 
-    flutter pub get
-Connect your device/emulator and run:
+### 2. Install dependencies
+```bash
+flutter pub get
+```
 
-    ```
-    flutter run
+### 3. Run the app
+```bash
+flutter run
+```
+
+---
 
 ## 📌 Notes
 - Ensure API URLs match your **local IP and port** (e.g., Django backend).
