@@ -1,62 +1,52 @@
-🏥 MedCare Flutter App
+# 🏥 MedCare Flutter App
 
+[![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev)
+[![Dart](https://img.shields.io/badge/Dart-0175C2?style=for-the-badge&logo=dart&logoColor=white)](https://dart.dev)
+[![REST API](https://img.shields.io/badge/REST%20API-FF6C37?style=for-the-badge&logo=api&logoColor=white)]()
 
+**MedCare** is a patient-centered healthcare mobile application built using **Flutter** and follows the **MVVM (Model-View-ViewModel)** architectural pattern.
 
+---
 
-MedCare is a patient-centered healthcare mobile application built using Flutter and follows the MVVM (Model-View-ViewModel) architectural pattern.
+## ✨ Key Features
 
-✨ Key Features
-👤 User Authentication
-Secure registration and login via REST API.
+### 👤 User Authentication
+- Secure **registration** and **login** via REST API.
+- Tokens are securely stored using `SharedPreferences`.
 
-Tokens are securely stored using SharedPreferences.
+### 🗓️ Appointment Booking
+- Step-by-step booking flow:
+  1. Select appointment date
+  2. View available doctors
+  3. Pick a suitable time slot
+- Displays patient-specific **appointment history**.
+- API-driven scheduling and availability.
 
-🗓️ Appointment Booking
-Step-by-step booking flow:
+### 📄 Medical Records
+- Upload **PDF reports**:
+  - Select report type (dropdown)
+  - Add an optional description
+  - Upload file via device file picker
+- Send data using `multipart/form-data`.
+- Fetch and view uploaded reports from the backend.
 
-Select appointment date
+---
 
-View available doctors
+## 🧱 Architecture – MVVM Pattern
 
-Pick a suitable time slot
+MedCare follows the **MVVM (Model-View-ViewModel)** pattern, enhancing:
+- Code maintainability
+- Separation of concerns
+- Testability
+- Scalability
 
-Displays patient-specific appointment history.
-
-API-driven scheduling and availability.
-
-📄 Medical Records
-Upload PDF reports:
-
-Select report type (dropdown)
-
-Add an optional description
-
-Upload file via device file picker
-
-Send data using multipart/form-data.
-
-Fetch and view uploaded reports from the backend.
-
-🧱 Architecture – MVVM Pattern
-MedCare follows the MVVM (Model-View-ViewModel) pattern, enhancing:
-
-Code maintainability
-
-Separation of concerns
-
-Testability
-
-Scalability
-
-🔁 MVVM Data Flow
-sql
-Copy
-Edit
+### 🔁 MVVM Data Flow
+```
 View ↔ ViewModel ↔ Repository ↔ Network/API
-📁 MVVM Structure Overview
-graphql
-Copy
-Edit
+```
+
+### 📁 MVVM Structure Overview
+```
 lib/
 ├── Models/         # Data models
 ├── repository/     # API logic per feature
@@ -64,10 +54,13 @@ lib/
 │   ├── controller/
 │   └── services/
 ├── Views/          # UI (screens & widgets)
-📂 Project Structure
-csharp
-Copy
-Edit
+```
+
+---
+
+## 📂 Project Structure
+
+```
 lib/
 ├── main.dart
 ├── common/                     # Shared custom widgets
@@ -89,68 +82,65 @@ lib/
 │   ├── Records/
 │   ├── Profile/
 │   └── splash_screen.dart
-🧰 Tech Stack
-💻 Frontend
-Flutter SDK – UI framework
+```
 
-Dart – Programming language
+---
 
-📦 Packages Used
-cupertino_icons – iOS-style icons
+## 🧰 Tech Stack
 
-file_picker – Pick files from device
+### 💻 Frontend
+- **Flutter SDK** – UI framework
+- **Dart** – Programming language
 
-image_picker – (Unused currently)
+### 📦 Packages Used
+- `cupertino_icons` – iOS-style icons
+- `file_picker` – Pick files from device
+- `image_picker` – (Unused currently)
+- `logger` – For logging/debugging
+- `http` – For API calls
+- `shared_preferences` – Local storage (tokens/sessions)
+- `path` – File path utilities
+- `url_launcher` – Open URLs/files
+- `provider` – State management
+- `http_parser` – For `MediaType` in file uploads
 
-logger – For logging/debugging
+### 📡 API Communication
+- **POST**: login, registration, report upload
+- **GET**: appointments, doctor list, uploaded reports
 
-http – For API calls
+### 🔐 Authentication
+- **JWT-based authentication**
+  - Access & Refresh tokens
+  - Stored securely using `shared_preferences`
 
-shared_preferences – Local storage (tokens/sessions)
+---
 
-path – File path utilities
+## 🧪 Testing (Optional)
+- **Postman** – For API testing and backend validation
 
-url_launcher – Open URLs/files
+---
 
-provider – State management
+## 🚀 Getting Started
 
-http_parser – For MediaType in file uploads
-
-📡 API Communication
-POST: login, registration, report upload
-
-GET: appointments, doctor list, uploaded reports
-
-🔐 Authentication
-JWT-based authentication
-
-Access & Refresh tokens
-
-Stored securely using shared_preferences
-
-🧪 Testing (Optional)
-Postman – For API testing and backend validation
-
-🚀 Getting Started
-1. Clone the repository
-bash
-Copy
-Edit
+### 1. Clone the repository
+```bash
 git clone https://github.com/Amalramesan/medicare.git
 cd medcare_flutter
-2. Install dependencies
-bash
-Copy
-Edit
+```
+
+### 2. Install dependencies
+```bash
 flutter pub get
-3. Run the app
-bash
-Copy
-Edit
+```
+
+### 3. Run the app
+```bash
 flutter run
-📌 Notes
-Ensure API URLs match your local IP and port (e.g., Django backend).
+```
 
-The app uses token-based authentication (Access + Refresh tokens).
+---
 
-If you change your backend URL, update res/app_url.dart.
+## 📌 Notes
+- Ensure API URLs match your **local IP and port** (e.g., Django backend).
+- The app uses **token-based authentication** (Access + Refresh tokens).
+- If you change your backend URL, update `res/app_url.dart`.
