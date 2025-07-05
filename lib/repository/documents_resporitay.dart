@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 import 'package:med_care/data/Network/base_api_service.dart';
 import 'package:med_care/data/Network/networ_api_service.dart';
@@ -46,14 +47,14 @@ Future<ReportFetchModel?> fetchReports({
     );
 
     // Debug print to see actual API response
-    print("Raw fetchReports response: $response");
+    log("Raw fetchReports response: $response");
 
     final model = ReportFetchModel.fromJson(response);
-    print("Parsed reports length: ${model.data.length}");
+    log("Parsed reports length: ${model.data.length}");
 
     return model;
   } catch (e) {
-    print("Error response: $e");
+    log("Error response: $e");
     throw Exception("Fetching reports failed: $e");
   }
 }

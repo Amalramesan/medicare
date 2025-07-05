@@ -1,9 +1,7 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:med_care/data/response/status.dart';
 import 'package:provider/provider.dart';
 import 'package:med_care/view_model/controller/upload_controller.dart';
-import 'package:med_care/view_model/services/store_auth_details.dart';
 import 'package:med_care/views/records/Widgets/description_record_field.dart';
 import 'package:med_care/views/records/Widgets/drope_down_field_widget.dart';
 import 'package:med_care/views/records/Widgets/file_picker_buttton.dart';
@@ -18,7 +16,7 @@ class UploadForm extends StatefulWidget {
 
 class _UploadFormState extends State<UploadForm> {
   final TextEditingController descriptionController = TextEditingController();
-  final LocalStorageService _storage = LocalStorageService();
+
 
   final Map<String, String> reportTypeOptions = {
     'Blood Test': 'BLOOD',

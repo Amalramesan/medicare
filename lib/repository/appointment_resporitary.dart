@@ -31,7 +31,7 @@ class AppointmentRepository {
 
       return AppointmentBooking.fromJson(response);
     } catch (e) {
-      print("Error booking appointment: $e");
+      log("Error booking appointment: $e");
       rethrow;
     }
   }

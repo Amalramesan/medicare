@@ -116,9 +116,6 @@ class _RecordListWidgetState extends State<RecordListWidget> {
                 },
               ),
             );
-
-          default:
-            return const SizedBox();
         }
       },
     );
