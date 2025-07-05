@@ -1,8 +1,8 @@
 import 'package:med_care/Models/login_model.dart';
 import 'package:med_care/Models/register_model.dart';
 import 'package:med_care/Res/app_url.dart';
-import 'package:med_care/Data/Network/base_api_service.dart';
-import 'package:med_care/Data/Network/networ_api_service.dart';
+import 'package:med_care/data/Network/base_api_service.dart';
+import 'package:med_care/data/Network/networ_api_service.dart';
 
 class AuthRepository {
   final BaseApiService _apiService = NetworApiService();

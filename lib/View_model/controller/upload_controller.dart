@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:med_care/Data/Network/base_api_service.dart';
-import 'package:med_care/Data/Network/networ_api_service.dart';
+import 'package:med_care/data/Network/base_api_service.dart';
+import 'package:med_care/data/Network/networ_api_service.dart';
 import 'package:med_care/Res/app_url.dart';
 
 import 'package:med_care/data/response/api_response.dart';

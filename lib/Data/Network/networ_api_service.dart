@@ -4,8 +4,8 @@ import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
-import 'package:med_care/Data/Network/base_api_service.dart';
-import 'package:med_care/Data/response/app_excpetion.dart';
+import 'package:med_care/data/Network/base_api_service.dart';
+import 'package:med_care/data/response/app_excpetion.dart';
 import 'package:med_care/Res/app_url.dart';
 import 'package:med_care/View_model/services/store_auth_details.dart';
 

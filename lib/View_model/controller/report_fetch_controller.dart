@@ -1,9 +1,9 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:med_care/Models/report_fetch_model.dart';
-import 'package:med_care/Resporitary/documents_resporitay.dart';
 import 'package:med_care/View_model/services/store_auth_details.dart';
 import 'package:med_care/data/response/api_response.dart';
+import 'package:med_care/repository/documents_resporitay.dart';
 
 class ReportFetchController with ChangeNotifier {
   final _repository = DocumentRepository();

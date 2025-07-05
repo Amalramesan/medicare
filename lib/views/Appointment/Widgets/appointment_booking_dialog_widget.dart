@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:med_care/Resporitary/appointment_resporitary.dart';
+import 'package:med_care/repository/appointment_resporitary.dart';
 import 'package:med_care/View_model/services/store_auth_details.dart';
 
 import 'package:med_care/view_model/controller/appointment_booking_controller.dart';

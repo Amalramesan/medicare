@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:med_care/Models/profile_model.dart';
-import 'package:med_care/Resporitary/profile_resporitary.dart';
 import 'package:med_care/View_model/services/store_auth_details.dart';
 import 'package:med_care/data/response/api_response.dart';
+import 'package:med_care/repository/profile_resporitary.dart';
 
 class ProfileController with ChangeNotifier {
   final ProfileRepository _profileRepository = ProfileRepository();

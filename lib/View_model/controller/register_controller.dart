@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:med_care/Models/register_model.dart';
-import 'package:med_care/Resporitary/auth_resporitary.dart';
 import 'package:med_care/View_model/services/store_auth_details.dart';
 import 'package:med_care/data/response/api_response.dart';
+import 'package:med_care/repository/auth_resporitary.dart';
 
 class RegisterController extends ChangeNotifier {
   final AuthRepository _authRepository = AuthRepository();
