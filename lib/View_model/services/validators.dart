@@ -1,3 +1,4 @@
+//this handles the validation of entire app.
 class Validators {
   //name validator
   static String? validatename(String? value) {

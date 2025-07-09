@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:med_care/models/appointment_history_model.dart';
-
+//to create a visually styled card around each  appointments with spacing,background color,rounded corners,shadow effect
 class AppointmentList extends StatelessWidget {
   final AppointmentHistoryModel appointment;
   final VoidCallback? onCancel; // Optional cancel callback

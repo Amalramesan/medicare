@@ -17,7 +17,7 @@ class DialogButtons extends StatelessWidget {
       children: [
         TextButton(onPressed: onClose, child: const Text("Close")),
         const SizedBox(width: 8),
-        ElevatedButton(
+        ElevatedButton( //it is the button used for submiting the reports  if there is any error it show an error message
           onPressed: () async {
             try {
               await onSubmit();

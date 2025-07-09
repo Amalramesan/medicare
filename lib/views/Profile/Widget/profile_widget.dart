@@ -1,41 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:med_care/View_model/controller/profile_controller.dart';
-import 'package:med_care/View_model/services/store_auth_details.dart';
-import 'package:med_care/data/response/status.dart';
+import 'package:med_care/Data/response/status.dart';
+import 'package:med_care/view_model/controller/profile_controller.dart';
+import 'package:med_care/view_model/services/store_auth_details.dart';
 import 'package:med_care/views/Profile/Widget/profile_textfield.dart';
 import 'package:provider/provider.dart';
 
-class ProfileWidget extends StatefulWidget {
+class ProfileWidget extends StatelessWidget {   // A stateless widget that displays a user profile screen
   const ProfileWidget({super.key});
-
-  @override
-  State<ProfileWidget> createState() => _ProfileWidgetState();
-}
-
-class _ProfileWidgetState extends State<ProfileWidget> {
-  @override
-  void initState() {
-    super.initState();
-    Future.microtask(() {
-      if (mounted) {
-        Provider.of<ProfileController>(
-          context,
-          listen: false,
-        ).loadUserProfile();
-      }
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     final Size screenSize = MediaQuery.of(context).size;
     final double screenHeight = screenSize.height;
     final double screenWidth = screenSize.width;
-    final profileProvider = Provider.of<ProfileController>(context);
-    final profileState = profileProvider.profileResponse;
 
-    return Scaffold(
-      appBar: AppBar(
+    return Scaffold(  // AppBar with title and logout button
+      appBar: AppBar(      
         title: Padding(
           padding: EdgeInsets.all(screenWidth * 0.02),
           child: Text(
@@ -46,7 +26,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
             ),
           ),
         ),
-        actions: [
+        actions: [         // Logout button on top right corner
           Padding(
             padding: EdgeInsets.only(right: screenWidth * 0.03),
             child: IconButton(
@@ -69,99 +49,88 @@ class _ProfileWidgetState extends State<ProfileWidget> {
             ),
           ),
         ],
-      ),
-      body: Builder(
-        builder: (_) {
-          if (profileState.status == Status.loading) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          if (profileState.status == Status.error) {
-            return Center(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Text(
-                  "Failed to load profile: ${profileState.message}",
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.red),
-                ),
-              ),
-            );
-          }
-
-          final profile = profileState.data?.data;
-
-          return SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: EdgeInsets.all(screenWidth * 0.045),
-                  child: Text(
-                    "Your Profile",
-                    style: TextStyle(
-                      fontSize: screenWidth * 0.06,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black,
+      ),  
+      body: SingleChildScrollView(     // Body with scrollable profile form
+        child: Consumer<ProfileController>(
+          builder: (context, controller, child) {
+            switch (controller.profileResponse.status!) {
+              case Status.loading:     // Show loading spinner while fetching profile data
+                return Center(child: CircularProgressIndicator());
+              case Status.completed:
+                final data = controller.profileResponse.data?.data;
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(       // Profile form with read-only fields
+                      padding: EdgeInsets.all(screenWidth * 0.045),
+                      child: Text(
+                        "Your Profile",
+                        style: TextStyle(
+                          fontSize: screenWidth * 0.06,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black,
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-                SizedBox(height: screenHeight * 0.02),
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: screenWidth * 0.045,
-                  ),
-                  child: Form(
-                    child: Column(
-                      children: [
-                        textfieldprofile(
-                          controller: TextEditingController(
-                            text: profile?.name ?? '',
-                          ),
-                          icon: Icons.person,
-                          label: "Full Name",
-                          width: screenWidth,
-                          readOnly: true,
+                    SizedBox(height: screenHeight * 0.02),
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: screenWidth * 0.045,
+                      ),
+                      child: Form(
+                        child: Column(
+                          children: [
+                            textfieldprofile(
+                              controller: TextEditingController(
+                                text: data?.name ?? "",
+                              ),
+                              icon: Icons.person,
+                              label: "Full Name",
+                              width: screenWidth,
+                              readOnly: true,
+                            ),
+                            SizedBox(height: screenHeight * 0.015),
+                            textfieldprofile(
+                              controller: TextEditingController(
+                                text: data?.email ?? "",
+                              ),
+                              icon: Icons.email,
+                              label: "Email",
+                              width: screenWidth,
+                              readOnly: true,
+                            ),
+                            SizedBox(height: screenHeight * 0.015),
+                            textfieldprofile(
+                              controller: TextEditingController(
+                                text: data?.phoneNumber ?? "",
+                              ),
+                              icon: Icons.phone,
+                              label: "Phone Number",
+                              width: screenWidth,
+                              inputType: TextInputType.number,
+                              readOnly: true,
+                            ),
+                            SizedBox(height: screenHeight * 0.015),
+                            textfieldprofile(
+                              controller: TextEditingController(
+                                text: data?.place ?? "",
+                              ),
+                              icon: Icons.place,
+                              label: "Place",
+                              width: screenWidth,
+                              readOnly: true,
+                            ),
+                          ],
                         ),
-                        SizedBox(height: screenHeight * 0.015),
-                        textfieldprofile(
-                          controller: TextEditingController(
-                            text: profile?.email ?? '',
-                          ),
-                          icon: Icons.email,
-                          label: "Email",
-                          width: screenWidth,
-                          readOnly: true,
-                        ),
-                        SizedBox(height: screenHeight * 0.015),
-                        textfieldprofile(
-                          controller: TextEditingController(
-                            text: profile?.phoneNumber ?? '',
-                          ),
-                          icon: Icons.phone,
-                          label: "Phone Number",
-                          width: screenWidth,
-                          inputType: TextInputType.number,
-                          readOnly: true,
-                        ),
-                        SizedBox(height: screenHeight * 0.015),
-                        textfieldprofile(
-                          controller: TextEditingController(
-                            text: profile?.place ?? '',
-                          ),
-                          icon: Icons.place,
-                          label: "Place",
-                          width: screenWidth,
-                          readOnly: true,
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
+                  ],
+                );
+              case Status.error:
+                return Center(child: Text(controller.error));
+            }
+          },
+        ),
       ),
     );
   }

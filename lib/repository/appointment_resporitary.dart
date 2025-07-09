@@ -5,6 +5,9 @@ import 'package:med_care/models/appointment_cancel_model.dart';
 import 'package:med_care/models/appointment_history_model.dart';
 import 'package:med_care/models/appointment_model.dart';
 import 'package:med_care/Res/app_url.dart';
+/// Repository class to manage all appointment-related API operations.
+  /// Books an appointment with the given doctor, patient, date, and time.
+  /// Returns an appointmentBooking object if the booking is successful.
 
 class AppointmentRepository {
   final BaseApiService _apiService = NetworApiService();
@@ -37,8 +40,9 @@ class AppointmentRepository {
   }
 
   //history
+  ///used to fetch patient appointments
   Future<List<AppointmentHistoryModel>> fetchPatientAppointments({
-    required int patientId,
+    required int patientId
   }) async {
     try {
       final response = await _apiService.getApi(
@@ -73,6 +77,7 @@ class AppointmentRepository {
   }
 
   //cancel
+  ///used to cancel the patient appointments
   Future<AppointmentCancelModel?> cancelAppointment({
     required String appointmentId,
   }) async {

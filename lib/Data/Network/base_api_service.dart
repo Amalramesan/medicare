@@ -1,5 +1,8 @@
 import 'dart:io';
 
+/// An abstract class that defines the contract for all API service implementations.
+/// It includes standard HTTP operations such as GET, POST, DELETE,
+/// and file upload with multipart/form-data.
 abstract class BaseApiService {
   Future<dynamic> getApi({
     required String endPoint,

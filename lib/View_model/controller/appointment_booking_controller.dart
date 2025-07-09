@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
-
+/// Controller for managing the state of the multi-step appointment booking process.
+///Responsibilities
+/// - Tracking the current step in the booking flow (Select Date → Select Doctor → Select Time)
+///- Storing the user's selected date, doctor, doctor ID, and time
+///- Providing methods to move between steps (`nextStep`, `previousStep`)
+///- Allowing step-specific selection (`selectDate`, `selectDoctor`, `selectTime`)
+///- Resetting all values after a booking is completed or cancelled
 class AppointmentBookingController with ChangeNotifier {
+
   int _currentStep = 0;
   DateTime? _selectedDate;
   String? _selectedDoctor;

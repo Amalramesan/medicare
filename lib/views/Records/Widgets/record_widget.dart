@@ -41,7 +41,7 @@ class DropedownnBodyStateState  extends State<DropedownnBodyState> {
       insetPadding: const EdgeInsets.symmetric(horizontal: 40, vertical: 100),
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
-        child: Column(
+        child: Column(    //this is dialog for uploding a report where user can select a report type,enter a description,pick  a file, submit  the upload
           mainAxisSize: MainAxisSize.min,
           children: [
             const Text(
@@ -98,11 +98,9 @@ class DropedownnBodyStateState  extends State<DropedownnBodyState> {
                         ),
                       ),
                     );
-
-                    // ✅ Refresh reports
                     final reportController = context
                         .read<ReportFetchController>();
-                    reportController.fetchReports();
+                    reportController.loadReports();
                   } else if (controller.uploadResponse.status == Status.error) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(

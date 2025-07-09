@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-
-class LoginButtonWidget extends StatelessWidget {
+//this is used to make a button of signup
+class LoginButtonWidget extends StatelessWidget { 
   final VoidCallback onTapp;
   const LoginButtonWidget({super.key, required this.onTapp});
 

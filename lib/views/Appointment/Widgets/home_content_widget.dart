@@ -15,8 +15,12 @@ class HomeContent extends StatelessWidget {
     final int selectedIndex = navProvider.selectIndex;
 
     final List<Widget> pages = [
+      //this code defines the homewidget which show a greeting,provide a button to book appointments,display the list of 
+      //existing appointments ,handles loading error, and empty states,allow user to cancel appointments, and uses the appointment controller for statemanagement
       HomeWidget(),
+      //it contains a record page where user can upload their medical reports and display in the page.
       RecordPage(),
+      //it is used for viewing the profile of registered user.
       ProfileView(),
     ];
 

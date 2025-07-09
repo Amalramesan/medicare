@@ -1,45 +1,40 @@
 import 'package:flutter/material.dart';
-import 'package:med_care/Models/profile_model.dart';
-import 'package:med_care/View_model/services/store_auth_details.dart';
+import 'package:med_care/models/profile_model.dart';
+
 import 'package:med_care/data/response/api_response.dart';
 import 'package:med_care/repository/profile_resporitary.dart';
 
 class ProfileController with ChangeNotifier {
-  final ProfileRepository _profileRepository = ProfileRepository();
-  final LocalStorageService _storage = LocalStorageService();
+  ///controller for managing the profile of the user
+  ProfileController() {
+    loadUserProfile();
+  }
+  ApiResponse<ProfileModel> profileResponse = ApiResponse.loading();
 
-  ApiResponse<ProfileModel> _profileResponse = ApiResponse.loading();
+  String _error = "";
+  String get error => _error;
+  void _setError(String v) {
+    _error = v;
+    notifyListeners();
+  }
 
-  ApiResponse<ProfileModel> get profileResponse => _profileResponse;
-
-  String get userName => _profileResponse.data?.data.name ?? 'User';
-  String get email => _profileResponse.data?.data.email ?? '';
-  String get phone => _profileResponse.data?.data.phoneNumber ?? '';
-  String get place => _profileResponse.data?.data.place ?? '';
+  void _setProfileResponse(ApiResponse<ProfileModel> response) {
+    profileResponse = response;
+    notifyListeners();
+  }
 
   Future<void> loadUserProfile() async {
-    _profileResponse = ApiResponse.loading();
-    notifyListeners();
+    _setError("");
+    _setProfileResponse(ApiResponse.loading());
 
-    try {
-      final fetchedProfile = await _profileRepository.fetchUserProfile();
-
-      if (fetchedProfile != null) {
-        _profileResponse = ApiResponse.completed(fetchedProfile);
-      } else {
-        _profileResponse = ApiResponse.error('Failed to load profile');
-      }
-    } catch (e) {
-      final errorMsg = e.toString();
-
-      if (errorMsg.contains('token_not_valid') || errorMsg.contains('Token is expired')) {
-        await _storage.clearTokens();
-        _profileResponse = ApiResponse.error("Session expired. Please login again.");
-      } else {
-        _profileResponse = ApiResponse.error("Error: $errorMsg");
-      }
-    }
-
-    notifyListeners();
+    ProfileRepository.fetchUserProfile()
+        .then((v) {
+          _setError("");
+          _setProfileResponse(ApiResponse.completed(v));
+        })
+        .onError((e, s) {
+          _setError(e.toString());
+          _setProfileResponse(ApiResponse.error(e.toString()));
+        });
   }
 }

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:med_care/repository/appointment_resporitary.dart';
-import 'package:med_care/View_model/services/store_auth_details.dart';
 import 'package:med_care/view_model/controller/appointment_booking_controller.dart';
 import 'package:med_care/view_model/controller/apoointment_history_controller.dart';
+import 'package:med_care/view_model/services/store_auth_details.dart';
 import 'package:provider/provider.dart';
 import 'dialog_date_widget.dart';
 import 'dialog_doctor_widget.dart';
 import 'dialog_timeslot_widget.dart';
-
+//it contains a multi step form inside  a dialog  that allows the user to book a medical  appointment by selecting date,doctor,timeslot
 class AppointmentDialog extends StatelessWidget {
   const AppointmentDialog({super.key});
 

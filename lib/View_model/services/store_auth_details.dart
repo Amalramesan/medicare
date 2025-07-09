@@ -1,5 +1,10 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
+/// A singleton service class for managing local storage using SharedPreferences.
+/// This service handles storing and retrieving:
+/// - Authentication tokens (access, refresh)
+/// - Patient/user identifiers
+/// - Basic user profile information
 class LocalStorageService {
   static final LocalStorageService _instance = LocalStorageService._internal();
 

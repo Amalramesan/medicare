@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:med_care/utilities/cliper.dart';
-
+//used for desiging the page and headings
 class LoginHeaderWidget extends StatelessWidget {
   const LoginHeaderWidget({super.key});
 

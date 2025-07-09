@@ -16,8 +16,9 @@ class HomePage extends StatelessWidget {
 
     return Scaffold(
       appBar: selectedIndex == 0 ? const CustomAppBar() : null,
-      body: const HomeContent(),
-      bottomNavigationBar: CustomBottomNav(
+      body: const HomeContent(),//it contain the widgets like home(),record(),and profile
+      //it is a custom navigation bar used for navigating to different screen
+      bottomNavigationBar: CustomBottomNav( 
         currentIndex: selectedIndex,
         onTap: navProvider.setIndex,
       ),

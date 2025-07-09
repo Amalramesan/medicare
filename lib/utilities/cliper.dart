@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+///it is used for desinging 
 class RPSCustomPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {

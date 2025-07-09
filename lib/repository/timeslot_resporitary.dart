@@ -3,7 +3,7 @@ import 'package:med_care/data/Network/base_api_service.dart';
 import 'package:med_care/data/Network/networ_api_service.dart';
 import 'package:med_care/Models/time_slote_model.dart';
 import 'package:med_care/Res/app_url.dart';
-
+///used to handle time related api calls
 class TimeSlotRepository {
   final BaseApiService _apiService = NetworApiService();
 

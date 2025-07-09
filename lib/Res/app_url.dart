@@ -1,5 +1,8 @@
+
+/// This class holds all the API endpoint URLs used in the application.
+///It centralizes API paths to make maintenance easier and reduce hardcoded strings across the app.
 class AppUrl {
-  static const String base = "http://192.168.29.112:8000/";
+  static const String base = 'http://10.0.2.2:8000/';
 
   // register and login Endpoints
   static const String register = "$base/api/register/";
@@ -20,11 +23,12 @@ class AppUrl {
   //upload document
   static const String uploadDocument = "$base/api/upload-report/";
   //fetchdocument
-  static const String fetchDocument="$base/api/my-reports/";
+  static const String fetchDocument = "$base/api/my-reports/";
   //profile
-  static const String profile="$base/api/profile/";
+  static const String profile = "$base/api/profile/";
   //appointment cancel
-  static  appointmentCancel(String appointmentId)=>"$base/api/appointment/$appointmentId/cancel/";
+  static appointmentCancel(String appointmentId) =>
+      "$base/api/appointment/$appointmentId/cancel/";
   //logout
-  static const String logoutt="$base/api/logout/";
+  static const String logoutt = "$base/api/logout/";
 }

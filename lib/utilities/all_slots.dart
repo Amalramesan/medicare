@@ -1,3 +1,4 @@
+//slotes availability
 const List<String> allAvailableSlots = [
   "09:00",
   "10:00",

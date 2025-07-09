@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:med_care/View_model/controller/profile_controller.dart';
+import 'package:med_care/view_model/controller/profile_controller.dart';
 
 class GreetingWidget extends StatelessWidget {
   final double screenWidth;
@@ -14,9 +14,6 @@ class GreetingWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final profileProvider = Provider.of<ProfileController>(context);
-    final userName = profileProvider.userName;
-
     return Container(
       alignment: Alignment.centerLeft,
       padding: EdgeInsets.symmetric(
@@ -27,7 +24,7 @@ class GreetingWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Hello, ${userName.isNotEmpty ? userName : "User"}',
+            'Hello, ${context.watch<ProfileController>().profileResponse.data?.data.name ?? "User"}',
             style: TextStyle(
               fontFamily: 'oswald',
               fontSize: screenWidth * 0.07,

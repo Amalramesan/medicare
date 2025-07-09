@@ -1,58 +1,38 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
-import 'package:med_care/View_model/controller/apoointment_history_controller.dart';
-import 'package:med_care/View_model/controller/login_controller.dart';
-import 'package:med_care/Routes/app_routes.dart';
-import 'package:med_care/data/response/status.dart';
-import 'package:med_care/views/Login/Widgets/login_button_widget.dart';
-import 'package:med_care/views/Login/Widgets/login_signup_button_widget.dart';
+import 'package:med_care/view_model/controller/login_controller.dart';
+import 'package:med_care/routes/app_routes.dart';
+import 'package:med_care/views/login/Widgets/login_button_widget.dart';
+import 'package:med_care/views/login/Widgets/login_signup_button_widget.dart';
 import 'package:provider/provider.dart';
-
+//functionality of login button 
 class LoginButtonWrapper extends StatelessWidget {
-  final GlobalKey<FormState> formKey;
-  final TextEditingController emailController;
-  final TextEditingController passwordController;
-
-  const LoginButtonWrapper({
-    super.key,
-    required this.formKey,
-    required this.emailController,
-    required this.passwordController,
-  });
-
-  void _handleSignUp(BuildContext context) {
-    Navigator.pushReplacementNamed(context, AppRoutes.register);
-  }
+  const LoginButtonWrapper({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final loginController = Provider.of<LoginController>(context);
+    final loginControllerr = Provider.of<LoginController>(context);
+    log("logincontroller $loginControllerr");
 
     return Column(
       children: [
-        LoginButton(
-          isLoading: loginController.loginResponse.status == Status.loading,//loading
-          onSignInTap: () {
-            if (formKey.currentState!.validate()) {
-              Provider.of<AppointmentController>(
-                context,
-                listen: false,
-              ).clearData();
-              loginController.login(
-                email: emailController.text.trim(),
-                password: passwordController.text,
-                context: context,
-              );
-            }
-          },
+        Consumer<LoginController>(
+          builder: (context, value, child) => LoginButton(
+            isLoading: value.isLoading, //loading
+            onSignInTap: () {
+              value.login(context: context);
+            },
+          ),
         ),
         const SizedBox(height: 10),
-        if (loginController.loginResponse.status == Status.error) //error
-          Text(
-            loginController.loginResponse.message ?? 'Login failed',
-            style: const TextStyle(color: Colors.red),
-          ),
+
         const SizedBox(height: 20),
-        LoginButtonWidget(onTapp: () => _handleSignUp(context)),
+        LoginButtonWidget(
+          onTapp: () {
+            Navigator.pushReplacementNamed(context, AppRoutes.register);
+          },
+        ),
       ],
     );
   }

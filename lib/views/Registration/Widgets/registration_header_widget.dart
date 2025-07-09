@@ -10,14 +10,14 @@ class SignupHeaderWidget extends StatelessWidget {
       children: [
         CustomPaint(
           size: Size(MediaQuery.of(context).size.width, 300),
-          painter: RPSCustomPainter(),
+          painter: RPSCustomPainter(),//it is custom design which is used in the login and registration page for making the pages attrative
         ),
         Positioned(
           top: 16,
           right: -5,
           child: CustomPaint(
             size: Size(MediaQuery.of(context).size.width, 300),
-            painter: RPSCustomPainter(),
+            painter: RPSCustomPainter(),//it is custom design which is used in the login and registration page for making the pages attrative
           ),
         ),
         Positioned(

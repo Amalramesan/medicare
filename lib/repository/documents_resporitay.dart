@@ -5,7 +5,7 @@ import 'package:med_care/data/Network/networ_api_service.dart';
 import 'package:med_care/Models/report_fetch_model.dart';
 import 'package:med_care/Models/upload_model.dart';
 import 'package:med_care/Res/app_url.dart';
-
+///used to handle upload documents api calls
 class DocumentRepository {
   final BaseApiService _apiService = NetworApiService();
 

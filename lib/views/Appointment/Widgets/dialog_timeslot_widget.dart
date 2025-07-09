@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:med_care/Models/time_slote_model.dart';
 import 'package:med_care/repository/timeslot_resporitary.dart' as _timeSlotRepo;
-
+//dialog for selecting timeslot
 class SelectTimeStep extends StatefulWidget {
   final VoidCallback onBack;
   final ValueChanged<String> onConfirm;

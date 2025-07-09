@@ -3,16 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:med_care/data/Network/base_api_service.dart';
 import 'package:med_care/data/Network/networ_api_service.dart';
-import 'package:med_care/Res/app_url.dart';
-
 import 'package:med_care/data/response/api_response.dart';
-
+import 'package:med_care/Res/app_url.dart';
+/// Controller responsible for handling the file upload process.
+/// Responsibilities:
+/// - Selecting report type and file
+///- Managing upload state
+/// - Sending file to backend via multipart request
 class UploadController with ChangeNotifier {
-  final BaseApiService _apiService = NetworApiService(); 
+  final BaseApiService _apiService = NetworApiService();
 
   String? selectedReportType;
   PlatformFile? pickedFile;
-  ApiResponse<String> uploadResponse = ApiResponse<String>.loading();
+  ApiResponse<String> _uploadResponse = ApiResponse.loading();
+  ApiResponse<String> get uploadResponse => _uploadResponse;
+  String _error = '';
+  String get error => _error;
 
   void setReportType(String? type) {
     selectedReportType = type;
@@ -24,34 +30,40 @@ class UploadController with ChangeNotifier {
     notifyListeners();
   }
 
+  void _setUploadResponse(ApiResponse<String> response) {
+    _uploadResponse = response;
+    notifyListeners();
+  }
+
+  void _setError(String errorMsg) {
+    _error = errorMsg;
+    notifyListeners();
+  }
+
   Future<void> uploadFile({String? description}) async {
+    _setError('');
     if (pickedFile == null || selectedReportType == null) {
-      uploadResponse = ApiResponse.error("Report type and file are required.");
-      notifyListeners();
+      _setUploadResponse(ApiResponse.error("Report type and file are required."));
       return;
     }
 
-    uploadResponse = ApiResponse.loading();
-    notifyListeners();
+    _setUploadResponse(ApiResponse.loading());
 
     try {
-      final result = await _apiService.uploadMultipartFile(
+      await _apiService.uploadMultipartFile(
         endPoint: AppUrl.uploadDocument,
         fields: {
           "report": selectedReportType!,
-          if (description != null && description.isNotEmpty)
-            "description": description,
+          if (description != null && description.isNotEmpty) "description": description,
         },
         file: File(pickedFile!.path!),
         fileField: "document",
-        isAuth: true, // ✅ Automatically adds token
+        isAuth: true,
       );
-
-      uploadResponse = ApiResponse.completed("File uploaded successfully");
+      _setUploadResponse(ApiResponse.completed("File uploaded successfully"));
     } catch (e) {
-      uploadResponse = ApiResponse.error("Upload failed: ${e.toString()}");
+      _setError("Upload failed: ${e.toString()}");
+      _setUploadResponse(ApiResponse.error(_error));
     }
-
-    notifyListeners();
   }
 }

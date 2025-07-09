@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:med_care/View_model/services/validators.dart';
-import 'package:med_care/views/Registration/Widgets/spacing_helper_widget.dart';
+import 'package:med_care/view_model/services/validators.dart';
+import 'package:med_care/views/registration/Widgets/spacing_helper_widget.dart';
 
 class GenderAgeRowWidget extends StatelessWidget {
   final TextEditingController ageController;
@@ -16,6 +16,7 @@ class GenderAgeRowWidget extends StatelessWidget {
   });
 
   final genderOptions = [
+    //"This list defines gender selection options for a dropdown menu, each represented by a label (for display) and a value (for form submission or logic)."
     {'label': 'Male', 'value': 'male'},
     {'label': 'Female', 'value': 'female'},
     {'label': 'Not Prefer to Say', 'value': 'na'},
@@ -47,6 +48,7 @@ class GenderAgeRowWidget extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: TextFormField(
+                    //this is a texxt field for age
                     controller: ageController,
                     keyboardType: TextInputType.number,
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -82,6 +84,8 @@ class GenderAgeRowWidget extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     child: DropdownButtonFormField<String>(
+                      // Dropdown field for selecting gender from the predefined genderOptions list.
+                      // The selected value is stored in genderValue and updated using onGenderChanged.
                       value: genderValue,
                       decoration: const InputDecoration(
                         border: InputBorder.none,

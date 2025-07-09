@@ -7,7 +7,11 @@ import 'package:http_parser/http_parser.dart';
 import 'package:med_care/data/Network/base_api_service.dart';
 import 'package:med_care/data/response/app_excpetion.dart';
 import 'package:med_care/Res/app_url.dart';
-import 'package:med_care/View_model/services/store_auth_details.dart';
+import 'package:med_care/view_model/services/store_auth_details.dart';
+
+/// This class implements the BaseApiService and is responsible
+/// for making HTTP requests (GET, POST, DELETE, Multipart upload)
+/// with proper error handling, optional authorization, and token refresh logic.
 
 class NetworApiService implements BaseApiService {
   @override

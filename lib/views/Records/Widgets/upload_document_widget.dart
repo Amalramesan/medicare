@@ -8,19 +8,22 @@ class Recordpagewidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-     onTap: () async {
-  final controller = Provider.of<ReportFetchController>(context, listen: false);
-  await controller.fetchReports();
-
-  if (context.mounted) {
-    showDialog(
-      context: context,
-      builder: (_) => const DropedownnBodyState(),
-    );
-  }
-},
-
+    return InkWell( 
+      onTap: () async {
+        // Access the report controller 
+        final controller = Provider.of<ReportFetchController>(
+          context,
+          listen: false,
+        );
+        //load the report data
+        await controller.loadReports();
+        if (context.mounted) {
+          showDialog(  //used to show a custom dialog after the reports are successfully loaded
+            context: context,
+            builder: (_) => const DropedownnBodyState(),
+          );
+        }
+      },
 
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),

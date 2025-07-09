@@ -1,3 +1,6 @@
+/// Base class for custom exceptions used in the app.
+/// It implements the Exception class and provides a custom message and prefix.
+/// 
 class AppExpection implements Exception {
   final String? _message;
   final String?_prefix;

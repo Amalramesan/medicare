@@ -1,62 +1,76 @@
 import 'package:flutter/material.dart';
-import 'package:med_care/Models/login_model.dart';
-import 'package:med_care/View_model/services/store_auth_details.dart';
-import 'package:med_care/data/Response/api_response.dart';
-import 'package:med_care/repository/auth_resporitary.dart'; // Assuming this is the correct path
+import 'package:med_care/view_model/services/store_auth_details.dart';
+import 'package:med_care/repository/auth_resporitary.dart';
+/// Controller for managing the user login functionality.
+/// Responsibilities:
+/// - Handles form validation using a [GlobalKey<FormState>]
+///- Manages loading state during the login process
+/// - Uses [AuthRepository] to perform login requests
+/// - Stores user authentication tokens and patient ID via [LocalStorageService]
+/// - Navigates to the home screen on successful login
+/// - Provides a logout method to clear saved tokens
+/// - Displays success or error messages using [ScaffoldMessenger]
+/// This controller is used with Provider to manage login-related state in a reactive way
 
 class LoginController with ChangeNotifier {
+
+  final formKey = GlobalKey<FormState>();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
   final AuthRepository _authRepository = AuthRepository();
   final LocalStorageService _storage = LocalStorageService();
 
-  ApiResponse<LoginModel> _loginResponse = ApiResponse.loading();
-  ApiResponse<LoginModel> get loginResponse => _loginResponse;
+  bool isLoading = false;
 
-  /// Login and save tokens/user ID
-  Future<void> login({
-    required String email,
-    required String password,
-    required BuildContext context,
-  }) async {
-    _loginResponse = ApiResponse.loading();
+  void _setIsLoading(bool val) {
+    isLoading = val;
     notifyListeners();
+  }
+  
+  bool isFormValid() => formKey.currentState?.validate() ?? false;
+
+  Future<void> login({required BuildContext context}) async {
+    if (!isFormValid()) return;
+    _setIsLoading(true);
 
     try {
-      final response = await _authRepository.loginUser(email, password);
-      _loginResponse = ApiResponse.completed(response);
-      notifyListeners();
-
+      final response = await _authRepository.loginUser(
+        emailController.text.trim(),
+        passwordController.text.trim(),
+      );
       final user = response.data.user;
       final access = response.data.access;
       final refresh = response.data.refresh;
-     await _storage.init(); 
+      _setIsLoading(false);
+
+      await _storage.init();
       await _storage.saveTokens(access, refresh);
       await _storage.savePatientId(user.id);
-
-      _showMessage(context, "Login success: ${response.message}");
-
+      if (context.mounted) {
+        _showMessage(context, "Login success: ${response.message}");
+      }
       if (context.mounted) {
         Navigator.pushReplacementNamed(context, '/home');
       }
     } catch (e) {
-      _loginResponse = ApiResponse.error(e.toString());
-      notifyListeners();
-      _showMessage(context, "Login failed: ${e.toString()}");
+      _setIsLoading(false);
+      if (context.mounted) {
+        _showMessage(context, "Login failed: ${e.toString()}");
+      }
     }
   }
 
-  /// Logout and clear saved user info
   Future<void> logout() async {
-    await _storage.init(); 
+    await _storage.init();
     await _storage.clearTokens();
-    _loginResponse = ApiResponse.loading(); // or null/initial state
-    notifyListeners();
+    // or reset state
   }
 
   void _showMessage(BuildContext context, String message) {
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(message)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(message)));
     }
   }
 }

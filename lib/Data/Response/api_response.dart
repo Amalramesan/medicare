@@ -1,7 +1,5 @@
-
-
 import 'package:med_care/Data/response/status.dart';
-
+///it is a class used to  represent the state of  an  api call(loading,success or error) 
 class ApiResponse<T> {
   Status? status;
   T? data;

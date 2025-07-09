@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:med_care/Data/response/status.dart';
-
 import 'package:med_care/View_model/controller/report_fetch_controller.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -21,13 +20,18 @@ class _RecordListWidgetState extends State<RecordListWidget> {
     return Consumer<ReportFetchController>(
       builder: (context, controller, child) {
         final response = controller.reportsResponse;
-        logger.i("First record: ${response.data?.first.toJson()}");
+
+        if (response.data != null && response.data!.isNotEmpty) {
+          logger.i("First record: ${response.data!.first.toJson()}");
+        } else {
+          logger.i("First record: null or empty list");
+        }
 
         logger.i("response.status: ${response.status}");
         logger.i("response.data: ${response.data}");
 
-        switch (response.status!) {
-          case Status.loading:
+        switch (response.status!) {  //this switch case is used to check the status. if the data is loading 
+          case Status.loading:       //it shows a circular progress indicattor or is there is a error it shows the error message, or if it is complete it shows the data
             return const Center(child: CircularProgressIndicator());
 
           case Status.error:

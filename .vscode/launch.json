@@ -1,0 +1,10 @@
+{
+    "configurations": [
+        {
+            "name": "Flutter (lib\\view_model\\controller\\apoointment_history_controller.dart)",
+            "type": "dart",
+            "request": "launch",
+            "program": "lib\\view_model\\controller\\apoointment_history_controller.dart"
+        }
+    ]
+}

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:med_care/view_model/controller/appointment_booking_controller.dart';
 import 'package:provider/provider.dart';
 import 'appointment_booking_dialog_widget.dart';
-
+//button for booking appointments
 class BookAppointmentButton extends StatelessWidget {
   final double screenWidth;
   final double screenHeight;

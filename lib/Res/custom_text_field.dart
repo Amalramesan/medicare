@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+///it is  a reusable custom text form field 
 class CustomTextField extends StatefulWidget {
   final String hintText;
   final IconData icon;

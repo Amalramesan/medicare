@@ -3,7 +3,7 @@ import 'package:med_care/Models/doctor_model.dart';
 import 'package:med_care/Res/app_url.dart';
 import 'package:med_care/data/Network/base_api_service.dart';
 import 'package:med_care/data/Network/networ_api_service.dart';
-
+///used to handele doctors related api calls 
 class DoctorRepository {
   final BaseApiService _apiService = NetworApiService();
 
